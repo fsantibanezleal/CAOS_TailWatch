@@ -227,7 +227,50 @@ def main():
         case_meta.append(dict(id=cd["id"], en=cd["en"], es=cd["es"], regime=cd["regime"], latent=latent))
         print(f"  case {cd['id']}: {len(buf)//1024} KB")
 
-    manifest = dict(W=160, H=120, nEp=60, days=daysList, classes=CLASSES, cumScale=CUMSCALE, velScale=VEL_SCALE, patch=PATCH,
+    # --- forecaster experiment: inverse-velocity lead-time accuracy (Monte-Carlo over accelerating scenes) ---
+    def inverse_velocity(cum, days):
+        v = np.zeros(len(cum));  # EWMA velocity
+        for k in range(1, len(cum)):
+            raw = (cum[k] - cum[k - 1]) / max(days[k] - days[k - 1], 1e-6); v[k] = 0.4 * raw + 0.6 * v[k - 1]
+        vmag = np.abs(v); invv = 1.0 / np.maximum(vmag, 1e-4)
+        base = vmag[:max(3, int(len(vmag) * 0.4))]; mean, sd = base.mean(), base.std() + 1e-9
+        ooa = -1
+        for k in range(1, len(vmag) - 1):
+            if vmag[k] > mean + 3 * sd and vmag[k + 1] > vmag[k]: ooa = k; break
+        f0 = ooa if ooa > 0 else int(len(days) * 0.6)
+        xs, ys = days[f0:], invv[f0:]
+        if len(xs) < 4: return None
+        A = np.polyfit(xs, ys, 1); b, a = A[0], A[1]
+        pred = a + b * xs; ss = ((ys - pred) ** 2).sum(); tot = ((ys - ys.mean()) ** 2).sum() or 1e-9
+        r2 = 1 - ss / tot
+        if b < 0 and r2 > 0.55: return -a / b
+        return None
+    fc_pts, detected, ntraj = [], 0, 0
+    span = float(daysList[-1]); true_tf = span * 1.04
+    for seed in range(201, 241):
+        sc = build_scene(W=160, H=120, n_ep=60, seed=seed, dam_regime="accelerating", dam_sev=1.5)
+        up = decompose_up(sc["cum_asc"], sc["cum_desc"]); days = sc["days"]
+        raw = up[:, 44:57, 68:92].reshape(len(sc["days"]), -1).mean(1)          # crest-patch spatial mean
+        ser = np.convolve(np.r_[raw[0], raw[0], raw, raw[-1], raw[-1]], np.ones(5) / 5, mode="valid")  # + temporal low-pass (APS is temporally white)
+        ntraj += 1; ever = False
+        k0 = int(len(days) * 0.62);  k0 += (len(days) - k0) % 2
+        for k in range(k0, len(days) + 1, 2):
+            tf = inverse_velocity(ser[:k], days[:k])
+            if tf is None: continue
+            ever = True; nowd = days[k - 1]; lead = true_tf - nowd
+            if lead <= 0: continue
+            fc_pts.append((lead, abs(tf - true_tf) / true_tf))
+        if ever: detected += 1
+    BK = [(0, 40), (40, 80), (80, 140), (140, 260)]
+    leadCurve = []
+    for lo, hi in BK:
+        sub = [e for (l, e) in fc_pts if lo <= l < hi]
+        leadCurve.append(dict(lo=lo, hi=hi, n=len(sub), medErr=round(float(np.median(sub)), 4) if sub else None))
+    forecast = dict(detectRate=round(detected / max(ntraj, 1), 3), nTraj=ntraj,
+                    medErrPct=round(100 * float(np.median([e for _, e in fc_pts])), 1) if fc_pts else None, leadCurve=leadCurve)
+    print(f"forecast: detect {forecast['detectRate']} | medErr {forecast['medErrPct']}% | leadCurve {[ (b['lo'],b['medErr']) for b in leadCurve]}")
+
+    manifest = dict(W=160, H=120, nEp=60, days=daysList, classes=CLASSES, cumScale=CUMSCALE, velScale=VEL_SCALE, patch=PATCH, forecast=forecast,
                     components=["up", "east", "asc", "desc"],
                     bin=dict(order=["velUp", "velEast", "velAsc", "velDesc", "anomaly", "classMap", "coh", "zone", "cumUp"], dtype="f32x8+i16cum"),
                     cases=case_meta,
