@@ -17,6 +17,7 @@ Run:  python train_models.py
 from __future__ import annotations
 import os, json, numpy as np, torch, torch.nn as nn
 from sbas import load_scene, decompose_up, velocity
+from forward import build_scene
 
 torch.manual_seed(0); np.random.seed(0)
 HERE = os.path.dirname(__file__)
@@ -188,41 +189,55 @@ def main():
     torch.onnx.export(ae, torch.zeros(1, 1, PATCH, PATCH), os.path.join(OUT, "ae.onnx"), dynamo=False,
                       input_names=["patch"], output_names=["recon"], dynamic_axes={"patch": {0: "n"}, "recon": {0: "n"}}, opset_version=17)
 
-    # --- demo-scene artifacts for the web ---
-    s, up, vel = scene_fields(DEMO); zone = s["zone"]; nEp, H, W = up.shape
-    amap = anomaly_map(ae, vel)
-    series = up.reshape(nEp, -1).T; mu = series.mean(1, keepdims=True); sd = series.std(1, keepdims=True) + 1e-6
-    with torch.no_grad():
-        logits = cnn(torch.tensor(((series - mu) / sd)[:, None].astype(np.float32)))
-        classMap = logits.argmax(1).numpy().reshape(H, W)
-    coh = s["coh"].mean(0)
-
-    # latent scatter: encode a grid of velocity patches → 16-D latent → UMAP 2-D, coloured by centre class
-    P, centers = velocity_patches(vel, stride=6)
-    with torch.no_grad():
-        lat = ae.encode(torch.tensor(P)).numpy()
+    # --- multi-case demo artifacts (distinct CONFIGURABLE scenarios; each view reacts to the case) ---
+    from sbas import SIN
     import umap
-    emb = umap.UMAP(n_neighbors=15, min_dist=0.1, random_state=0).fit_transform(lat)
-    latent = [{"x": float(emb[k, 0]), "y": float(emb[k, 1]), "cls": int(zone[cy, cx])} for k, (cy, cx) in enumerate(centers)]
-
-    # write the binary (float32 maps + int16 cum) + the meta json
     CUMSCALE = 10.0
-    maps = [vel.astype(np.float32), amap.astype(np.float32), classMap.astype(np.float32), coh.astype(np.float32), zone.astype(np.float32)]
-    buf = b"".join(m.ravel().tobytes() for m in maps)
-    buf += np.clip(up * CUMSCALE, -32760, 32760).astype(np.int16).ravel().tobytes()
-    with open(os.path.join(OUT, "tw-demo.bin"), "wb") as f:
-        f.write(buf)
-    meta = dict(W=W, H=H, nEp=nEp, days=s["days"].tolist(), classes=CLASSES, cumScale=CUMSCALE,
-                velScale=VEL_SCALE, patch=PATCH,
-                bin=dict(order=["vel", "anomaly", "classMap", "coh", "zone", "cumUp"], dtype="f32x5+i16cum"),
-                latent=latent,
-                benchmark=dict(macroF1=round(macroF1, 3), aeAuc=round(ae_auc, 3), velAuc=round(v_auc, 3),
-                               aeRoc=dict(fpr=[round(x, 4) for x in ae_fpr], tpr=[round(x, 4) for x in ae_tpr]),
-                               velRoc=dict(fpr=[round(x, 4) for x in v_fpr], tpr=[round(x, 4) for x in v_tpr]),
-                               confusion=conf, heldOut=HELD, trainScenes=len(TRAIN)))
-    with open(os.path.join(OUT, "tw-demo.json"), "w") as f:
-        json.dump(meta, f)
-    print(f"wrote {OUT}\\tw-demo.bin ({len(buf)//1024} KB), tw-demo.json, ae.onnx, cnn.onnx")
+    CASES = [
+        dict(id="accel",    en="Accelerating dam → collapse", es="Presa acelerando → colapso", regime="accelerating", seed=101, sev=1.0),
+        dict(id="stable",   en="Stable control",                  es="Control estable",                regime="stable",       seed=102, sev=1.0),
+        dict(id="seasonal", en="Seasonal site",                   es="Sitio estacional",               regime="seasonal",     seed=103, sev=1.0),
+        dict(id="step",     en="Step after rain",                 es="Escalón tras lluvia",        regime="step",         seed=104, sev=1.0),
+        dict(id="linear",   en="Steady linear creep",             es="Creep lineal estable",           regime="linear",       seed=105, sev=1.2),
+    ]
+    case_meta = []
+    daysList = None
+    for cd in CASES:
+        sc = build_scene(W=160, H=120, n_ep=60, seed=cd["seed"], dam_regime=cd["regime"], dam_sev=cd["sev"])
+        asc, desc, days, zone = sc["cum_asc"], sc["cum_desc"], sc["days"], sc["zone"]
+        daysList = days.tolist()
+        up = decompose_up(asc, desc); east = (asc - desc) / (2 * SIN)
+        vU, vEa, vAs, vDe = velocity(up, days), velocity(east, days), velocity(asc, days), velocity(desc, days)
+        amap = anomaly_map(ae, vU)
+        nEp, H, W = up.shape
+        series = up.reshape(nEp, -1).T; mu = series.mean(1, keepdims=True); sd = series.std(1, keepdims=True) + 1e-6
+        with torch.no_grad():
+            classMap = cnn(torch.tensor(((series - mu) / sd)[:, None].astype(np.float32))).argmax(1).numpy().reshape(H, W)
+        coh = sc["coh"].mean(0)
+        P, centers = velocity_patches(vU, stride=6)
+        with torch.no_grad():
+            lat = ae.encode(torch.tensor(P)).numpy()
+        emb = umap.UMAP(n_neighbors=15, min_dist=0.1, random_state=0).fit_transform(lat)
+        latent = [{"x": round(float(emb[k, 0]), 3), "y": round(float(emb[k, 1]), 3), "cls": int(zone[cy, cx])} for k, (cy, cx) in enumerate(centers)]
+        maps = [vU, vEa, vAs, vDe, amap, classMap, coh, zone]
+        buf = b"".join(m.astype(np.float32).ravel().tobytes() for m in maps)
+        buf += np.clip(up * CUMSCALE, -32760, 32760).astype(np.int16).ravel().tobytes()
+        with open(os.path.join(OUT, f"tw-{cd['id']}.bin"), "wb") as f:
+            f.write(buf)
+        case_meta.append(dict(id=cd["id"], en=cd["en"], es=cd["es"], regime=cd["regime"], latent=latent))
+        print(f"  case {cd['id']}: {len(buf)//1024} KB")
+
+    manifest = dict(W=160, H=120, nEp=60, days=daysList, classes=CLASSES, cumScale=CUMSCALE, velScale=VEL_SCALE, patch=PATCH,
+                    components=["up", "east", "asc", "desc"],
+                    bin=dict(order=["velUp", "velEast", "velAsc", "velDesc", "anomaly", "classMap", "coh", "zone", "cumUp"], dtype="f32x8+i16cum"),
+                    cases=case_meta,
+                    benchmark=dict(macroF1=round(macroF1, 3), aeAuc=round(ae_auc, 3), velAuc=round(v_auc, 3),
+                                   aeRoc=dict(fpr=[round(x, 4) for x in ae_fpr], tpr=[round(x, 4) for x in ae_tpr]),
+                                   velRoc=dict(fpr=[round(x, 4) for x in v_fpr], tpr=[round(x, 4) for x in v_tpr]),
+                                   confusion=conf, heldOut=HELD, trainScenes=len(TRAIN)))
+    with open(os.path.join(OUT, "tw-cases.json"), "w") as f:
+        json.dump(manifest, f)
+    print(f"wrote {len(CASES)} cases + tw-cases.json, ae.onnx, cnn.onnx")
 
 
 if __name__ == "__main__":
