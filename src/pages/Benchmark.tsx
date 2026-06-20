@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Refs, useShellLang } from '@fasl-work/caos-app-shell';
-import { loadDemo, CLASS_EN, CLASS_ES, type Demo } from '../data/demo';
+import { loadManifest, CLASS_EN, CLASS_ES, type Manifest } from '../data/demo';
 
 export default function Benchmark() {
   const es = useShellLang() === 'es';
-  const [demo, setDemo] = useState<Demo | null>(null);
-  useEffect(() => { loadDemo().then(setDemo).catch(() => {}); }, []);
+  const [demo, setDemo] = useState<Manifest | null>(null);
+  useEffect(() => { loadManifest().then(setDemo).catch(() => {}); }, []);
   const CLS = es ? CLASS_ES : CLASS_EN;
   return (
     <div className="page-body prose">
