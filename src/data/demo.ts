@@ -1,49 +1,56 @@
-// Loader for the committed precompute artifacts produced by the offline pipeline (forward sim → SBAS →
-// trained conv-AE + 1-D CNN → ONNX). tw-demo.bin packs five float32 H*W maps then an int16 cumulative-Up
-// cube; tw-demo.json carries the calendar, classes, latent UMAP coords, the held-out ROC curves and the
-// CNN confusion matrix. Everything here is REAL model output, not synthetic-on-the-fly.
+// Loader for the committed precompute artifacts (forward sim → SBAS → conv-AE + CNN → ONNX). The manifest
+// tw-cases.json lists the configurable CASES (distinct deformation scenarios) + the held-out benchmark; each
+// case's tw-<id>.bin packs eight float32 H*W maps (velocity Up/East/Asc/Desc, AE anomaly, CNN class,
+// coherence, zone) then an int16 cumulative-Up cube. Cases lazy-load so only the selected one is fetched.
 export interface RocCurve { fpr: number[]; tpr: number[] }
-export interface Benchmark {
-  macroF1: number; aeAuc: number; velAuc: number;
-  aeRoc: RocCurve; velRoc: RocCurve; confusion: number[][];
-  heldOut: number[]; trainScenes: number;
-}
+export interface Benchmark { macroF1: number; aeAuc: number; velAuc: number; aeRoc: RocCurve; velRoc: RocCurve; confusion: number[][]; heldOut: number[]; trainScenes: number }
 export interface LatentPt { x: number; y: number; cls: number }
-export interface Demo {
+export interface CaseInfo { id: string; en: string; es: string; regime: string; latent: LatentPt[] }
+export interface LeadBucket { lo: number; hi: number; n: number; medErr: number | null }
+export interface Forecast { detectRate: number; nTraj: number; medErrPct: number | null; leadCurve: LeadBucket[] }
+export interface Manifest {
   W: number; H: number; nEp: number; days: number[]; classes: string[];
-  velScale: number; patch: number;
-  vel: Float32Array; anomaly: Float32Array; classMap: Float32Array; coh: Float32Array; zone: Float32Array;
-  cumUp: Int16Array; cumScale: number;       // displacement mm = cumUp / cumScale
-  latent: LatentPt[]; benchmark: Benchmark;
-  series(x: number, y: number): number[];     // cumulative-Up series (mm) at a pixel
-  velAt(x: number, y: number): number;
+  cumScale: number; velScale: number; patch: number; components: string[];
+  cases: CaseInfo[]; benchmark: Benchmark; forecast: Forecast;
+}
+export type Component = 'up' | 'east' | 'asc' | 'desc';
+export interface CaseData {
+  velUp: Float32Array; velEast: Float32Array; velAsc: Float32Array; velDesc: Float32Array;
+  anomaly: Float32Array; classMap: Float32Array; coh: Float32Array; zone: Float32Array; cumUp: Int16Array;
 }
 
-let cache: Promise<Demo> | null = null;
+const base = () => (import.meta.env.BASE_URL || '/');
+let manifestCache: Promise<Manifest> | null = null;
+const caseCache = new Map<string, Promise<CaseData>>();
 
-export function loadDemo(): Promise<Demo> {
-  if (cache) return cache;
-  cache = (async () => {
-    const base = import.meta.env.BASE_URL || '/';
-    const [meta, buf] = await Promise.all([
-      fetch(`${base}tw-demo.json`).then((r) => r.json()),
-      fetch(`${base}tw-demo.bin`).then((r) => r.arrayBuffer()),
-    ]);
-    const { W, H, nEp } = meta; const n = W * H;
-    let o = 0;
-    const f32 = (len: number) => { const a = new Float32Array(buf, o, len); o += len * 4; return a; };
-    const vel = f32(n), anomaly = f32(n), classMap = f32(n), coh = f32(n), zone = f32(n);
-    const cumUp = new Int16Array(buf, o, nEp * n);
-    const cumScale: number = meta.cumScale;
-    return {
-      W, H, nEp, days: meta.days, classes: meta.classes, velScale: meta.velScale, patch: meta.patch,
-      vel, anomaly, classMap, coh, zone, cumUp, cumScale,
-      latent: meta.latent, benchmark: meta.benchmark,
-      series(x: number, y: number) { const i = y * W + x; const out: number[] = []; for (let e = 0; e < nEp; e++) out.push(cumUp[e * n + i] / cumScale); return out; },
-      velAt(x: number, y: number) { return vel[y * W + x]; },
-    } as Demo;
-  })();
-  return cache;
+export function loadManifest(): Promise<Manifest> {
+  return (manifestCache ??= fetch(`${base()}tw-cases.json`).then((r) => r.json()));
+}
+
+export function loadCase(m: Manifest, id: string): Promise<CaseData> {
+  let p = caseCache.get(id);
+  if (!p) {
+    p = fetch(`${base()}tw-${id}.bin`).then((r) => r.arrayBuffer()).then((buf) => {
+      const n = m.W * m.H; let o = 0;
+      const f32 = () => { const a = new Float32Array(buf, o, n); o += n * 4; return a; };
+      const velUp = f32(), velEast = f32(), velAsc = f32(), velDesc = f32(), anomaly = f32(), classMap = f32(), coh = f32(), zone = f32();
+      const cumUp = new Int16Array(buf, o, m.nEp * n);
+      return { velUp, velEast, velAsc, velDesc, anomaly, classMap, coh, zone, cumUp };
+    });
+    caseCache.set(id, p);
+  }
+  return p;
+}
+
+/** The velocity field for the chosen geometry/component. */
+export function velOf(c: CaseData, comp: Component): Float32Array {
+  return comp === 'east' ? c.velEast : comp === 'asc' ? c.velAsc : comp === 'desc' ? c.velDesc : c.velUp;
+}
+/** Cumulative-Up series (mm) at a pixel. */
+export function seriesAt(m: Manifest, c: CaseData, x: number, y: number): number[] {
+  const i = y * m.W + x, n = m.W * m.H, out: number[] = [];
+  for (let e = 0; e < m.nEp; e++) out.push(c.cumUp[e * n + i] / m.cumScale);
+  return out;
 }
 
 // percentile-normalise an anomaly field to [0,1] for display (robust to the long tail)
@@ -55,7 +62,8 @@ export function pctNorm(a: Float32Array): { norm: Float32Array; lo: number; hi: 
   return { norm, lo, hi };
 }
 
-// categorical colours for the 6 deformation classes (CVD-safe-ish, stable across light/dark)
 export const CLASS_COLORS = ['#8b949e', '#58a6ff', '#f85149', '#3fb950', '#d29922', '#6e7681'];
 export const CLASS_EN = ['Stable', 'Linear creep', 'Accelerating', 'Seasonal', 'Step', 'Decorrelated'];
 export const CLASS_ES = ['Estable', 'Creep lineal', 'Acelerando', 'Estacional', 'Escalón', 'Decorrelado'];
+export const COMP_EN: Record<Component, string> = { up: 'Vertical (Up)', east: 'East (E–W)', asc: 'Ascending LOS', desc: 'Descending LOS' };
+export const COMP_ES: Record<Component, string> = { up: 'Vertical (Up)', east: 'Este (E–O)', asc: 'LOS ascendente', desc: 'LOS descendente' };

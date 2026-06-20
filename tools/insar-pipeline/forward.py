@@ -70,7 +70,9 @@ def _true_motion(t_days, regime, span, sev):
     return mu, -0.45 * mu
 
 
-def build_scene(W=160, H=120, n_ep=60, seed=7):
+def build_scene(W=160, H=120, n_ep=60, seed=7, dam_regime="accelerating", dam_sev=1.0):
+    """dam_regime overrides the deforming dam+crest zone's behaviour so distinct CASES can be generated
+    (accelerating→collapse, stable control, seasonal, step, linear) sharing the same scene structure."""
     rng = np.random.default_rng(seed)
     days = np.arange(n_ep) * DT_DAYS
     span = float(days[-1])
@@ -91,6 +93,9 @@ def build_scene(W=160, H=120, n_ep=60, seed=7):
     crest = dam & (xx > W * 0.36) & (xx < W * 0.64)
     zone[crest] = CLASSES.index("accelerating")
     sev[crest] = 1.0 + 0.6 * np.exp(-((xx[crest] - W * 0.5) ** 2) / (2 * (W * 0.10) ** 2))
+    if dam_regime != "accelerating":          # override the dam+crest behaviour for distinct CASES
+        zone[dam] = CLASSES.index(dam_regime); zone[crest] = CLASSES.index(dam_regime)
+    sev[dam] *= dam_sev; sev[crest] *= dam_sev
     # wet tailings beach below: seasonal + low coherence (decorrelation)
     beach = (yy > cy + 7) & (yy < cy + 22) & (xx > W * 0.2) & (xx < W * 0.8)
     zone[beach] = CLASSES.index("seasonal"); coh0[beach] = 0.30
