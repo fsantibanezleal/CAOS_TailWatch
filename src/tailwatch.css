@@ -67,6 +67,13 @@
 .codeblock { background: var(--color-surface-2, var(--color-surface)); border: 1px solid var(--color-border); border-radius: 8px; padding: 0.85rem 1rem; overflow-x: auto; font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.55; color: var(--color-fg); white-space: pre; }
 .mono { font-family: var(--font-mono); }
 
+/* stat cards (benchmark) */
+.tw-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.6rem; margin: 0.6rem 0 0.9rem; }
+@media (max-width: 640px) { .tw-stats { grid-template-columns: repeat(2, 1fr); } }
+.tw-stat { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 10px; padding: 0.6rem 0.7rem; text-align: center; }
+.tw-stat-v { font-family: var(--font-mono); font-size: 1.5rem; font-weight: 700; color: var(--color-fg); line-height: 1.1; }
+.tw-stat-l { font-size: 0.72rem; color: var(--color-fg-subtle); margin-top: 0.2rem; }
+
 /* uPlot live legend (value readout) */
 .uplot-host { width: 100%; }
 .u-legend { font-size: 0.76rem; color: var(--color-fg-subtle); margin-top: 0.15rem; }
