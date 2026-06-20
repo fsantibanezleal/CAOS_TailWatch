@@ -1,0 +1,32 @@
+{
+  "name": "caos-tailwatch",
+  "version": "0.01.000",
+  "private": true,
+  "type": "module",
+  "description": "TailWatch — InSAR ground-deformation monitoring & early-warning for tailings dams and pit walls (SBAS displacement, velocity maps, inverse-velocity failure forecasting, GISTM-aligned TARP alarms). Didactic + decision-support, not a certified safety system.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "node --import tsx --test test/dsp.test.ts"
+  },
+  "dependencies": {
+    "@fasl-work/caos-app-shell": "^0.1.1",
+    "katex": "^0.16.11",
+    "lucide-react": "^0.469.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.1.1",
+    "uplot": "^1.6.31",
+    "zustand": "^5.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3",
+    "vite": "^6.0.7"
+  }
+}

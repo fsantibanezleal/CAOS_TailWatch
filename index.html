@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TailWatch — InSAR Ground-Deformation Monitoring for Tailings Dams & Pit Walls</title>
+    <meta name="description" content="A real InSAR deformation suite: open Sentinel-1 time-series over mine tailings dams and pit walls, SBAS displacement, velocity maps, inverse-velocity failure forecasting and GISTM-aligned alarms — open, client-side. Part of the Faena mining-analytics hub." />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <script>
+      // Pre-paint theme — same localStorage key as the shared shell.
+      (function () {
+        try {
+          var s = localStorage.getItem('caos.theme');
+          document.documentElement.dataset.theme = s ? s : matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

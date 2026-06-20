@@ -1,0 +1,38 @@
+/* TailWatch — app-specific styles on top of the shared design-system tokens. */
+
+.tw-layout { display: grid; grid-template-columns: 250px 1fr; gap: 1rem; align-items: start; }
+@media (max-width: 760px) { .tw-layout { grid-template-columns: 1fr; } }
+
+.tw-controls { display: flex; flex-direction: column; gap: 0.7rem; position: sticky; top: 0.5rem; }
+.tw-ctl { display: flex; flex-direction: column; gap: 0.25rem; font-size: 0.85rem; }
+.tw-ctl .range { width: 100%; }
+.tw-check { flex-direction: row; align-items: center; gap: 0.4rem; }
+
+.tw-alarm { display: flex; flex-direction: column; gap: 0.15rem; padding: 0.5rem 0.6rem; border: 1px solid var(--color-border); border-left-width: 4px; border-radius: 8px; background: var(--color-surface); }
+.tw-alarm-dot { display: inline-block; width: 0.7rem; height: 0.7rem; border-radius: 50%; vertical-align: middle; margin-right: 0.3rem; }
+.tw-read { display: flex; flex-direction: column; gap: 0.2rem; }
+.tw-read b { font-family: var(--font-mono); }
+
+.tw-main { display: flex; flex-direction: column; gap: 0.6rem; min-width: 0; }
+.tw-map-wrap { position: relative; }
+.tw-readout { position: absolute; pointer-events: none; background: color-mix(in oklab, var(--color-surface) 90%, transparent); border: 1px solid var(--color-border); border-radius: 6px; padding: 0.2rem 0.45rem; font-family: var(--font-mono); font-size: 0.72rem; color: var(--color-fg); white-space: nowrap; }
+.tw-legend { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; font-size: 0.72rem; color: var(--color-fg-subtle); margin-top: 0.3rem; }
+.tw-cbar { display: inline-block; width: 160px; height: 0.55rem; border-radius: 3px; border: 1px solid var(--color-border); }
+.tw-legend-u { margin-left: auto; }
+
+.tw-plot { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 10px; padding: 0.6rem 0.75rem; }
+.tw-plot-t { font-size: 0.82rem; color: var(--color-fg-subtle); margin-bottom: 0.2rem; }
+.tw-disc { font-size: 0.76rem; border-left: 3px solid var(--color-warn); padding-left: 0.6rem; }
+
+/* uPlot live legend (value readout) */
+.uplot-host { width: 100%; }
+.u-legend { font-size: 0.74rem; color: var(--color-fg-subtle); margin-top: 0.1rem; }
+.u-legend .u-series { display: inline-flex; align-items: center; gap: 0.3rem; margin-right: 0.9rem; }
+.u-legend .u-value { font-family: var(--font-mono); color: var(--color-fg); }
+
+/* doc page bits reused from the shell prose */
+.cmp-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+.cmp-table th, .cmp-table td { border: 1px solid var(--color-border); padding: 0.3rem 0.5rem; text-align: center; }
+.cmp-table th { background: var(--color-surface); }
+.mono { font-family: var(--font-mono); }
+.hint { font-size: 0.82rem; color: var(--color-fg-subtle); }
