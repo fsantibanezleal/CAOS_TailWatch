@@ -1,8 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
-import { type Cube } from '../dsp/insar';
+import { type Cube, type Comp } from '../dsp/insar';
 import { vik, rgbCss } from '../lib/colormap';
 
 const ZONE = { 0: 'rock', 1: 'dam', 2: 'beach' } as const;
+
+// per-component legend: how to read negative ← → positive, and the velocity unit
+const LEGEND: Record<Comp, { lo: [string, string]; hi: [string, string]; unit: string }> = {
+  asc: { lo: ['← away / subsiding', '← alejándose / hundimiento'], hi: ['toward / uplift →', 'acercándose / alza →'], unit: 'LOS↗ asc mm/yr' },
+  desc: { lo: ['← away / subsiding', '← alejándose / hundimiento'], hi: ['toward / uplift →', 'acercándose / alza →'], unit: 'LOS↘ desc mm/yr' },
+  up: { lo: ['← subsiding', '← hundimiento'], hi: ['uplift →', 'alza →'], unit: 'Up (decomposed) mm/yr' },
+  east: { lo: ['← westward', '← hacia el oeste'], hi: ['eastward →', 'hacia el este →'], unit: 'East (decomposed) mm/yr' },
+};
 
 /** LOS-velocity deformation map (vik diverging, zero-centred). Sign convention frozen + on-screen
  * (negative = away/subsiding); low-coherence pixels desaturated, not deleted, with the mask toggleable.
@@ -52,12 +60,12 @@ export function DeformationMap({ cube, sel, onPick, clamp = 120, maskCoh = true,
         <div className="tw-readout" style={{ left: Math.min(hov.px + 10, 240), top: Math.max(2, hov.py - 6) }}>
           {hov.x},{hov.y} · {cube.vel[i].toFixed(1)} mm/yr · coh {cube.coh[i].toFixed(2)} · {ZONE[cube.zone[i] as 0 | 1 | 2]}
         </div>); })()}
-      {/* sign-convention legend + colorbar */}
+      {/* sign-convention legend + colorbar (adapts to the displayed component) */}
       <div className="tw-legend">
-        <span className="tw-legend-l">{es ? '← alejándose / hundimiento' : '← away / subsiding'}</span>
+        <span className="tw-legend-l">{LEGEND[cube.comp].lo[es ? 1 : 0]}</span>
         <span className="tw-cbar" style={{ background: `linear-gradient(90deg, ${rgbCss(vik(-clamp, clamp))}, ${rgbCss(vik(0, clamp))}, ${rgbCss(vik(clamp, clamp))})` }} />
-        <span className="tw-legend-r">{es ? 'acercándose / alza →' : 'toward / uplift →'}</span>
-        <span className="tw-legend-u muted">LOS mm/yr · ±{clamp}</span>
+        <span className="tw-legend-r">{LEGEND[cube.comp].hi[es ? 1 : 0]}</span>
+        <span className="tw-legend-u muted">{LEGEND[cube.comp].unit} · ±{clamp}</span>
       </div>
     </div>
   );
