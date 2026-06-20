@@ -1,58 +1,74 @@
-/* TailWatch — app-specific styles on top of the shared design-system tokens. */
+/* TailWatch — app styles on top of @fasl-work/caos-app-shell/styles.css. The shell does NOT ship `.chip`,
+   `.gauge` or the control/diagnosis/plot patterns — they are defined here, ported from the validated
+   RotorVitals visual language so every product looks identical. Light AND dark via shell tokens. */
 
-.tw-layout { display: grid; grid-template-columns: 250px 1fr; gap: 1rem; align-items: start; }
-@media (max-width: 760px) { .tw-layout { grid-template-columns: 1fr; } }
+/* ---- workbench layout ---- */
+.tw-layout { display: grid; grid-template-columns: 320px 1fr; gap: 1.5rem; align-items: start; }
+@media (max-width: 900px) { .tw-layout { grid-template-columns: 1fr; } }
+.tw-side { display: flex; flex-direction: column; gap: 0.9rem; }
+.tw-main { min-width: 0; }
 
-.tw-controls { display: flex; flex-direction: column; gap: 0.7rem; position: sticky; top: 0.5rem; }
-.tw-ctl { display: flex; flex-direction: column; gap: 0.25rem; font-size: 0.85rem; }
-.tw-ctl .range { width: 100%; }
+/* ---- the validated pill chip (filled-accent when active) ---- */
+.chip { background: var(--color-surface); border: 1px solid var(--color-border); color: var(--color-fg-subtle); border-radius: 999px; padding: 0.32rem 0.75rem; font-size: 0.82rem; cursor: pointer; }
+.chip:hover { color: var(--color-fg); border-color: var(--color-fg-faint); }
+.chip.on { background: var(--color-accent); color: var(--color-accent-fg); border-color: transparent; font-weight: 600; }
+.tw-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.tw-seg { display: inline-flex; gap: 0.25rem; flex-wrap: wrap; }
+.tw-seg .chip { padding: 0.16rem 0.55rem; font-size: 0.76rem; }
+
+/* ---- controls ---- */
+.tw-ctl { display: flex; flex-direction: column; gap: 0.35rem; font-size: 0.82rem; color: var(--color-fg-subtle); }
+.tw-ctl .select, .tw-ctl .range { width: 100%; }
+.tw-ctl-lbl { color: var(--color-fg-faint); font-size: 0.78rem; }
 .tw-check { flex-direction: row; align-items: center; gap: 0.4rem; }
-.tw-cases { display: flex; flex-wrap: wrap; gap: 0.25rem; margin: 0.25rem 0; }
-.tw-cases .chip { padding: 0.12rem 0.5rem; font-size: 0.74rem; }
 
-.tw-alarm { display: flex; flex-direction: column; gap: 0.15rem; padding: 0.5rem 0.6rem; border: 1px solid var(--color-border); border-left-width: 4px; border-radius: 8px; background: var(--color-surface); }
-.tw-alarm-dot { display: inline-block; width: 0.7rem; height: 0.7rem; border-radius: 50%; vertical-align: middle; margin-right: 0.3rem; }
-.tw-read { display: flex; flex-direction: column; gap: 0.2rem; }
-.tw-read b { font-family: var(--font-mono); }
+/* ---- decision / diagnosis card (colored left border by alarm) ---- */
+.tw-diag { padding: 0.9rem 1rem; border-left: 4px solid var(--color-accent); background: var(--color-surface); border-radius: 10px; }
+.tw-diag[data-alarm="green"] { border-left-color: #3fb950; }
+.tw-diag[data-alarm="amber"] { border-left-color: #d29922; }
+.tw-diag[data-alarm="red"] { border-left-color: #f85149; }
+.tw-diag-top { display: flex; align-items: baseline; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+.tw-diag-top strong { font-size: 1.05rem; }
+.tw-read { display: grid; grid-template-columns: auto 1fr; gap: 0.15rem 0.6rem; font-size: 0.82rem; }
+.tw-read .k { color: var(--color-fg-subtle); }
+.tw-read .v { font-family: var(--font-mono); color: var(--color-fg); }
 
-.tw-main { display: flex; flex-direction: column; gap: 0.6rem; min-width: 0; }
-.tw-map-wrap { position: relative; }
-.tw-readout { position: absolute; pointer-events: none; background: color-mix(in oklab, var(--color-surface) 90%, transparent); border: 1px solid var(--color-border); border-radius: 6px; padding: 0.2rem 0.45rem; font-family: var(--font-mono); font-size: 0.72rem; color: var(--color-fg); white-space: nowrap; }
-.tw-legend { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; font-size: 0.72rem; color: var(--color-fg-subtle); margin-top: 0.3rem; }
-.tw-cbar { display: inline-block; width: 160px; height: 0.55rem; border-radius: 3px; border: 1px solid var(--color-border); }
-.tw-legend-u { margin-left: auto; }
+/* ---- gauge ---- */
+.gauge { margin-top: 0.2rem; }
+.gauge-title { font-size: 0.78rem; color: var(--color-fg-faint); margin-bottom: 0.35rem; }
+.gauge-track { position: relative; height: 14px; border-radius: 7px; background: var(--color-surface-2, var(--color-surface)); overflow: hidden; border: 1px solid var(--color-border); }
+.gauge-zone { position: absolute; top: 0; height: 100%; opacity: 0.55; }
+.gauge-needle { position: absolute; top: -3px; width: 2px; height: 20px; background: var(--color-fg); transform: translateX(-1px); }
+.gauge-scale { display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--color-fg-faint); margin-top: 0.2rem; }
+.gauge-scale .gauge-val { color: var(--color-fg); font-weight: 700; font-family: var(--font-mono); }
 
+/* ---- plot cards ---- */
+.tw-vizstack { display: flex; flex-direction: column; gap: 1rem; }
 .tw-plot { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 10px; padding: 0.6rem 0.75rem; }
-.tw-plot-t { font-size: 0.82rem; color: var(--color-fg-subtle); margin-bottom: 0.2rem; }
-.tw-disc { font-size: 0.76rem; border-left: 3px solid var(--color-warn); padding-left: 0.6rem; }
-.tw-geomnote { font-size: 0.74rem; border-left: 3px solid var(--color-accent); padding-left: 0.55rem; margin-top: 0.1rem; }
+.tw-plot-t { font-size: 0.82rem; color: var(--color-fg-subtle); margin-bottom: 0.3rem; }
+.tw-plot-th { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+.tw-hint { font-size: 0.82rem; color: var(--color-fg-subtle); }
+.tw-note { font-size: 0.78rem; border-left: 3px solid var(--color-warn, #d29922); padding-left: 0.6rem; color: var(--color-fg-subtle); }
 
-/* documented-failures case cards */
-.tw-case-card { border: 1px solid var(--color-border); border-left-width: 4px; border-radius: 10px; background: var(--color-surface); padding: 0.7rem 0.9rem 0.4rem; margin: 0.8rem 0; }
-.tw-case-card h3 { margin: 0 0 0.1rem; font-size: 1.02rem; }
-.tw-case-meta { margin: 0 0 0.5rem; }
-.tw-case-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.3rem 1.2rem; }
-@media (max-width: 680px) { .tw-case-grid { grid-template-columns: 1fr; } }
-.tw-case-grid > div { min-width: 0; }
-.tw-case-grid p { margin: 0.05rem 0 0.4rem; font-size: 0.86rem; }
-.tw-case-k { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-fg-subtle); font-weight: 600; }
+/* ---- maps (canvas) ---- */
+.tw-map-wrap { position: relative; }
+.tw-readout { position: absolute; pointer-events: none; background: color-mix(in oklab, var(--color-surface) 92%, transparent); border: 1px solid var(--color-border); border-radius: 6px; padding: 0.2rem 0.45rem; font-family: var(--font-mono); font-size: 0.72rem; color: var(--color-fg); white-space: nowrap; z-index: 2; }
+.tw-legend { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; font-size: 0.72rem; color: var(--color-fg-subtle); margin-top: 0.3rem; }
+.tw-cbar { display: inline-block; width: 150px; height: 0.55rem; border-radius: 3px; border: 1px solid var(--color-border); }
+.tw-legend-u { margin-left: auto; }
+.tw-classlegend { display: flex; flex-wrap: wrap; gap: 0.5rem; font-size: 0.74rem; margin-top: 0.3rem; }
+.tw-classlegend .dot { width: 0.7rem; height: 0.7rem; border-radius: 3px; display: inline-block; margin-right: 0.25rem; vertical-align: middle; }
 
-/* self-validation stat cards */
-.tw-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.6rem; margin: 0.6rem 0 0.8rem; }
-@media (max-width: 680px) { .tw-stats { grid-template-columns: repeat(2, 1fr); } }
-.tw-stat { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 10px; padding: 0.6rem 0.7rem; text-align: center; }
-.tw-stat-v { font-family: var(--font-mono); font-size: 1.4rem; font-weight: 700; color: var(--color-fg); line-height: 1.1; }
-.tw-stat-l { font-size: 0.72rem; color: var(--color-fg-subtle); margin-top: 0.2rem; }
+/* ---- tables / docs ---- */
+.cmp-table { border-collapse: collapse; width: 100%; font-size: 0.84rem; margin-top: 0.6rem; }
+.cmp-table th, .cmp-table td { padding: 0.4rem 0.55rem; text-align: center; border-bottom: 1px solid var(--color-border); }
+.cmp-table thead th { color: var(--color-fg-faint); font-weight: 600; font-size: 0.78rem; }
+.cmp-table td.lo, .cmp-table th.lo { text-align: left; }
+.codeblock { background: var(--color-surface-2, var(--color-surface)); border: 1px solid var(--color-border); border-radius: 8px; padding: 0.85rem 1rem; overflow-x: auto; font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.55; color: var(--color-fg); white-space: pre; }
+.mono { font-family: var(--font-mono); }
 
 /* uPlot live legend (value readout) */
 .uplot-host { width: 100%; }
-.u-legend { font-size: 0.74rem; color: var(--color-fg-subtle); margin-top: 0.1rem; }
+.u-legend { font-size: 0.76rem; color: var(--color-fg-subtle); margin-top: 0.15rem; }
 .u-legend .u-series { display: inline-flex; align-items: center; gap: 0.3rem; margin-right: 0.9rem; }
 .u-legend .u-value { font-family: var(--font-mono); color: var(--color-fg); }
-
-/* doc page bits reused from the shell prose */
-.cmp-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
-.cmp-table th, .cmp-table td { border: 1px solid var(--color-border); padding: 0.3rem 0.5rem; text-align: center; }
-.cmp-table th { background: var(--color-surface); }
-.mono { font-family: var(--font-mono); }
-.hint { font-size: 0.82rem; color: var(--color-fg-subtle); }
