@@ -26,7 +26,7 @@ const config: ShellConfig = {
     { path: '/about', en: 'About', es: 'Acerca' },
   ],
   links: { github: 'https://github.com/fsantibanezleal/CAOS_TailWatch' },
-  version: '0.01.000',
+  version: '0.02.000',
 };
 
 createRoot(document.getElementById('root')!).render(
