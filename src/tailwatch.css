@@ -27,6 +27,16 @@
 .tw-disc { font-size: 0.76rem; border-left: 3px solid var(--color-warn); padding-left: 0.6rem; }
 .tw-geomnote { font-size: 0.74rem; border-left: 3px solid var(--color-accent); padding-left: 0.55rem; margin-top: 0.1rem; }
 
+/* documented-failures case cards */
+.tw-case-card { border: 1px solid var(--color-border); border-left-width: 4px; border-radius: 10px; background: var(--color-surface); padding: 0.7rem 0.9rem 0.4rem; margin: 0.8rem 0; }
+.tw-case-card h3 { margin: 0 0 0.1rem; font-size: 1.02rem; }
+.tw-case-meta { margin: 0 0 0.5rem; }
+.tw-case-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.3rem 1.2rem; }
+@media (max-width: 680px) { .tw-case-grid { grid-template-columns: 1fr; } }
+.tw-case-grid > div { min-width: 0; }
+.tw-case-grid p { margin: 0.05rem 0 0.4rem; font-size: 0.86rem; }
+.tw-case-k { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-fg-subtle); font-weight: 600; }
+
 /* uPlot live legend (value readout) */
 .uplot-host { width: 100%; }
 .u-legend { font-size: 0.74rem; color: var(--color-fg-subtle); margin-top: 0.1rem; }
