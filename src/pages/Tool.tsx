@@ -1,122 +1,189 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
 import type uPlot from 'uplot';
-import { useShellLang } from '@fasl-work/caos-app-shell';
-import { buildScene, projectGeom, selectCube, pixelSeries, type Regime, type Comp } from '../dsp/insar';
+import { Tabs, useShellLang } from '@fasl-work/caos-app-shell';
+import { loadDemo, pctNorm, CLASS_COLORS, CLASS_EN, CLASS_ES, type Demo } from '../data/demo';
+import { vik, batlow, rgbCss } from '../lib/colormap';
 import { inverseVelocity, tarp } from '../dsp/forecast';
-import { DeformationMap } from '../viz/DeformationMap';
+import { classifySeries } from '../lib/ort';
+import { FieldMap } from '../viz/FieldMap';
+import { LatentScatter } from '../viz/LatentScatter';
+import { Gauge } from '../viz/Gauge';
 import { UPlotChart } from '../viz/UPlotChart';
 import { lineOpts } from '../viz/uplotKit';
 
-const T = {
-  en: { scen: 'Synthetic case', geom: 'Component', sev: 'Creep severity', mask: 'Coherence mask',
-    pick: 'Click a pixel on the map to inspect its displacement history.',
-    alarm: 'TARP alarm', tf: 'Projected failure', incon: 'inconclusive (no credible acceleration / poor fit)',
-    r2: 'fit R²', vel: 'velocity', zoneLbl: 'zone',
-    iv: 'Inverse velocity 1/|v| — the linear fit projects the failure time (x-intercept)',
-    geomNote: 'Two near-polar passes recover Up + East but are blind to North–South. Decomposed Up is the cleanest failure signal; raw ascending / descending LOS each mix vertical + horizontal motion — read together they reveal it.',
-    disc: 'SYNTHETIC, physics-grounded data in the real LiCSBAS sense (tertiary creep → known t_f). TailWatch is didactic + decision-support, NOT a certified safety/alarm system: InSAR is 6–12-day surveillance (it can miss the final acceleration), and alarm thresholds are configurable site defaults, not regulatory limits.' },
-  es: { scen: 'Caso sintético', geom: 'Componente', sev: 'Severidad de creep', mask: 'Máscara de coherencia',
-    pick: 'Clic en un píxel del mapa para inspeccionar su historia de desplazamiento.',
-    alarm: 'Alarma TARP', tf: 'Falla proyectada', incon: 'no concluyente (sin aceleración creíble / ajuste pobre)',
-    r2: 'R² del ajuste', vel: 'velocidad', zoneLbl: 'zona',
-    iv: 'Velocidad inversa 1/|v| — el ajuste lineal proyecta el tiempo de falla (intercepto x)',
-    geomNote: 'Dos pasos casi polares recuperan Up + Este pero son ciegos al Norte–Sur. El Up descompuesto es la señal de falla más limpia; las LOS ascendente / descendente crudas mezclan movimiento vertical + horizontal — leídas juntas lo revelan.',
-    disc: 'Datos SINTÉTICOS, físicamente fundados en el sentido LiCSBAS real (creep terciario → t_f conocido). TailWatch es didáctico + soporte de decisión, NO un sistema certificado de seguridad/alarma: InSAR es vigilancia de 6–12 días (puede perder la aceleración final) y los umbrales de alarma son valores por defecto configurables, no límites regulatorios.' },
-};
+const hexRgb = (h: string): [number, number, number] => [parseInt(h.slice(1, 3), 16) / 255, parseInt(h.slice(3, 5), 16) / 255, parseInt(h.slice(5, 7), 16) / 255];
 const ALARM_C: Record<string, string> = { green: '#3fb950', amber: '#d29922', red: '#f85149' };
 
-const CASES: { regime: Regime; en: string; es: string; expEn: string; expEs: string }[] = [
-  { regime: 'accelerating', en: 'Accelerating dam → collapse', es: 'Presa acelerando → colapso', expEn: 'failure — inverse velocity recovers t_f', expEs: 'falla — la velocidad inversa recupera t_f' },
-  { regime: 'stable', en: 'Stable bedrock (control)', es: 'Roca estable (control)', expEn: 'non-failure — must NOT raise a false alarm', expEs: 'no-falla — NO debe dar falsa alarma' },
-  { regime: 'seasonal', en: 'Seasonal beach breathing', es: 'Respiración estacional de playa', expEn: 'reversible annual cycle — no net trend, no failure', expEs: 'ciclo anual reversible — sin tendencia neta, sin falla' },
-  { regime: 'step', en: 'Step after rain', es: 'Escalón tras lluvia', expEn: 'one-off settling step — not an accelerating failure', expEs: 'escalón de asentamiento puntual — no es falla acelerante' },
-  { regime: 'linear', en: 'Steady linear creep', es: 'Creep lineal estable', expEn: 'constant velocity — no acceleration, t_f undefined', expEs: 'velocidad constante — sin aceleración, t_f indefinido' },
-];
-const GEOMS: { comp: Comp; en: string; es: string; tipEn: string; tipEs: string }[] = [
-  { comp: 'up', en: 'Vertical (Up)', es: 'Vertical (Up)', tipEn: 'decomposed Up — cleanest failure indicator', tipEs: 'Up descompuesto — el mejor indicador de falla' },
-  { comp: 'east', en: 'East (E–W)', es: 'Este (E–O)', tipEn: 'decomposed horizontal — the dam face bulging outward', tipEs: 'horizontal descompuesto — la cara de la presa abombándose' },
-  { comp: 'asc', en: 'Ascending LOS', es: 'LOS ascendente', tipEn: 'raw line-of-sight, one geometry — biased by horizontal motion', tipEs: 'línea de vista cruda, una geometría — sesgada por el movimiento horizontal' },
-  { comp: 'desc', en: 'Descending LOS', es: 'LOS descendente', tipEn: 'raw line-of-sight, mirror geometry', tipEs: 'línea de vista cruda, geometría espejo' },
-];
-// component-aware time-series axis label
-const TS_LABEL: Record<Comp, { en: string; es: string }> = {
-  asc: { en: 'Cumulative ascending LOS (mm) — negative = away / subsiding', es: 'LOS ascendente acumulado (mm) — negativo = alejándose / hundimiento' },
-  desc: { en: 'Cumulative descending LOS (mm) — negative = away / subsiding', es: 'LOS descendente acumulado (mm) — negativo = alejándose / hundimiento' },
-  up: { en: 'Cumulative vertical (Up) displacement (mm) — negative = subsiding', es: 'Desplazamiento vertical (Up) acumulado (mm) — negativo = hundimiento' },
-  east: { en: 'Cumulative East displacement (mm) — negative = westward', es: 'Desplazamiento Este acumulado (mm) — negativo = hacia el oeste' },
-};
-
 export default function Tool() {
-  const lang = useShellLang(); const es = lang === 'es'; const t = T[lang];
-  const [severity, setSeverity] = useState(1.0);
+  const es = useShellLang() === 'es';
+  const [demo, setDemo] = useState<Demo | null>(null);
+  const [err, setErr] = useState<string | null>(null);
+  useEffect(() => { loadDemo().then(setDemo).catch((e) => setErr(String(e))); }, []);
+  if (err) return <div className="page-body"><p className="tw-note">Failed to load artifacts: {err}</p></div>;
+  if (!demo) return <div className="page-body"><p className="tw-hint">{es ? 'Cargando artefactos del modelo…' : 'Loading model artifacts…'}</p></div>;
+  return <Workbench demo={demo} />;
+}
+
+function Workbench({ demo }: { demo: Demo }) {
+  const lang = useShellLang(); const es = lang === 'es';
+  const CLS = es ? CLASS_ES : CLASS_EN;
+  const [sel, setSel] = useState({ x: 80, y: 50 });
   const [maskCoh, setMaskCoh] = useState(true);
-  const [regime, setRegime] = useState<Regime>('accelerating');
-  const [comp, setComp] = useState<Comp>('up');
+  const [epoch, setEpoch] = useState(59);
+  const [cnnProbs, setCnnProbs] = useState<number[] | null>(null);
 
-  const scene = useMemo(() => buildScene({ severity, seed: 7, regime }), [severity, regime]);
-  const asc = useMemo(() => projectGeom(scene, 'asc'), [scene]);
-  const desc = useMemo(() => projectGeom(scene, 'desc'), [scene]);
-  const cube = useMemo(() => selectCube(asc, desc, comp), [asc, desc, comp]);
-  const curCase = CASES.find((c) => c.regime === regime)!;
-  const curGeom = GEOMS.find((g) => g.comp === comp)!;
+  // live CNN inference on the selected pixel's series (onnxruntime-web)
+  useEffect(() => {
+    let alive = true;
+    classifySeries(demo.series(sel.x, sel.y)).then((p) => { if (alive) setCnnProbs(p); }).catch(() => setCnnProbs(null));
+    return () => { alive = false; };
+  }, [demo, sel]);
 
-  const [sel, setSel] = useState({ x: 48, y: 27 });
-  const series = useMemo(() => pixelSeries(cube, sel.x, sel.y), [cube, sel]);
-  const days = useMemo(() => Array.from(cube.days), [cube]);
-  const iv = useMemo(() => inverseVelocity(series, days), [series, days]);
-  const velMmYr = cube.vel[sel.y * cube.W + sel.x];
+  const { W, H, days, nEp } = demo;
+  const i = sel.y * W + sel.x;
+  const series = demo.series(sel.x, sel.y);
+  const vel = demo.vel[i];
+  const iv = inverseVelocity(series, days);
   const lastDay = days[days.length - 1];
   const daysToFail = iv.tFail != null && iv.credible ? iv.tFail - lastDay : null;
-  const alarm = tarp(velMmYr, daysToFail);
+  const alarm = tarp(vel, daysToFail);
+  const cohN = pctNorm(demo.coh);
+  const anomN = useMemo(() => pctNorm(demo.anomaly), [demo]);
+  const cnnClass = cnnProbs ? cnnProbs.indexOf(Math.max(...cnnProbs)) : Math.round(demo.classMap[i]);
 
-  const tsData = useMemo<uPlot.AlignedData>(() => [days, series], [days, series]);
+  // ---- colour functions per map ----
+  const velColor = useCallback((k: number) => vik(demo.vel[k], 60), [demo]);
+  const anomColor = useCallback((k: number) => batlow(anomN.norm[k]), [anomN]);
+  const classColor = useCallback((k: number) => hexRgb(CLASS_COLORS[Math.round(demo.classMap[k])] || '#888'), [demo]);
+  const cohColor = useCallback((k: number) => batlow(cohN.norm[k]), [cohN]);
+  const cumColor = useCallback((k: number) => vik(demo.cumUp[epoch * W * H + k] / demo.cumScale, 80), [demo, epoch, W, H]);
+  const lowCoh = useCallback((k: number) => demo.coh[k] < 0.4, [demo]);
+
+  // ---- uPlot builds ----
+  const tsData = useMemo<uPlot.AlignedData>(() => [Array.from(days), series], [days, series]);
+  const buildTs = useCallback((w: number, h: number) => lineOpts(w, h, { label: es ? 'disp' : 'disp', color: '#58a6ff', xUnit: es ? 'día' : 'day', yUnit: 'mm', yPrec: 1 }), [es]);
   const ivData = useMemo<uPlot.AlignedData>(() => {
-    const xs = iv.credible && iv.tFail != null ? [...days, iv.tFail] : days.slice();
+    const xs = iv.credible && iv.tFail != null ? [...days, iv.tFail] : Array.from(days);
     const ys: (number | null)[] = iv.credible && iv.tFail != null ? [...iv.invv, null] : iv.invv.slice();
     const fit = xs.map((x) => (iv.credible ? Math.max(0, iv.a + iv.b * x) : null));
     return [xs, ys, fit];
   }, [days, iv]);
-
-  const buildTs = useCallback((w: number, h: number) => lineOpts(w, h, { label: 'disp', color: '#58a6ff', xUnit: es ? 'día' : 'day', yUnit: 'mm', yPrec: 1 }), [es]);
   const buildIv = useCallback((w: number, h: number) => {
     const o = lineOpts(w, h, { label: '1/|v|', color: '#8b949e', xUnit: es ? 'día' : 'day', yUnit: 'd/mm', yPrec: 2 });
-    o.series = [o.series[0], { ...o.series[1], label: '1/|v|', points: { show: true } }, { label: es ? 'ajuste' : 'fit', stroke: '#f778ba', width: 1.6, dash: [5, 3], points: { show: false }, value: (_u: uPlot, v: number | null) => (v == null ? '--' : v.toFixed(2)) }];
+    o.series = [o.series[0], { ...o.series[1], points: { show: true } }, { label: es ? 'ajuste' : 'fit', stroke: '#f778ba', width: 1.6, dash: [5, 3], points: { show: false }, value: (_u: uPlot, v: number | null) => (v == null ? '--' : v.toFixed(2)) }];
     return o;
   }, [es]);
+  const b = demo.benchmark;
+  const rocData = useMemo<uPlot.AlignedData>(() => {
+    // align AE + classical onto a shared FPR grid (step interpolation)
+    const grid = Array.from({ length: 51 }, (_, k) => k / 50);
+    const interp = (c: { fpr: number[]; tpr: number[] }) => grid.map((g) => { let t = 0; for (let k = 0; k < c.fpr.length; k++) if (c.fpr[k] <= g) t = c.tpr[k]; return t; });
+    return [grid, interp(b.aeRoc), interp(b.velRoc), grid];
+  }, [b]);
+  const buildRoc = useCallback((w: number, h: number) => {
+    const o = lineOpts(w, h, { label: 'AE', color: '#bc8cff', xUnit: 'FPR', yUnit: 'TPR', xPrec: 2, yPrec: 2, yRange: [0, 1] });
+    o.series = [o.series[0], { ...o.series[1], label: `AE (AUC ${b.aeAuc})` },
+      { label: `|v| (AUC ${b.velAuc})`, stroke: '#58a6ff', width: 1.6, points: { show: false }, value: (_u: uPlot, v: number | null) => (v == null ? '--' : v.toFixed(2)) },
+      { label: es ? 'azar' : 'chance', stroke: '#6e7681', width: 1, dash: [3, 3], points: { show: false }, value: () => '' }];
+    return o;
+  }, [b, es]);
+
+  // ---- tabs ----
+  const mapReadVel = (x: number, y: number, k: number) => `${x},${y} · ${demo.vel[k].toFixed(1)} mm/yr · coh ${demo.coh[k].toFixed(2)}`;
+  const tabs = [
+    { id: 'vel', label: es ? 'Velocidad LOS' : 'LOS velocity', content: (
+      <Panel t={es ? 'Velocidad de deformación LOS (mm/yr) — el baseline clásico' : 'LOS deformation velocity (mm/yr) — the classical baseline'}>
+        <FieldMap W={W} H={H} colorAt={velColor} sel={sel} onPick={(x, y) => setSel({ x, y })} mask={maskCoh ? lowCoh : undefined} readout={mapReadVel} />
+        <Cbar lo={es ? '← alejándose/hundimiento' : '← away/subsiding'} hi={es ? 'acercándose/alza →' : 'toward/uplift →'} ramp={[rgbCss(vik(-60, 60)), rgbCss(vik(0, 60)), rgbCss(vik(60, 60))]} unit="mm/yr ±60" />
+      </Panel>) },
+    { id: 'anom', label: es ? 'Anomalía (AE)' : 'Anomaly (AE)', content: (
+      <Panel t={es ? 'Mapa de anomalía — error de reconstrucción del autoencoder convolucional (no supervisado)' : 'Anomaly map — convolutional-autoencoder reconstruction error (unsupervised)'}>
+        <FieldMap W={W} H={H} colorAt={anomColor} sel={sel} onPick={(x, y) => setSel({ x, y })} readout={(x, y, k) => `${x},${y} · ${es ? 'anomalía' : 'anomaly'} ${anomN.norm[k].toFixed(2)}`} />
+        <Cbar lo={es ? 'normal' : 'normal'} hi={es ? 'anómalo' : 'anomalous'} ramp={[rgbCss(batlow(0)), rgbCss(batlow(0.5)), rgbCss(batlow(1))]} unit={es ? 'percentil' : 'percentile'} />
+        <p className="tw-note">{es ? 'El AE se entrena solo en parches normales; lo que reconstruye mal es anómalo. AUC held-out ' + b.aeAuc + ' vs |v| clásico ' + b.velAuc + ' — honesto: el clásico es fuerte cuando la falla tiene firma de velocidad.' : 'The AE trains on normal patches only; what it reconstructs poorly is anomalous. Held-out AUC ' + b.aeAuc + ' vs classical |v| ' + b.velAuc + ' — honest: the classical baseline is strong when failure has a velocity signature.'}</p>
+      </Panel>) },
+    { id: 'class', label: es ? 'Clase (CNN)' : 'Class (CNN)', content: (
+      <Panel t={es ? 'Mapa de clase de deformación — clasificador CNN 1-D por píxel (6 clases)' : 'Deformation-class map — 1-D CNN per-pixel classifier (6 classes)'}>
+        <FieldMap W={W} H={H} colorAt={classColor} sel={sel} onPick={(x, y) => setSel({ x, y })} readout={(x, y, k) => `${x},${y} · ${CLS[Math.round(demo.classMap[k])]}`} />
+        <div className="tw-classlegend">{CLS.map((c, ci) => <span key={ci}><span className="dot" style={{ background: CLASS_COLORS[ci] }} />{c}</span>)}</div>
+        <p className="tw-note">{es ? 'La velocidad da magnitud; el CNN da el TIPO de deformación — capacidad que el baseline no tiene. macro-F1 held-out ' + b.macroF1 + '.' : 'Velocity gives magnitude; the CNN gives the deformation TYPE — capability the baseline lacks. Held-out macro-F1 ' + b.macroF1 + '.'}</p>
+      </Panel>) },
+    { id: 'lat', label: es ? 'Espacio latente' : 'Latent space', content: (
+      <Panel t={es ? 'Espacio latente del AE (UMAP) — la representación aprendida, coloreada por clase' : 'AE latent space (UMAP) — the learned representation, coloured by class'}>
+        <LatentScatter pts={demo.latent} names={CLS} />
+        <div className="tw-classlegend">{CLS.map((c, ci) => <span key={ci}><span className="dot" style={{ background: CLASS_COLORS[ci] }} />{c}</span>)}</div>
+      </Panel>) },
+    { id: 'series', label: es ? 'Serie + ajuste' : 'Series + fit', content: (
+      <Panel t={es ? 'Desplazamiento LOS acumulado (mm) del píxel seleccionado — negativo = hundimiento' : 'Cumulative LOS displacement (mm) at the selected pixel — negative = subsiding'}>
+        <UPlotChart data={tsData} build={buildTs} height={200} />
+        <p className="tw-hint">{es ? 'Clic en cualquier mapa para inspeccionar otro píxel.' : 'Click any map to inspect another pixel.'}</p>
+      </Panel>) },
+    { id: 'iv', label: es ? 'Velocidad inversa' : 'Inverse velocity', content: (
+      <Panel t={es ? 'Velocidad inversa 1/|v| (Fukuzono) — el ajuste lineal proyecta el tiempo de falla' : 'Inverse velocity 1/|v| (Fukuzono) — the linear fit projects the failure time'}>
+        <UPlotChart data={ivData} build={buildIv} height={200} />
+      </Panel>) },
+    { id: 'coh', label: es ? 'Coherencia' : 'Coherence', content: (
+      <Panel t={es ? 'Coherencia temporal media — calidad interferométrica (baja en agua/playa)' : 'Mean temporal coherence — interferometric quality (low over water/beach)'}>
+        <FieldMap W={W} H={H} colorAt={cohColor} sel={sel} onPick={(x, y) => setSel({ x, y })} readout={(x, y, k) => `${x},${y} · coh ${demo.coh[k].toFixed(2)}`} />
+        <Cbar lo={es ? 'incoherente' : 'incoherent'} hi={es ? 'coherente' : 'coherent'} ramp={[rgbCss(batlow(0)), rgbCss(batlow(0.5)), rgbCss(batlow(1))]} unit="0–1" />
+      </Panel>) },
+    { id: 'cum', label: es ? 'Acumulado (tiempo)' : 'Cumulative (time)', content: (
+      <Panel t={es ? `Desplazamiento acumulado en la época ${epoch + 1}/${nEp} (día ${days[epoch].toFixed(0)})` : `Cumulative displacement at epoch ${epoch + 1}/${nEp} (day ${days[epoch].toFixed(0)})`}>
+        <FieldMap W={W} H={H} colorAt={cumColor} sel={sel} onPick={(x, y) => setSel({ x, y })} mask={maskCoh ? lowCoh : undefined} readout={(x, y, k) => `${x},${y} · ${(demo.cumUp[epoch * W * H + k] / demo.cumScale).toFixed(1)} mm`} />
+        <input className="range" type="range" min={0} max={nEp - 1} value={epoch} onChange={(e) => setEpoch(+e.target.value)} style={{ width: '100%', marginTop: '0.4rem' }} />
+        <Cbar lo={es ? '← hundimiento' : '← subsiding'} hi={es ? 'alza →' : 'uplift →'} ramp={[rgbCss(vik(-80, 80)), rgbCss(vik(0, 80)), rgbCss(vik(80, 80))]} unit="mm ±80" />
+      </Panel>) },
+    { id: 'roc', label: es ? 'Benchmark ROC' : 'ROC benchmark', content: (
+      <Panel t={es ? 'Detección de falla en escenas HELD-OUT — aprendido (AE) vs clásico (|velocidad|)' : 'Failure detection on HELD-OUT scenes — learned (AE) vs classical (|velocity|)'}>
+        <UPlotChart data={rocData} build={buildRoc} height={300} />
+        <p className="tw-note">{es ? `Honesto: en escenas no vistas el baseline |v| (AUC ${b.velAuc}) supera al AE (AUC ${b.aeAuc}) porque las fallas simuladas tienen firma de velocidad. El valor aprendido es la clasificación de tipo + la detección sin etiquetas.` : `Honest: on unseen scenes the |v| baseline (AUC ${b.velAuc}) beats the AE (AUC ${b.aeAuc}) because the simulated failures carry a velocity signature. The learned value is the type classification + label-free detection.`}</p>
+      </Panel>) },
+    { id: 'conf', label: es ? 'Matriz de confusión' : 'Confusion matrix', content: (
+      <Panel t={es ? `Matriz de confusión del CNN (held-out, ${b.heldOut.length} escenas) — macro-F1 ${b.macroF1}` : `CNN confusion matrix (held-out, ${b.heldOut.length} scenes) — macro-F1 ${b.macroF1}`}>
+        <Confusion m={b.confusion} names={CLS} />
+      </Panel>) },
+  ];
 
   return (
     <div className="page-body tw-layout">
-      <aside className="tw-controls">
-        <div className="tw-ctl">
-          <span>{t.scen}</span>
-          <div className="tw-cases">{CASES.map((c) => <button key={c.regime} className={`chip ${regime === c.regime ? 'on' : ''}`} onClick={() => setRegime(c.regime)} title={es ? c.es : c.en}>{(es ? c.es : c.en).split(/[ →]/)[0]}</button>)}</div>
-          <div className="muted small"><b>{es ? curCase.es : curCase.en}</b> — <i>{es ? curCase.expEs : curCase.expEn}</i></div>
+      <aside className="tw-side">
+        <div className="tw-diag" data-alarm={alarm.level}>
+          <div className="tw-diag-top"><strong>TARP {alarm.level.toUpperCase()}</strong><span className="tw-hint">{es ? alarm.reasonEs : alarm.reason}</span></div>
+          <Gauge title={es ? 'Velocidad |LOS| (mm/yr)' : '|LOS| velocity (mm/yr)'} value={Math.abs(vel)} max={120}
+            zones={[{ upTo: 30, color: '#3fb950' }, { upTo: 60, color: '#58a6ff' }, { upTo: 100, color: '#d29922' }, { upTo: 120, color: '#f85149' }]} />
         </div>
-        <div className="tw-ctl">
-          <span>{t.geom}</span>
-          <div className="tw-cases">{GEOMS.map((g) => <button key={g.comp} className={`chip ${comp === g.comp ? 'on' : ''}`} onClick={() => setComp(g.comp)} title={es ? g.tipEs : g.tipEn}>{es ? g.es : g.en}</button>)}</div>
-          <div className="muted small"><i>{es ? curGeom.tipEs : curGeom.tipEn}</i></div>
+        <div className="tw-diag">
+          <div className="tw-read">
+            <span className="k">{es ? 'Píxel' : 'Pixel'}</span><span className="v">{sel.x},{sel.y}</span>
+            <span className="k">{es ? 'Velocidad' : 'Velocity'}</span><span className="v">{vel.toFixed(1)} mm/yr</span>
+            <span className="k">{es ? 'Clase (CNN)' : 'Class (CNN)'}</span><span className="v" style={{ color: ALARM_C[alarm.level] }}>{CLS[cnnClass]}{cnnProbs ? ` ${(Math.max(...cnnProbs) * 100).toFixed(0)}%` : ''}</span>
+            <span className="k">{es ? 'Anomalía' : 'Anomaly'}</span><span className="v">{anomN.norm[i].toFixed(2)}</span>
+            <span className="k">{es ? 'Coherencia' : 'Coherence'}</span><span className="v">{demo.coh[i].toFixed(2)}</span>
+            <span className="k">{es ? 'Falla proy.' : 'Proj. failure'}</span><span className="v">{iv.credible && daysToFail != null ? `${daysToFail.toFixed(0)} d` : '—'}</span>
+          </div>
         </div>
-        <label className="tw-ctl">{t.sev}: {severity.toFixed(2)}<input className="range" type="range" min={0.3} max={1.6} step={0.05} value={severity} onChange={(e) => setSeverity(+e.target.value)} /></label>
-        <label className="tw-ctl tw-check"><input type="checkbox" checked={maskCoh} onChange={(e) => setMaskCoh(e.target.checked)} /> {t.mask}</label>
-        <div className="tw-alarm card" style={{ borderColor: ALARM_C[alarm.level] }}>
-          <span className="tw-alarm-dot" style={{ background: ALARM_C[alarm.level] }} /> <b>{t.alarm}: {alarm.level.toUpperCase()}</b>
-          <div className="small muted">{es ? alarm.reasonEs : alarm.reason}</div>
-        </div>
-        <div className="tw-read small">
-          <div><span className="muted">{t.vel}:</span> <b>{velMmYr.toFixed(1)} mm/yr</b></div>
-          <div><span className="muted">{t.tf}:</span> <b>{iv.credible && daysToFail != null ? `${daysToFail.toFixed(0)} d (${iv.tFailLo != null ? Math.max(0, iv.tFailLo - lastDay).toFixed(0) : '?'}–${iv.tFailHi != null ? (iv.tFailHi - lastDay).toFixed(0) : '?'} d)` : t.incon}</b></div>
-          <div><span className="muted">{t.r2}:</span> <b>{iv.r2.toFixed(2)}</b> · <span className="muted">{t.zoneLbl}:</span> {(['rock', 'dam', 'beach'] as const)[cube.zone[sel.y * cube.W + sel.x]]}</div>
-        </div>
-        <p className="hint tw-geomnote">{t.geomNote}</p>
+        <label className="tw-ctl tw-check"><input type="checkbox" checked={maskCoh} onChange={(e) => setMaskCoh(e.target.checked)} /> {es ? 'Máscara de coherencia' : 'Coherence mask'}</label>
+        <p className="tw-note">{es ? 'Datos SINTÉTICOS físicamente fundados (formato LiCSBAS); modelos entrenados offline, inferencia ONNX en vivo. NO es un sistema de alarma certificado.' : 'SYNTHETIC physics-grounded data (LiCSBAS format); models trained offline, live ONNX inference. NOT a certified alarm system.'}</p>
       </aside>
-      <div className="tw-main">
-        <DeformationMap cube={cube} sel={sel} onPick={(x, y) => setSel({ x, y })} maskCoh={maskCoh} clamp={60} lang={lang} />
-        <p className="hint">{t.pick}</p>
-        <div className="tw-plot"><div className="tw-plot-t">{TS_LABEL[comp][lang]}</div><UPlotChart data={tsData} build={buildTs} height={150} /></div>
-        <div className="tw-plot"><div className="tw-plot-t">{t.iv}</div><UPlotChart data={ivData} build={buildIv} height={160} /></div>
-        <p className="hint tw-disc">{t.disc}</p>
-      </div>
+      <div className="tw-main"><Tabs tabs={tabs} ariaLabel="methods" /></div>
     </div>
+  );
+}
+
+function Panel({ t, children }: { t: string; children: ReactNode }) {
+  return <div className="tw-plot"><div className="tw-plot-t">{t}</div>{children}</div>;
+}
+function Cbar({ lo, hi, ramp, unit }: { lo: string; hi: string; ramp: string[]; unit: string }) {
+  return <div className="tw-legend"><span>{lo}</span><span className="tw-cbar" style={{ background: `linear-gradient(90deg, ${ramp.join(', ')})` }} /><span>{hi}</span><span className="tw-legend-u muted">{unit}</span></div>;
+}
+function Confusion({ m, names }: { m: number[][]; names: string[] }) {
+  const rowSums = m.map((r) => r.reduce((a, b) => a + b, 0) || 1);
+  return (
+    <table className="cmp-table">
+      <thead><tr><th className="lo">{'true \\ pred'}</th>{names.map((n, i) => <th key={i}>{n.split(' ')[0]}</th>)}</tr></thead>
+      <tbody>{m.map((row, r) => (
+        <tr key={r}><th className="lo">{names[r]}</th>{row.map((v, c) => { const f = v / rowSums[r]; return <td key={c} style={{ background: `color-mix(in oklab, var(--color-accent) ${Math.round(f * 70)}%, transparent)`, fontWeight: r === c ? 700 : 400 }}>{v}</td>; })}</tr>
+      ))}</tbody>
+    </table>
   );
 }
