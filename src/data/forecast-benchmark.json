@@ -1,0 +1,526 @@
+{
+  "method": "inverse-velocity (Fukuzono α≈2) on decomposed-Up crest series; TARP two-trigger alarm",
+  "pipeline": "identical to the live app (src/dsp/insar.ts + forecast.ts), seeded + deterministic",
+  "grid": {
+    "seeds": 60,
+    "severities": [
+      0.6,
+      1,
+      1.4
+    ],
+    "crest": {
+      "x": 48,
+      "y": 27
+    }
+  },
+  "accel": {
+    "nTrajectories": 180,
+    "detectRate": 1,
+    "nCredibleForecasts": 1380,
+    "medAbsRelErrTf": 0.038,
+    "medAbsRelErrTfPct": 3.8,
+    "alphaAccuracy20": 0.304,
+    "leadCurve": [
+      {
+        "lo": 0,
+        "hi": 40,
+        "mid": 20,
+        "n": 180,
+        "medAbsRelErr": 0.006
+      },
+      {
+        "lo": 40,
+        "hi": 80,
+        "mid": 60,
+        "n": 360,
+        "medAbsRelErr": 0.02
+      },
+      {
+        "lo": 80,
+        "hi": 140,
+        "mid": 110,
+        "n": 360,
+        "medAbsRelErr": 0.049
+      },
+      {
+        "lo": 140,
+        "hi": 260,
+        "mid": 200,
+        "n": 480,
+        "medAbsRelErr": 0.159
+      }
+    ],
+    "scatter": [
+      {
+        "trueTf": 736.3,
+        "predTf": 762.1,
+        "sev": 0.6
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 762.1,
+        "sev": 0.6
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 762.1,
+        "sev": 0.6
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 762.1,
+        "sev": 0.6
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 762.1,
+        "sev": 0.6
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 762.1,
+        "sev": 0.6
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 762.1,
+        "sev": 0.6
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 762.1,
+        "sev": 0.6
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 762.1,
+        "sev": 0.6
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 762.1,
+        "sev": 0.6
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 762.1,
+        "sev": 0.6
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 762.1,
+        "sev": 0.6
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 762.1,
+        "sev": 0.6
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 762.1,
+        "sev": 0.6
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 762.1,
+        "sev": 0.6
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 762.1,
+        "sev": 0.6
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 762.1,
+        "sev": 0.6
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 762.1,
+        "sev": 0.6
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 762.1,
+        "sev": 0.6
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 762.1,
+        "sev": 0.6
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 762.1,
+        "sev": 0.6
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 762.1,
+        "sev": 0.6
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 762.1,
+        "sev": 0.6
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 762.1,
+        "sev": 0.6
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 762.1,
+        "sev": 0.6
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 762.1,
+        "sev": 0.6
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 762.1,
+        "sev": 0.6
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 762.1,
+        "sev": 0.6
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 762.1,
+        "sev": 0.6
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 762.1,
+        "sev": 0.6
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 739.8,
+        "sev": 1
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 739.8,
+        "sev": 1
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 739.8,
+        "sev": 1
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 739.8,
+        "sev": 1
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 739.8,
+        "sev": 1
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 739.8,
+        "sev": 1
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 739.8,
+        "sev": 1
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 739.8,
+        "sev": 1
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 739.8,
+        "sev": 1
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 739.8,
+        "sev": 1
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 739.8,
+        "sev": 1
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 739.8,
+        "sev": 1
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 739.8,
+        "sev": 1
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 739.8,
+        "sev": 1
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 739.8,
+        "sev": 1
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 739.8,
+        "sev": 1
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 739.8,
+        "sev": 1
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 739.8,
+        "sev": 1
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 739.8,
+        "sev": 1
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 739.8,
+        "sev": 1
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 739.8,
+        "sev": 1
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 739.8,
+        "sev": 1
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 739.8,
+        "sev": 1
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 739.8,
+        "sev": 1
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 739.8,
+        "sev": 1
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 739.8,
+        "sev": 1
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 739.8,
+        "sev": 1
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 739.8,
+        "sev": 1
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 739.8,
+        "sev": 1
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 739.8,
+        "sev": 1
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 731.7,
+        "sev": 1.4
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 731.7,
+        "sev": 1.4
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 731.7,
+        "sev": 1.4
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 731.7,
+        "sev": 1.4
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 731.7,
+        "sev": 1.4
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 731.7,
+        "sev": 1.4
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 731.7,
+        "sev": 1.4
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 731.7,
+        "sev": 1.4
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 731.7,
+        "sev": 1.4
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 731.7,
+        "sev": 1.4
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 731.7,
+        "sev": 1.4
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 731.7,
+        "sev": 1.4
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 731.7,
+        "sev": 1.4
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 731.7,
+        "sev": 1.4
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 731.7,
+        "sev": 1.4
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 731.7,
+        "sev": 1.4
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 731.7,
+        "sev": 1.4
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 731.7,
+        "sev": 1.4
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 731.7,
+        "sev": 1.4
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 731.7,
+        "sev": 1.4
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 731.7,
+        "sev": 1.4
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 731.7,
+        "sev": 1.4
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 731.7,
+        "sev": 1.4
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 731.7,
+        "sev": 1.4
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 731.7,
+        "sev": 1.4
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 731.7,
+        "sev": 1.4
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 731.7,
+        "sev": 1.4
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 731.7,
+        "sev": 1.4
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 731.7,
+        "sev": 1.4
+      },
+      {
+        "trueTf": 736.3,
+        "predTf": 731.7,
+        "sev": 1.4
+      }
+    ]
+  },
+  "controls": [
+    {
+      "regime": "stable",
+      "n": 180,
+      "falseAlarmRate": 0,
+      "nonGreenRate": 0
+    },
+    {
+      "regime": "seasonal",
+      "n": 180,
+      "falseAlarmRate": 0,
+      "nonGreenRate": 0
+    },
+    {
+      "regime": "linear",
+      "n": 180,
+      "falseAlarmRate": 0,
+      "nonGreenRate": 0
+    }
+  ]
+}
