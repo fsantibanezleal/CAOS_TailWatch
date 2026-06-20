@@ -1,0 +1,4 @@
+.venv/
+artifacts/*.h5
+artifacts/*.npy
+__pycache__/
