@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import type uPlot from 'uplot';
 import { useShellLang } from '@fasl-work/caos-app-shell';
-import { buildCube, pixelSeries } from '../dsp/insar';
+import { buildCube, pixelSeries, type Regime } from '../dsp/insar';
 import { inverseVelocity, tarp } from '../dsp/forecast';
 import { DeformationMap } from '../viz/DeformationMap';
 import { UPlotChart } from '../viz/UPlotChart';
@@ -18,12 +18,21 @@ const T = {
     zoneLbl: 'zona', disc: 'Datos SINTÉTICOS, físicamente fundados en el sentido LiCSBAS real (creep terciario → t_f conocido). TailWatch es didáctico + soporte de decisión, NO un sistema certificado de seguridad/alarma: InSAR es vigilancia de 6–12 días (puede perder la aceleración final), solo LOS, y los umbrales de alarma son valores por defecto configurables, no límites regulatorios.' },
 };
 const ALARM_C: Record<string, string> = { green: '#3fb950', amber: '#d29922', red: '#f85149' };
+const CASES: { regime: Regime; en: string; es: string; expEn: string; expEs: string }[] = [
+  { regime: 'accelerating', en: 'Accelerating dam → collapse', es: 'Presa acelerando → colapso', expEn: 'failure — inverse velocity recovers t_f', expEs: 'falla — la velocidad inversa recupera t_f' },
+  { regime: 'stable', en: 'Stable bedrock (control)', es: 'Roca estable (control)', expEn: 'non-failure — must NOT raise a false alarm', expEs: 'no-falla — NO debe dar falsa alarma' },
+  { regime: 'seasonal', en: 'Seasonal beach breathing', es: 'Respiración estacional de playa', expEn: 'reversible annual cycle — no net trend, no failure', expEs: 'ciclo anual reversible — sin tendencia neta, sin falla' },
+  { regime: 'step', en: 'Step after rain', es: 'Escalón tras lluvia', expEn: 'one-off settling step — not an accelerating failure', expEs: 'escalón de asentamiento puntual — no es falla acelerante' },
+  { regime: 'linear', en: 'Steady linear creep', es: 'Creep lineal estable', expEn: 'constant velocity — no acceleration, t_f undefined', expEs: 'velocidad constante — sin aceleración, t_f indefinido' },
+];
 
 export default function Tool() {
   const lang = useShellLang(); const es = lang === 'es'; const t = T[lang];
   const [severity, setSeverity] = useState(1.0);
   const [maskCoh, setMaskCoh] = useState(true);
-  const cube = useMemo(() => buildCube({ severity, seed: 7 }), [severity]);
+  const [regime, setRegime] = useState<Regime>('accelerating');
+  const cube = useMemo(() => buildCube({ severity, seed: 7, regime }), [severity, regime]);
+  const curCase = CASES.find((c) => c.regime === regime)!;
   const [sel, setSel] = useState({ x: 48, y: 27 });
   const series = useMemo(() => pixelSeries(cube, sel.x, sel.y), [cube, sel]);
   const days = useMemo(() => Array.from(cube.days), [cube]);
@@ -51,7 +60,11 @@ export default function Tool() {
   return (
     <div className="page-body tw-layout">
       <aside className="tw-controls">
-        <label className="tw-ctl">{t.scen}<div className="muted small">{es ? 'Presa de relaves acelerando a colapso' : 'Tailings dam accelerating to collapse'}</div></label>
+        <div className="tw-ctl">
+          <span>{t.scen}</span>
+          <div className="tw-cases">{CASES.map((c) => <button key={c.regime} className={`chip ${regime === c.regime ? 'on' : ''}`} onClick={() => setRegime(c.regime)} title={es ? c.es : c.en}>{(es ? c.es : c.en).split(/[ →]/)[0]}</button>)}</div>
+          <div className="muted small"><b>{es ? curCase.es : curCase.en}</b> — <i>{es ? curCase.expEs : curCase.expEn}</i></div>
+        </div>
         <label className="tw-ctl">{t.sev}: {severity.toFixed(2)}<input className="range" type="range" min={0.3} max={1.6} step={0.05} value={severity} onChange={(e) => setSeverity(+e.target.value)} /></label>
         <label className="tw-ctl tw-check"><input type="checkbox" checked={maskCoh} onChange={(e) => setMaskCoh(e.target.checked)} /> {t.mask}</label>
         <div className="tw-alarm card" style={{ borderColor: ALARM_C[alarm.level] }}>

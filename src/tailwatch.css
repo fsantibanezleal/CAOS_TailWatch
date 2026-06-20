@@ -7,6 +7,8 @@
 .tw-ctl { display: flex; flex-direction: column; gap: 0.25rem; font-size: 0.85rem; }
 .tw-ctl .range { width: 100%; }
 .tw-check { flex-direction: row; align-items: center; gap: 0.4rem; }
+.tw-cases { display: flex; flex-wrap: wrap; gap: 0.25rem; margin: 0.25rem 0; }
+.tw-cases .chip { padding: 0.12rem 0.5rem; font-size: 0.74rem; }
 
 .tw-alarm { display: flex; flex-direction: column; gap: 0.15rem; padding: 0.5rem 0.6rem; border: 1px solid var(--color-border); border-left-width: 4px; border-radius: 8px; background: var(--color-surface); }
 .tw-alarm-dot { display: inline-block; width: 0.7rem; height: 0.7rem; border-radius: 50%; vertical-align: middle; margin-right: 0.3rem; }

@@ -7,6 +7,7 @@
 import { mulberry32, gaussian } from '../lib/prng';
 
 export type Zone = 0 | 1 | 2; // 0 = stable rock, 1 = deforming dam, 2 = low-coherence beach
+export type Regime = 'accelerating' | 'stable' | 'seasonal' | 'step' | 'linear';
 
 export interface Cube {
   W: number; H: number; nEp: number;
@@ -15,12 +16,13 @@ export interface Cube {
   vel: Float32Array;         // per-pixel LOS velocity mm/yr (linear fit)
   coh: Float32Array;         // per-pixel temporal coherence 0..1
   zone: Uint8Array;          // per-pixel zone
-  tFail: number;             // injected true failure day (for the deforming zone)
+  tFail: number;             // injected true failure day (for the deforming zone; accelerating regime)
   ooa: number;               // onset-of-acceleration day
   refDate: string;
+  regime: Regime;
 }
 
-export interface CubeSpec { W?: number; H?: number; nEp?: number; dt?: number; seed?: number; severity?: number }
+export interface CubeSpec { W?: number; H?: number; nEp?: number; dt?: number; seed?: number; severity?: number; regime?: Regime }
 
 /** Tertiary-creep cumulative LOS displacement (mm, negative = subsiding) at day t for the deforming zone.
  * Secondary (slow linear) phase until OOA, then α≈2 Fukuzono acceleration v(t)=k/(tFail−t) → 1/v linear. */
@@ -32,9 +34,23 @@ function creep(t: number, ooa: number, tFail: number, vSec: number, k: number): 
   return d;
 }
 
+/** Dam-zone cumulative LOS displacement (mm) at day t for a given deformation REGIME — the honest range
+ * of behaviours a monitor must distinguish: an accelerating failure, a stable control, a reversible
+ * seasonal cycle, a post-rain step, and steady (non-accelerating) linear creep. */
+function damDisp(t: number, span: number, ooa: number, tFail: number, vSec: number, k: number, regime: Regime): number {
+  switch (regime) {
+    case 'stable': return 0;
+    case 'seasonal': return -9 * Math.sin((2 * Math.PI * t) / 365); // reversible annual breathing (no net trend)
+    case 'step': return t > span * 0.55 ? -28 : 0;                  // a settling step after a rain event
+    case 'linear': return -vSec * 2.2 * t;                          // steady creep, NO acceleration
+    default: return creep(t, ooa, tFail, vSec, k);                  // 'accelerating'
+  }
+}
+
 export function buildCube(spec: CubeSpec = {}): Cube {
   const W = spec.W ?? 96, H = spec.H ?? 64, nEp = spec.nEp ?? 60, dt = spec.dt ?? 12;
   const sev = spec.severity ?? 1;
+  const regime: Regime = spec.regime ?? 'accelerating';
   const rng = mulberry32(spec.seed ?? 7);
   const days = new Float64Array(nEp);
   for (let i = 0; i < nEp; i++) days[i] = i * dt;
@@ -66,7 +82,7 @@ export function buildCube(spec: CubeSpec = {}): Cube {
   const cum: Float32Array[] = [];
   for (let e = 0; e < nEp; e++) {
     const t = days[e];
-    const dDam = creep(t, ooa, tFail, vSec, k);
+    const dDam = damDisp(t, span, ooa, tFail, vSec, k, regime);
     const ras = new Float32Array(W * H);
     for (let i = 0; i < W * H; i++) {
       const noiseScale = zone[i] === 2 ? 3.0 : 0.8;                                    // beach = noisier (decorrelation)
@@ -85,7 +101,7 @@ export function buildCube(spec: CubeSpec = {}): Cube {
     vel[i] = ((sty - mt * sy) / den) * 365;
   }
 
-  return { W, H, nEp, days, cum, vel, coh, zone, tFail, ooa, refDate: '2018-01-06' };
+  return { W, H, nEp, days, cum, vel, coh, zone, tFail, ooa, refDate: '2018-01-06', regime };
 }
 
 /** Cumulative-displacement time-series at a pixel (mm), already coherence-aware (caller may mask). */
