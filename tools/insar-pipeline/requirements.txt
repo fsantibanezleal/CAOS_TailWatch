@@ -1,0 +1,10 @@
+# TailWatch precompute / ML pipeline — isolated .venv (never global).
+# Create:  python -m venv .venv  &&  .venv\Scripts\pip install -r requirements.txt
+numpy>=1.26
+scipy>=1.11
+h5py>=3.10
+scikit-learn>=1.4
+umap-learn>=0.5
+torch>=2.2            # CPU is fine; small models
+onnx>=1.16
+onnxruntime>=1.17     # offline validation of the exported ONNX vs torch
