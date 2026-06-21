@@ -1,0 +1,6 @@
+scene_id,W,H,n_ep,regime,dam_sev,coherence_threshold
+ex-accel,160,120,60,accelerating,1.5,0.3
+ex-linear,160,120,60,linear,1.0,0.3
+ex-step,160,120,60,step,1.0,0.3
+ex-stable,160,120,60,stable,0.0,0.3
+ex-seasonal,160,120,60,seasonal,1.0,0.3

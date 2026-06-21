@@ -1,0 +1,15 @@
+# DORMANT systemd unit template for the VPS path — used ONLY if the app/ backend is activated (ADR-0002).
+# Rename to fasl-<slug>.service, fill <slug>/<user>/paths/port, then enable on the host.
+[Unit]
+Description=fasl-<slug> (product API)
+After=network.target
+
+[Service]
+User=<user>
+WorkingDirectory=/opt/fasl-<slug>
+ExecStart=/opt/fasl-<slug>/.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port <port>
+Restart=on-failure
+EnvironmentFile=/opt/fasl-<slug>/.env
+
+[Install]
+WantedBy=multi-user.target

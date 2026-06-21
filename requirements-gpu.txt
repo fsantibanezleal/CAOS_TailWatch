@@ -1,0 +1,3 @@
+# GPU lane (OPTIONAL, DORMANT) — TailWatch's training is modest (a small 1-D CNN + conv-AE over patches from 16
+# synthetic scenes, minutes on CPU), so no GPU is required. This solution does not require it at the moment.
+# torch==2.12.1  --index-url https://download.pytorch.org/whl/cu124

@@ -1,0 +1,35 @@
+# TailWatch — the offline engine package (instantiated from the CAOS product-repo archetype, ADR-0057).
+# The DEFAULT pipeline is numpy/stdlib-only (builds the replay layer from committed artifacts); the heavy SOTA
+# engines (torch/scipy/h5py/onnx) live in requirements-precompute.txt and are documented in docs/frameworks/.
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "twlab"
+# PEP 440 form of the display version X.XX.XXX (see CHANGELOG.md + twlab.__version__ = "0.09.000").
+version = "0.9.0"
+description = "TailWatch — InSAR tailings-dam deformation monitoring (conv-AE anomaly + 1-D CNN classifier on a synthetic Sentinel-1 sim) as a staged offline pipeline with two data contracts (ADR-0057)."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Felipe Santibáñez-Leal" }]
+dependencies = ["numpy>=1.26"]
+
+[tool.setuptools.packages.find]
+where = ["data-pipeline"]
+exclude = ["twlab.science*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 110
+target-version = "py311"
+# the preserved verbatim forward-sim / SBAS / training science (the heavy lane, run only via --retrain) keeps its
+# original compact research style; the archetype base around it is the linted surface.
+extend-exclude = ["data-pipeline/twlab/science"]
+
+[tool.ruff.lint]
+ignore = ["E741"]
