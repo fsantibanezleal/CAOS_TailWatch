@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" width="900" class="arch-svg" role="img" aria-label="TailWatch science — InSAR velocity, coherence, Fukuzono inverse-velocity forecast, the CNN + AE">
+  <style>
+    .arch-svg text { font-family: var(--font-sans, Inter, "Segoe UI", system-ui, sans-serif); }
+    .arch-svg .mono { font-family: var(--font-mono, ui-monospace, Consolas, monospace); }
+    .arch-svg .bx { fill: var(--color-surface-2); stroke: var(--color-border); stroke-width: 1.2; }
+    .arch-svg .bx-hi { stroke: var(--color-accent); }
+    .arch-svg .bx-good { stroke: var(--color-good); }
+    .arch-svg .ttl { fill: var(--color-fg); font-size: 13px; font-weight: 700; }
+    .arch-svg .sub { fill: var(--color-fg-subtle); font-size: 10px; }
+    .arch-svg .st { fill: var(--color-accent); font-size: 11px; font-weight: 700; }
+    .arch-svg .it { fill: var(--color-fg); font-size: 10.5px; }
+    .arch-svg .cd { fill: var(--color-accent); font-size: 9px; }
+    .arch-svg .eq { fill: var(--color-fg); font-size: 12.5px; }
+    .arch-svg .eqi { fill: var(--color-fg); font-size: 12.5px; font-style: italic; }
+    .arch-svg .mu { fill: var(--color-fg-subtle); font-size: 9.5px; }
+    .arch-svg .flow { fill: none; stroke: var(--color-fg-faint); stroke-width: 1.6; }
+  </style>
+  <defs>
+    <marker id="sc-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L8,4 L0,8 z" fill="var(--color-fg-faint)"/>
+    </marker>
+  </defs>
+
+  <text class="ttl" x="22" y="28">The science — InSAR deformation + Fukuzono inverse-velocity prognostics</text>
+  <text class="sub" x="22" y="45">frontend/src/dsp/ · the same TypeScript runs live in the browser and under Node in the offline bake</text>
+
+  <!-- Stage 1 -->
+  <rect class="bx bx-hi" x="16" y="66" width="170" height="104" rx="9"/>
+  <text class="st" x="28" y="88">① InSAR stack</text>
+  <text class="it" x="28" y="108">cumulative phase</text>
+  <text class="mu" x="28" y="124">→ displacement (mm)</text>
+  <text class="mu" x="28" y="138">per epoch, per pixel</text>
+  <text class="cd mono" x="28" y="160">trace.cumUp</text>
+
+  <!-- Stage 2 -->
+  <rect class="bx bx-hi" x="202" y="66" width="170" height="104" rx="9"/>
+  <text class="st" x="214" y="88">② Velocity</text>
+  <text class="it" x="214" y="108">E / Up / LOS decomp</text>
+  <text class="mu" x="214" y="124">robust smoothing</text>
+  <text class="mu" x="214" y="138">+ coherence mask</text>
+  <text class="cd mono" x="214" y="160">velocitySeries</text>
+
+  <!-- Stage 3 -->
+  <rect class="bx bx-hi" x="388" y="66" width="170" height="104" rx="9"/>
+  <text class="st" x="400" y="88">③ Onset + window</text>
+  <text class="it" x="400" y="108">detect tertiary creep</text>
+  <text class="mu" x="400" y="124">pick the terminal</text>
+  <text class="mu" x="400" y="138">window for the fit</text>
+  <text class="cd mono" x="400" y="160">inverseVelocity</text>
+
+  <!-- Stage 4 -->
+  <rect class="bx bx-hi" x="574" y="66" width="170" height="104" rx="9"/>
+  <text class="st" x="586" y="88">④ 1/v fit → t_fail</text>
+  <text class="it" x="586" y="108">OLS on 1/|v|</text>
+  <text class="mu" x="586" y="124">x-intercept = failure</text>
+  <text class="mu" x="586" y="138">+ credibility gate</text>
+  <text class="cd mono" x="586" y="160">inverseVelocity</text>
+
+  <!-- Stage 5 -->
+  <rect class="bx bx-good" x="760" y="66" width="124" height="104" rx="9"/>
+  <text class="st" x="772" y="88" style="fill:var(--color-good)">⑤ TARP</text>
+  <text class="it" x="772" y="108">tiered alarm</text>
+  <text class="mu" x="772" y="124">from |v| + days</text>
+  <text class="cd mono" x="772" y="148">tarp()</text>
+
+  <path class="flow" d="M186,118 H200" marker-end="url(#sc-arrow)"/>
+  <path class="flow" d="M372,118 H386" marker-end="url(#sc-arrow)"/>
+  <path class="flow" d="M558,118 H572" marker-end="url(#sc-arrow)"/>
+  <path class="flow" d="M744,118 H758" marker-end="url(#sc-arrow)"/>
+
+  <!-- equations -->
+  <rect class="bx" x="16" y="190" width="430" height="120" rx="9"/>
+  <text class="it" x="30" y="212" style="font-weight:700">Fukuzono inverse velocity (tertiary creep)</text>
+  <text class="eqi" x="30" y="240">1/v(t) = a + b·t   (b &lt; 0 toward failure)</text>
+  <text class="eq" x="30" y="266">t_fail = −a / b      (the x-intercept)</text>
+  <text class="mu" x="30" y="292">linear fit on the terminal window; gated by R², acceleration and window length so noise never raises a false alarm.</text>
+
+  <rect class="bx" x="454" y="190" width="430" height="120" rx="9"/>
+  <text class="it" x="468" y="212" style="font-weight:700">Velocity + coherence</text>
+  <text class="eqi" x="468" y="240">v = robust slope of d(t)   ·   d = d_E, d_Up, d_LOS</text>
+  <text class="eq" x="468" y="266">mask where coherence γ &lt; γ_min</text>
+  <text class="mu" x="468" y="292">the velocity field is decomposed by viewing geometry; low-coherence pixels (water/beach) are masked, not trusted.</text>
+
+  <!-- learned lane -->
+  <rect class="bx" x="16" y="330" width="430" height="124" rx="9"/>
+  <text class="it" x="30" y="352" style="font-weight:700">Deterministic engine (always on)</text>
+  <text class="mu" x="30" y="374">the transparent velocity + inverse-velocity</text>
+  <text class="mu" x="30" y="392">+ TARP — the reference every alarm is</text>
+  <text class="mu" x="30" y="410">measured against; recomputes live.</text>
+  <text class="cd mono" x="30" y="436">dsp/forecast.ts (live)</text>
+
+  <rect class="bx bx-good" x="454" y="330" width="430" height="124" rx="9"/>
+  <text class="it" x="468" y="352" style="font-weight:700">Learned lane (ONNX, client-side)</text>
+  <text class="mu" x="468" y="374">• 1-D CNN: a pixel's 60-epoch series → 6 pattern</text>
+  <text class="mu" x="468" y="392">  classes (stable / linear / accelerating / …).</text>
+  <text class="mu" x="468" y="410">• conv-AE: a 16×16 velocity patch → anomaly (MSE).</text>
+  <text class="cd mono" x="468" y="436">train.py → cnn.onnx · ae.onnx → ort.ts</text>
+</svg>

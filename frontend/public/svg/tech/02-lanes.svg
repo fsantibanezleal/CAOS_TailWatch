@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 480" width="900" class="arch-svg" role="img" aria-label="The three lanes: what runs in the web, offline/compute and replay">
+  <!-- Hand-authored. Every colour is a shell CSS variable, so the diagram repaints
+       with the active light/dark theme when inlined into the SPA (ADR-0058). -->
+  <style>
+    .arch-svg text { font-family: var(--font-sans, Inter, "Segoe UI", system-ui, sans-serif); }
+    .arch-svg .mono { font-family: var(--font-mono, ui-monospace, Consolas, monospace); }
+    .arch-svg .bx { fill: var(--color-surface-2); stroke: var(--color-border); stroke-width: 1.2; }
+    .arch-svg .lane { fill: none; stroke-width: 1.4; }
+    .arch-svg .lane-web { stroke: var(--color-accent); }
+    .arch-svg .lane-comp { stroke: var(--color-magenta); }
+    .arch-svg .lane-rep { stroke: var(--color-good); }
+    .arch-svg .bx-web { stroke: var(--color-accent); }
+    .arch-svg .bx-comp { stroke: var(--color-magenta); }
+    .arch-svg .bx-rep { stroke: var(--color-good); }
+    .arch-svg .ttl { fill: var(--color-fg); font-size: 13px; font-weight: 700; }
+    .arch-svg .lnt { font-size: 12.5px; font-weight: 700; }
+    .arch-svg .lnt-web { fill: var(--color-accent); }
+    .arch-svg .lnt-comp { fill: var(--color-magenta); }
+    .arch-svg .lnt-rep { fill: var(--color-good); }
+    .arch-svg .sub { fill: var(--color-fg-subtle); font-size: 10px; }
+    .arch-svg .it { fill: var(--color-fg); font-size: 10.5px; }
+    .arch-svg .cd { fill: var(--color-accent); font-size: 9.5px; }
+    .arch-svg .mu { fill: var(--color-fg-subtle); font-size: 10px; }
+    .arch-svg .flow { fill: none; stroke: var(--color-fg-faint); stroke-width: 1.4; }
+    .arch-svg .lbl { fill: var(--color-fg-subtle); font-size: 9.5px; }
+  </style>
+  <defs>
+    <marker id="ln-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L8,4 L0,8 z" fill="var(--color-fg-faint)"/>
+    </marker>
+  </defs>
+
+  <text class="ttl" x="22" y="30">Three lanes — what runs WHERE</text>
+  <text class="sub" x="22" y="47">the same TypeScript engine runs in the browser AND under Node; Python only bakes &amp; trains offline</text>
+
+  <!-- ===== WEB lane ===== -->
+  <rect class="bx bx-web" x="14" y="66" width="290" height="392" rx="11"/>
+  <text class="lnt lnt-web" x="30" y="92">WEB · live, in the browser</text>
+  <text class="sub" x="30" y="108">no server — static GitHub Pages</text>
+
+  <rect class="bx" x="30" y="122" width="258" height="58" rx="7"/>
+  <text class="it" x="42" y="142">Deterministic engine (TS)</text>
+  <text class="cd mono" x="42" y="158">frontend/src/&lt;domain&gt;/</text>
+  <text class="mu" x="42" y="172">re-runs on every control change</text>
+
+  <rect class="bx" x="30" y="190" width="258" height="58" rx="7"/>
+  <text class="it" x="42" y="210">In-browser inference</text>
+  <text class="cd mono" x="42" y="226">onnxruntime-web · WASM</text>
+  <text class="mu" x="42" y="240">*.onnx loaded from /public, numThreads=1</text>
+
+  <rect class="bx" x="30" y="258" width="258" height="58" rx="7"/>
+  <text class="it" x="42" y="278">6-page SPA + live viz</text>
+  <text class="cd mono" x="42" y="294">caos-app-shell · uPlot · three</text>
+  <text class="mu" x="42" y="308">App reacts to the case selector</text>
+
+  <rect class="bx" x="30" y="326" width="258" height="58" rx="7"/>
+  <text class="it" x="42" y="346">Loads baked artifacts</text>
+  <text class="cd mono" x="42" y="362">/case-results.json · /data/manifests</text>
+  <text class="mu" x="42" y="376">read-only — never recomputes the bake</text>
+  <text class="mu" x="30" y="406">User: pick a case OR drop your own data</text>
+  <text class="mu" x="30" y="420">→ engine + inference run client-side, live</text>
+
+  <!-- ===== COMPUTE lane ===== -->
+  <rect class="bx bx-comp" x="318" y="66" width="290" height="392" rx="11"/>
+  <text class="lnt lnt-comp" x="334" y="92">OFFLINE · compute (your machine)</text>
+  <text class="sub" x="334" y="108">Python, isolated .venv — never in the browser</text>
+
+  <rect class="bx" x="334" y="122" width="258" height="58" rx="7"/>
+  <text class="it" x="346" y="142">Precompute / bake pipeline</text>
+  <text class="cd mono" x="346" y="158">data-pipeline/&lt;pkg&gt;/pipeline.py</text>
+  <text class="mu" x="346" y="172">numpy-light default · staged · gated</text>
+
+  <rect class="bx" x="334" y="190" width="258" height="58" rx="7"/>
+  <text class="it" x="346" y="210">Model training (heavy lane)</text>
+  <text class="cd mono" x="346" y="226">--retrain · .venv-precompute · torch</text>
+  <text class="mu" x="346" y="240">exports torch → ONNX, never ships the venv</text>
+
+  <rect class="bx" x="334" y="258" width="258" height="58" rx="7"/>
+  <text class="it" x="346" y="278">Two-language bake (parity)</text>
+  <text class="cd mono" x="346" y="294">science/bake_cases.mjs · tsx</text>
+  <text class="mu" x="346" y="308">Node runs the SAME TS engine</text>
+
+  <rect class="bx" x="334" y="326" width="258" height="58" rx="7"/>
+  <text class="it" x="346" y="346">Writes canonical artifacts</text>
+  <text class="cd mono" x="346" y="362">data/derived/ + manifests + trace</text>
+  <text class="mu" x="346" y="376">deterministic — git-clean after re-run</text>
+  <text class="mu" x="334" y="406">Run once per data/model change; the</text>
+  <text class="mu" x="334" y="420">artifacts are committed, the venvs are not</text>
+
+  <!-- ===== REPLAY lane ===== -->
+  <rect class="bx bx-rep" x="622" y="66" width="264" height="392" rx="11"/>
+  <text class="lnt lnt-rep" x="638" y="92">REPLAY · committed bridge</text>
+  <text class="sub" x="638" y="108">the contract between compute &amp; web</text>
+
+  <rect class="bx" x="638" y="122" width="232" height="64" rx="7"/>
+  <text class="it" x="650" y="142">Canonical artifacts</text>
+  <text class="cd mono" x="650" y="158">data/derived/*.json + *.onnx</text>
+  <text class="mu" x="650" y="174">small, reviewable, versioned in git</text>
+
+  <rect class="bx" x="638" y="196" width="232" height="64" rx="7"/>
+  <text class="it" x="650" y="216">Overlay into the SPA</text>
+  <text class="cd mono" x="650" y="232">frontend/copy-data.mjs</text>
+  <text class="mu" x="650" y="248">copies derived → frontend/public</text>
+
+  <rect class="bx" x="638" y="270" width="232" height="64" rx="7"/>
+  <text class="it" x="650" y="290">Typed mirror gates the build</text>
+  <text class="cd mono" x="650" y="306">frontend/src/lib/contract.types.ts</text>
+  <text class="mu" x="650" y="322">tsc fails if web ≠ pipeline shape</text>
+
+  <text class="mu" x="638" y="356">Replay = how the live app shows real,</text>
+  <text class="mu" x="638" y="370">reproducible results with no backend.</text>
+  <text class="mu" x="638" y="392">If a model is pending, the app still</text>
+  <text class="mu" x="638" y="406">runs the classical baseline; the toggle</text>
+  <text class="mu" x="638" y="420">turns on once the ONNX exists.</text>
+
+  <!-- flows compute -> replay -> web -->
+  <path class="flow" d="M608,355 H636" marker-end="url(#ln-arrow)"/>
+  <path class="flow" d="M636,300 H612 Q300,300 304,300" />
+  <path class="flow" d="M620,228 H306" marker-end="url(#ln-arrow)"/>
+  <text class="lbl" x="430" y="222">artifacts overlaid → loaded live</text>
+</svg>
