@@ -1,0 +1,19 @@
+{
+  "// note": "Shipped by the CAOS product template (ADR-0057): point Pylance at the pipeline venv + the package source, and keep the file-watcher/analyzer off venvs and generated data so the editor stays responsive.",
+  "python.defaultInterpreterPath": "${workspaceFolder}/.venv-pipeline/Scripts/python.exe",
+  "python.analysis.extraPaths": ["data-pipeline"],
+  "python.analysis.exclude": ["**/.venv*/**", "**/node_modules/**", "**/frontend/dist/**"],
+  "files.watcherExclude": {
+    "**/.venv*/**": true,
+    "**/node_modules/**": true,
+    "**/frontend/dist/**": true,
+    "**/frontend/public/data/**": true,
+    "**/__pycache__/**": true,
+    "**/data/raw/**": true
+  },
+  "search.exclude": {
+    "**/.venv*": true,
+    "**/node_modules": true,
+    "**/frontend/dist": true
+  }
+}

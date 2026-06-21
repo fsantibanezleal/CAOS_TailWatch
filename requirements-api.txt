@@ -1,0 +1,5 @@
+# API / BACKEND lane (OPTIONAL) — install ONLY when app/ is activated (an ADR-0002 trigger: server-side processing
+# of uploaded data, auth-gated private data, paid heavy compute). Most products are static deterministic-replay and
+# never need this; the app/ module ships dormant. Pin to the versions you install+verify when you activate it.
+# fastapi==X.Y.Z
+# uvicorn[standard]==X.Y.Z
