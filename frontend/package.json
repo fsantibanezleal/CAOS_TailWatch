@@ -9,6 +9,7 @@
     "dev": "vite",
     "prebuild": "node copy-data.mjs",
     "build": "tsc --noEmit && vite build",
+    "postbuild": "node spa-404.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
