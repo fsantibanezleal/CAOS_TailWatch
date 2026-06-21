@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Deploy Pages
 
 on:
   push:
@@ -19,16 +19,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Rebuild the replay layer (numpy-only; the committed ONNX/cubes/tw-cases.json are the heavy lane's outputs)
+        run: |
+          pip install -r requirements.txt -e .
+          python -m twlab.pipeline all
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: "20"
           cache: npm
-      - run: npm ci
-      - run: npm run build
+          cache-dependency-path: frontend/package-lock.json
+      - name: Build the SPA (copy-data.mjs overlays data/derived -> public/)
+        run: cd frontend && npm ci && npm run build
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: frontend/dist
+
   deploy:
     needs: build
     runs-on: ubuntu-latest

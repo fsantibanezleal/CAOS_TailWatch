@@ -78,20 +78,6 @@ function Workbench({ m }: { m: Manifest }) {
     o.series = [o.series[0], { ...o.series[1], points: { show: true } }, { label: es ? 'ajuste' : 'fit', stroke: '#f778ba', width: 1.6, dash: [5, 3], points: { show: false }, value: (_u: uPlot, v: number | null) => (v == null ? '--' : v.toFixed(2)) }];
     return o;
   }, [es]);
-  const b = m.benchmark;
-  const rocData = useMemo<uPlot.AlignedData>(() => {
-    const grid = Array.from({ length: 51 }, (_, k) => k / 50);
-    const interp = (c: { fpr: number[]; tpr: number[] }) => grid.map((g) => { let t = 0; for (let k = 0; k < c.fpr.length; k++) if (c.fpr[k] <= g) t = c.tpr[k]; return t; });
-    return [grid, interp(b.aeRoc), interp(b.velRoc), grid];
-  }, [b]);
-  const buildRoc = useCallback((w: number, h: number) => {
-    const o = lineOpts(w, h, { label: 'AE', color: '#bc8cff', xUnit: 'FPR', yUnit: 'TPR', xPrec: 2, yPrec: 2, yRange: [0, 1] });
-    o.series = [o.series[0], { ...o.series[1], label: `AE (AUC ${b.aeAuc})` },
-      { label: `|v| (AUC ${b.velAuc})`, stroke: '#58a6ff', width: 1.6, points: { show: false }, value: (_u: uPlot, v: number | null) => (v == null ? '--' : v.toFixed(2)) },
-      { label: es ? 'azar' : 'chance', stroke: '#6e7681', width: 1, dash: [3, 3], points: { show: false }, value: () => '' }];
-    return o;
-  }, [b, es]);
-
   const compUnit = comp === 'east' ? (es ? 'Este mm/yr' : 'East mm/yr') : comp === 'up' ? (es ? 'Up mm/yr' : 'Up mm/yr') : `LOS ${comp} mm/yr`;
   const loadingMap = !cd ? <p className="tw-hint">{es ? 'Cargando caso…' : 'Loading case…'}</p> : null;
 
@@ -104,8 +90,8 @@ function Workbench({ m }: { m: Manifest }) {
     { id: 'iv', label: es ? 'Velocidad inversa' : 'Inverse velocity', content: <Panel t={es ? 'Velocidad inversa 1/|v| (Fukuzono) — el ajuste lineal proyecta el tiempo de falla' : 'Inverse velocity 1/|v| (Fukuzono) — the linear fit projects the failure time'}><UPlotChart data={ivData} build={buildIv} height={200} /></Panel> },
     { id: 'coh', label: es ? 'Coherencia' : 'Coherence', content: <Panel t={es ? 'Coherencia temporal media — calidad interferométrica (baja en agua/playa)' : 'Mean temporal coherence — interferometric quality (low over water/beach)'}>{loadingMap || <><FieldMap W={W} H={H} colorAt={cohColor} sel={sel} onPick={(x, y) => setSel({ x, y })} readout={(x, y, k) => `${x},${y} · coh ${(cd ? cd.coh[k] : 0).toFixed(2)}`} /><Cbar lo={es ? 'incoherente' : 'incoherent'} hi={es ? 'coherente' : 'coherent'} ramp={[rgbCss(batlow(0)), rgbCss(batlow(0.5)), rgbCss(batlow(1))]} unit="0–1" /></>}</Panel> },
     { id: 'cum', label: es ? 'Acumulado (tiempo)' : 'Cumulative (time)', content: <Panel t={`${es ? 'Desplazamiento acumulado, época' : 'Cumulative displacement, epoch'} ${epoch + 1}/${nEp} (${es ? 'día' : 'day'} ${days[epoch].toFixed(0)})`}>{loadingMap || <><FieldMap W={W} H={H} colorAt={cumColor} sel={sel} onPick={(x, y) => setSel({ x, y })} mask={maskCoh ? lowCoh : undefined} readout={(x, y, k) => `${x},${y} · ${(cd ? cd.cumUp[epoch * W * H + k] / m.cumScale : 0).toFixed(1)} mm`} /><input className="range" type="range" min={0} max={nEp - 1} value={epoch} onChange={(e) => setEpoch(+e.target.value)} style={{ width: '100%', marginTop: '0.4rem' }} /><Cbar lo={es ? '← hundimiento' : '← subsiding'} hi={es ? 'alza →' : 'uplift →'} ramp={[rgbCss(vik(-80, 80)), rgbCss(vik(0, 80)), rgbCss(vik(80, 80))]} unit="mm ±80" /></>}</Panel> },
-    { id: 'roc', label: es ? 'Benchmark ROC' : 'ROC benchmark', content: <Panel t={es ? 'Detección de falla en escenas HELD-OUT — aprendido (AE) vs clásico (|velocidad|)' : 'Failure detection on HELD-OUT scenes — learned (AE) vs classical (|velocity|)'}><UPlotChart data={rocData} build={buildRoc} height={300} /><p className="tw-note">{es ? `Honesto: el baseline |v| (AUC ${b.velAuc}) supera al AE (AUC ${b.aeAuc}) porque las fallas simuladas tienen firma de velocidad. El valor aprendido es la clasificación de tipo + la anomalía sin etiquetas.` : `Honest: the |v| baseline (AUC ${b.velAuc}) beats the AE (AUC ${b.aeAuc}) because the simulated failures carry a velocity signature. The learned value is the type classification + label-free anomaly.`}</p></Panel> },
-    { id: 'conf', label: es ? 'Matriz de confusión' : 'Confusion matrix', content: <Panel t={`${es ? 'Matriz de confusión del CNN (held-out)' : 'CNN confusion matrix (held-out)'} — macro-F1 ${b.macroF1}`}><Confusion m={b.confusion} names={CLS} /></Panel> },
+    // The held-out ROC + confusion matrix are cross-case (aggregate) views that do NOT react to the case selector,
+    // so per the archetype design rule they live on the Benchmark page (which already renders them), not the App.
   ];
 
   return (
@@ -143,12 +129,3 @@ function Workbench({ m }: { m: Manifest }) {
 function Panel({ t, children }: { t: string; children: ReactNode }) { return <div className="tw-plot"><div className="tw-plot-t">{t}</div>{children}</div>; }
 function Cbar({ lo, hi, ramp, unit }: { lo: string; hi: string; ramp: string[]; unit: string }) { return <div className="tw-legend"><span>{lo}</span><span className="tw-cbar" style={{ background: `linear-gradient(90deg, ${ramp.join(', ')})` }} /><span>{hi}</span><span className="tw-legend-u muted">{unit}</span></div>; }
 function ClassLegend({ cls }: { cls: string[] }) { return <div className="tw-classlegend">{cls.map((c, ci) => <span key={ci}><span className="dot" style={{ background: CLASS_COLORS[ci] }} />{c}</span>)}</div>; }
-function Confusion({ m, names }: { m: number[][]; names: string[] }) {
-  const rowSums = m.map((r) => r.reduce((a, b) => a + b, 0) || 1);
-  return (
-    <table className="cmp-table">
-      <thead><tr><th className="lo">{'true \\ pred'}</th>{names.map((n, i) => <th key={i}>{n.split(' ')[0]}</th>)}</tr></thead>
-      <tbody>{m.map((row, r) => (<tr key={r}><th className="lo">{names[r]}</th>{row.map((v, c) => <td key={c} style={{ background: `color-mix(in oklab, var(--color-accent) ${Math.round((v / rowSums[r]) * 70)}%, transparent)`, fontWeight: r === c ? 700 : 400 }}>{v}</td>)}</tr>))}</tbody>
-    </table>
-  );
-}
