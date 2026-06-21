@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 460" width="900" class="arch-svg" role="img" aria-label="TailWatch — InSAR tailings-dam deformation to a TARP alarm">
+  <style>
+    .arch-svg text { font-family: var(--font-sans, Inter, "Segoe UI", system-ui, sans-serif); }
+    .arch-svg .mono { font-family: var(--font-mono, ui-monospace, Consolas, monospace); }
+    .arch-svg .bx { fill: var(--color-surface-2); stroke: var(--color-border); stroke-width: 1.2; }
+    .arch-svg .bx-hi { stroke: var(--color-accent); }
+    .arch-svg .bx-good { stroke: var(--color-good); }
+    .arch-svg .bx-warn { stroke: var(--color-warn); }
+    .arch-svg .ttl { fill: var(--color-fg); font-size: 13px; font-weight: 700; }
+    .arch-svg .sub { fill: var(--color-fg-subtle); font-size: 10px; }
+    .arch-svg .it { fill: var(--color-fg); font-size: 11px; font-weight: 600; }
+    .arch-svg .cd { fill: var(--color-accent); font-size: 9.5px; }
+    .arch-svg .mu { fill: var(--color-fg-subtle); font-size: 10px; }
+    .arch-svg .flow { fill: none; stroke: var(--color-fg-faint); stroke-width: 1.6; }
+    .arch-svg .axis { stroke: var(--color-border); stroke-width: 1; }
+    .arch-svg .sat { fill: var(--color-accent); }
+    .arch-svg .iv { fill: none; stroke: var(--color-warn); stroke-width: 2; }
+  </style>
+  <defs>
+    <marker id="ta-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L8,4 L0,8 z" fill="var(--color-fg-faint)"/>
+    </marker>
+  </defs>
+
+  <text class="ttl" x="22" y="30">TailWatch — is the tailings dam deforming toward failure?</text>
+  <text class="sub" x="22" y="47">a TSF-monitoring product: a stack of satellite InSAR images → the surface deformation velocity → an anomaly map + a Fukuzono failure-time forecast + a TARP alarm</text>
+
+  <!-- 1. The question -->
+  <rect class="bx bx-hi" x="20" y="74" width="196" height="150" rx="11"/>
+  <text class="it" x="34" y="98">The question</text>
+  <text class="mu" x="34" y="118">Is the dam wall</text>
+  <text class="mu" x="34" y="134">subsiding /</text>
+  <text class="mu" x="34" y="150">accelerating? When</text>
+  <text class="mu" x="34" y="166">would it fail?</text>
+  <text class="mu" x="34" y="186">A safety question,</text>
+  <text class="mu" x="34" y="202">answered remotely.</text>
+
+  <!-- 2. The input: InSAR stack -->
+  <rect class="bx" x="244" y="74" width="196" height="150" rx="11"/>
+  <text class="it" x="258" y="98">The input</text>
+  <path class="sat" d="M392,110 l8,4 l-8,4 l-2,-4 z"/>
+  <line class="axis" x1="390" y1="118" x2="300" y2="150"/>
+  <rect x="262" y="148" width="160" height="56" rx="3" fill="var(--color-bg, var(--color-surface))" stroke="var(--color-border)"/>
+  <rect x="266" y="152" width="152" height="14" rx="2" fill="var(--color-fg-faint)" opacity="0.35"/>
+  <rect x="266" y="168" width="152" height="14" rx="2" fill="var(--color-fg-faint)" opacity="0.25"/>
+  <rect x="266" y="184" width="152" height="14" rx="2" fill="var(--color-fg-faint)" opacity="0.15"/>
+  <text class="mu" x="258" y="138">a time-stack of radar phase</text>
+  <text class="cd mono" x="258" y="218">epochs × pixels · coherence</text>
+
+  <!-- 3. The method -->
+  <rect class="bx bx-hi" x="468" y="74" width="196" height="150" rx="11"/>
+  <text class="it" x="482" y="98">The method</text>
+  <text class="mu" x="482" y="118">• velocity (E/Up/LOS)</text>
+  <text class="mu" x="482" y="134">• anomaly (conv-AE)</text>
+  <text class="mu" x="482" y="150">• series class (1-D CNN)</text>
+  <text class="mu" x="482" y="166">• Fukuzono 1/v forecast</text>
+  <text class="cd mono" x="482" y="190">dsp/forecast.ts · *.onnx</text>
+  <text class="mu" x="482" y="210">all live in the browser</text>
+
+  <!-- 4. The value: TARP -->
+  <rect class="bx bx-warn" x="692" y="74" width="188" height="150" rx="11"/>
+  <text class="it" x="706" y="98">The value</text>
+  <line class="axis" x1="712" y1="190" x2="862" y2="190"/>
+  <line class="axis" x1="712" y1="118" x2="712" y2="190"/>
+  <path class="iv" d="M716,124 L840,182"/>
+  <circle cx="840" cy="182" r="3" fill="var(--color-warn)"/>
+  <text class="mu" x="788" y="178" style="font-size:8.5px">t_fail</text>
+  <text class="mu" x="706" y="118">1/|v|</text>
+  <text class="mu" x="820" y="206">time →</text>
+  <text class="cd mono" x="706" y="218">TARP tier · days-to-fail</text>
+
+  <path class="flow" d="M216,149 H242" marker-end="url(#ta-arrow)"/>
+  <path class="flow" d="M440,149 H466" marker-end="url(#ta-arrow)"/>
+  <path class="flow" d="M664,149 H690" marker-end="url(#ta-arrow)"/>
+
+  <!-- bottom band -->
+  <rect class="bx" x="20" y="252" width="860" height="184" rx="11"/>
+  <text class="it" x="36" y="278">It is a real system, not a demo:</text>
+  <text class="mu" x="36" y="302">• the deformation engine (frontend/src/dsp/) recomputes velocity, the inverse-velocity fit and the TARP tier live on every pixel click / epoch;</text>
+  <text class="mu" x="36" y="324">• the velocity field is decomposed into East/Up/LOS and masked by interferometric coherence (low over water/beach) — honest about data quality;</text>
+  <text class="mu" x="36" y="346">• a 1-D CNN classifies a pixel's displacement series (60 epochs → 6 patterns) and a conv-AE flags anomalous velocity patches — both ONNX, client-side;</text>
+  <text class="mu" x="36" y="368">• the Fukuzono inverse-velocity failure-time projection has a credibility gate (R², acceleration, window) — no false alarms from noise;</text>
+  <text class="mu" x="36" y="390">• Contract 1 accepts your own InSAR stack; six documented pages; every number sourced or labelled synthetic.</text>
+  <text class="cd mono" x="36" y="418">InSAR stack  →  velocity (E/Up/LOS) + coherence  →  conv-AE anomaly + CNN class  →  Fukuzono 1/v → t_fail  →  TARP alarm</text>
+</svg>

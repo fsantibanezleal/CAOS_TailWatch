@@ -6,6 +6,7 @@ import { AppShell, applyTheme, readTheme, CitationsProvider, type ShellConfig } 
 import '@fasl-work/caos-app-shell/styles.css';
 import './tailwatch.css';
 import { CITATIONS } from './data/citations';
+import { architecture } from './architecture';
 import Tool from './pages/Tool';
 import Introduction from './pages/Introduction';
 import Methodology from './pages/Methodology';
@@ -27,6 +28,7 @@ const config: ShellConfig = {
   ],
   links: { github: 'https://github.com/fsantibanezleal/CAOS_TailWatch' },
   version: '0.09.000',
+  architecture,
 };
 
 createRoot(document.getElementById('root')!).render(

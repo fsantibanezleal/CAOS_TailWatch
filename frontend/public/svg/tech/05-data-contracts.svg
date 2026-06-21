@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" width="900" class="arch-svg" role="img" aria-label="The design: two data contracts and the lane gate">
+  <style>
+    .arch-svg text { font-family: var(--font-sans, Inter, "Segoe UI", system-ui, sans-serif); }
+    .arch-svg .mono { font-family: var(--font-mono, ui-monospace, Consolas, monospace); }
+    .arch-svg .bx { fill: var(--color-surface-2); stroke: var(--color-border); stroke-width: 1.2; }
+    .arch-svg .bx-in { stroke: var(--color-accent); }
+    .arch-svg .bx-out { stroke: var(--color-good); }
+    .arch-svg .bx-gate { stroke: var(--color-warn); }
+    .arch-svg .grp { fill: none; stroke: var(--color-border); stroke-dasharray: 5 4; }
+    .arch-svg .ttl { fill: var(--color-fg); font-size: 13px; font-weight: 700; }
+    .arch-svg .sub { fill: var(--color-fg-subtle); font-size: 10px; }
+    .arch-svg .it { fill: var(--color-fg); font-size: 10.5px; }
+    .arch-svg .cd { fill: var(--color-accent); font-size: 9.5px; }
+    .arch-svg .key { fill: var(--color-good); font-size: 9.5px; }
+    .arch-svg .mu { fill: var(--color-fg-subtle); font-size: 10px; }
+    .arch-svg .flow { fill: none; stroke: var(--color-fg-faint); stroke-width: 1.5; }
+    .arch-svg .lbl { fill: var(--color-fg-subtle); font-size: 9.5px; }
+  </style>
+  <defs>
+    <marker id="dc-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L8,4 L0,8 z" fill="var(--color-fg-faint)"/>
+    </marker>
+  </defs>
+
+  <text class="ttl" x="22" y="30">The design — two data contracts + the lane gate</text>
+  <text class="sub" x="22" y="47">a contract is a validated schema; everything in and out of the pipeline passes one, so the app is bring-your-own-data</text>
+
+  <!-- Contract 1: ingestion -->
+  <rect class="bx bx-in" x="14" y="68" width="252" height="220" rx="11"/>
+  <text class="it" x="30" y="92" style="font-weight:700">Contract 1 · Ingestion</text>
+  <text class="cd mono" x="30" y="108">io/schema.py · io/contract.py</text>
+  <text class="mu" x="30" y="128">what a valid INPUT case looks like:</text>
+  <rect class="bx" x="30" y="138" width="220" height="40" rx="6"/>
+  <text class="it" x="42" y="156">field names + dtypes + units</text>
+  <text class="mu" x="42" y="170">domain quantities, not pixels</text>
+  <rect class="bx" x="30" y="184" width="220" height="40" rx="6"/>
+  <text class="it" x="42" y="202">range / NaN / outlier guards</text>
+  <text class="mu" x="42" y="216">rejects malformed cases early</text>
+  <rect class="bx" x="30" y="230" width="220" height="44" rx="6"/>
+  <text class="it" x="42" y="248">accepts built-in OR your data</text>
+  <text class="key mono" x="42" y="264">data/examples/*.csv</text>
+
+  <!-- Pipeline + gate -->
+  <rect class="bx bx-gate" x="324" y="68" width="252" height="220" rx="11"/>
+  <text class="it" x="340" y="92" style="font-weight:700">Pipeline + lane gate</text>
+  <text class="cd mono" x="340" y="108">core/gate.py · pipeline.py</text>
+  <rect class="bx" x="340" y="124" width="220" height="42" rx="6"/>
+  <text class="it" x="352" y="142">staged, deterministic</text>
+  <text class="cd mono" x="352" y="158">stages/*.py · core/trace.py</text>
+  <rect class="bx" x="340" y="172" width="220" height="42" rx="6"/>
+  <text class="it" x="352" y="190">lane gate: default vs retrain</text>
+  <text class="mu" x="352" y="206">numpy-light unless --retrain</text>
+  <rect class="bx" x="340" y="220" width="220" height="54" rx="6"/>
+  <text class="it" x="352" y="238">manifest = provenance</text>
+  <text class="cd mono" x="352" y="254">core/manifest.py</text>
+  <text class="mu" x="352" y="268">seeds, inputs, hashes — reproducible</text>
+
+  <!-- Contract 2: artifact -->
+  <rect class="bx bx-out" x="634" y="68" width="252" height="220" rx="11"/>
+  <text class="it" x="650" y="92" style="font-weight:700">Contract 2 · Artifact</text>
+  <text class="cd mono" x="650" y="108">data/derived/ · manifests</text>
+  <text class="mu" x="650" y="128">what a valid OUTPUT looks like:</text>
+  <rect class="bx" x="650" y="138" width="220" height="40" rx="6"/>
+  <text class="it" x="662" y="156">per-case results + metrics</text>
+  <text class="key mono" x="662" y="170">case-results.json</text>
+  <rect class="bx" x="650" y="184" width="220" height="40" rx="6"/>
+  <text class="it" x="662" y="202">model index (onnx + meta)</text>
+  <text class="key mono" x="662" y="216">manifests/index.json</text>
+  <rect class="bx" x="650" y="230" width="220" height="44" rx="6"/>
+  <text class="it" x="662" y="248">the SAME shape the web reads</text>
+  <text class="key mono" x="662" y="264">contract.types.ts (mirror)</text>
+
+  <path class="flow" d="M266,178 H322" marker-end="url(#dc-arrow)"/>
+  <path class="flow" d="M576,178 H632" marker-end="url(#dc-arrow)"/>
+  <text class="lbl" x="272" y="170">validate</text>
+  <text class="lbl" x="582" y="170">emit + validate</text>
+
+  <!-- cases by category + mirror -->
+  <rect class="grp" x="14" y="312" width="430" height="142" rx="10"/>
+  <text class="it" x="30" y="334" style="font-weight:700">Cases by category</text>
+  <text class="cd mono" x="30" y="350">cases/&lt;domain&gt;_cases.py · registry.py</text>
+  <text class="mu" x="30" y="372">• control / degenerate — sanity anchors</text>
+  <text class="mu" x="30" y="392">• canonical regimes — the science range</text>
+  <text class="mu" x="30" y="412">• real-data — sourced, labelled honestly</text>
+  <text class="mu" x="30" y="438">each case carries its own units + provenance</text>
+
+  <rect class="grp" x="460" y="312" width="426" height="142" rx="10"/>
+  <text class="it" x="476" y="334" style="font-weight:700">The mirror that gates the build</text>
+  <text class="mu" x="476" y="356">the TS type mirrors Contract 2 exactly;</text>
+  <text class="mu" x="476" y="374">if the pipeline changes the artifact shape</text>
+  <text class="mu" x="476" y="392">and the mirror is not updated, tsc fails.</text>
+  <text class="cd mono" x="476" y="414">frontend/src/lib/contract.types.ts</text>
+  <text class="mu" x="476" y="438">→ web and pipeline can never silently drift</text>
+</svg>

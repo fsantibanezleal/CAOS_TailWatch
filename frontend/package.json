@@ -3,7 +3,7 @@
   "version": "0.09.000",
   "private": true,
   "type": "module",
-  "description": "TailWatch — InSAR ground-deformation monitoring & early-warning for tailings dams and pit walls (SBAS displacement, velocity maps, inverse-velocity failure forecasting, GISTM-aligned TARP alarms). Didactic + decision-support, not a certified safety system.",
+  "description": "TailWatch \u2014 InSAR ground-deformation monitoring & early-warning for tailings dams and pit walls (SBAS displacement, velocity maps, inverse-velocity failure forecasting, GISTM-aligned TARP alarms). Didactic + decision-support, not a certified safety system.",
   "scripts": {
     "predev": "node copy-data.mjs",
     "dev": "vite",
@@ -12,7 +12,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@fasl-work/caos-app-shell": "^0.1.1",
+    "@fasl-work/caos-app-shell": "^0.1.2",
     "katex": "^0.16.11",
     "lucide-react": "^0.469.0",
     "onnxruntime-web": "^1.27.0",
