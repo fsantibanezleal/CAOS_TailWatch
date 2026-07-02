@@ -13,7 +13,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@fasl-work/caos-app-shell": "^0.1.2",
+    "@fasl-work/caos-app-shell": "^0.2.0",
     "katex": "^0.16.11",
     "lucide-react": "^0.469.0",
     "onnxruntime-web": "^1.27.0",
