@@ -1,5 +1,9 @@
 # TailWatch — InSAR deformation monitoring & early-warning
 
+[![CI](https://img.shields.io/github/actions/workflow/status/fsantibanezleal/CAOS_TailWatch/ci.yml?branch=main&label=CI)](https://github.com/fsantibanezleal/CAOS_TailWatch/actions)
+[![License](https://img.shields.io/github/license/fsantibanezleal/CAOS_TailWatch)](LICENSE)
+[![Live demo](https://img.shields.io/badge/demo-live-2ea44f)](https://tailwatch.fasl-work.com)
+
 > Monitor tailings dams and pit walls for ground deformation from synthetic Sentinel-1 InSAR: a 2-geometry SBAS
 > displacement decomposition, a velocity map, a learned anomaly + deformation-type tier, and inverse-velocity failure
 > forecasting with tiered TARP alarms. Didactic + decision-support, **not a certified safety system**. Part of the
