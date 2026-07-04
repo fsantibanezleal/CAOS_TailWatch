@@ -1,8 +1,8 @@
-"""CONTRACT 1 — ingestion (raw InSAR scene -> pipeline). The *bring-your-own-scene* gate.
+"""CONTRACT 1, ingestion (raw InSAR scene -> pipeline). The *bring-your-own-scene* gate.
 
 Declares the required schema (columns, units, ranges) of a synthetic InSAR scene descriptor and an EXPLICIT outlier
 policy: a scene is ACCEPTED iff it passes; ill-formed scenes are REJECTED with a reason (never silently coerced);
-plausible-but-suspicious scenes are FLAGGED (accepted; the flag travels into the manifest — e.g. a decorrelated
+plausible-but-suspicious scenes are FLAGGED (accepted; the flag travels into the manifest, e.g. a decorrelated
 scene whose coherence mask will dominate). This is what lets TailWatch ingest a NEW displacement stack instead of
 only replaying the baked cases. Documented in data/README.md.
 """
@@ -83,7 +83,7 @@ def validate_records(raw_rows: list[dict[str, Any]]) -> ContractReport:
         if sev > SEV_FLAG_MAX:
             rec_flags.append(f"dam_sev={sev:g} > {SEV_FLAG_MAX:g} (implausibly large deformation)")
         if regime == "decorrelated":
-            rec_flags.append("decorrelated regime — coherence mask dominates; velocity/forecast unreliable")
+            rec_flags.append("decorrelated regime, coherence mask dominates; velocity/forecast unreliable")
         coh = row.get("coherence_threshold")
         coh_t = 0.3
         if coh not in (None, ""):
@@ -92,7 +92,7 @@ def validate_records(raw_rows: list[dict[str, Any]]) -> ContractReport:
                 if not (COH_RANGE[0] <= coh_t <= COH_RANGE[1]):
                     rec_flags.append(f"coherence_threshold={coh_t:g} outside {COH_RANGE}")
             except (TypeError, ValueError):
-                rec_flags.append(f"coherence_threshold={coh!r} non-numeric — default 0.3")
+                rec_flags.append(f"coherence_threshold={coh!r} non-numeric, default 0.3")
 
         if rec_flags:
             flagged.append({"scene_id": sid, "flags": rec_flags})

@@ -1,5 +1,5 @@
 """Regenerate ONLY the `forecast` block of tw-cases.json (accelerating MC + false-alarm control
-bank) without the torch lane. Pure numpy — reuses forecast_benchmark() so the numbers are the
+bank) without the torch lane. Pure numpy, reuses forecast_benchmark() so the numbers are the
 single source of truth. Use when the models do not need retraining but the forecast protocol did
 (issue #24).
 

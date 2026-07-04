@@ -1,4 +1,4 @@
-"""CONTRACT 2 — artifact (pipeline -> web). The manifest is the authoritative, versioned record of a baked case:
+"""CONTRACT 2, artifact (pipeline -> web). The manifest is the authoritative, versioned record of a baked case:
 its category/regime, seed, engine+version, the shared learned-tier artifacts, the compact per-case trace pointer +
 byte size, the lane/gate verdict, the CONTRACT-1 flags, and the case metrics. The web loads ONLY manifests + traces
 + the shared artifacts (the ONNX + the decimated cubes); frontend/src/lib/contract.types.ts mirrors this schema so a
@@ -17,7 +17,7 @@ INDEX_SCHEMA = "tailwatch.index/v1"
 DATASET = "synthetic Sentinel-1 InSAR forward simulation (von-Kármán APS + decorrelation + DEM-error + orbital ramps)"
 SPLIT = "train scenes 1-16, held-out scenes 17-20 (split by scene -> no spatial leakage)"
 HONESTY = (
-    "The scenes are SYNTHETIC Sentinel-1 simulations, NOT real SAR — TailWatch is didactic + decision-support, not a "
+    "The scenes are SYNTHETIC Sentinel-1 simulations, NOT real SAR, TailWatch is didactic + decision-support, not a "
     "certified alarm. The held-out split is by scene (17-20) so no patch leaks. Real tailings-dam failures (Brumadinho "
     "2019, Cadia 2018) are documented as cautionary/forecastable analogs, not re-hosted data."
 )

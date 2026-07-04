@@ -1,7 +1,7 @@
-# 04 — The live lane (client-side)
+# 04, The live lane (client-side)
 
 TailWatch's live lane is **onnxruntime-web + a small TypeScript DSP**, not Pyodide. The archetype permits either
-("Pyodide + lightweight wheels, OR a small TS engine") — TailWatch uses the same exported models the offline lane
+("Pyodide + lightweight wheels, OR a small TS engine"), TailWatch uses the same exported models the offline lane
 trained, so the live lane is faithful, not a toy.
 
 ## Inference (`frontend/src/lib/ort.ts`)
@@ -11,9 +11,9 @@ ort.env.wasm.wasmPaths = 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.20.1/di
 ort.env.wasm.numThreads = 1;   // GitHub Pages has no COOP/COEP for threaded WASM
 ```
 
-* `cnn.onnx` — a per-pixel displacement time-series → 6-class deformation label (click a pixel → its class). Runs
+* `cnn.onnx`, a per-pixel displacement time-series → 6-class deformation label (click a pixel → its class). Runs
   live on every picked pixel.
-* `ae.onnx` — a 16×16 velocity patch → reconstruction; the error is the unsupervised spatial anomaly score. The
+* `ae.onnx`, a 16×16 velocity patch → reconstruction; the error is the unsupervised spatial anomaly score. The
   model ships exported and `reconstructPatch` exists in `ort.ts`, but no component calls it yet: the anomaly values
   the App shows come from the precomputed map (a live AE patch inspector is roadmap).
 

@@ -1,4 +1,4 @@
-# PRECOMPUTE lane — the heavy, research-chosen SOTA engines, in .venv-pipeline (local-only, never deployed).
+# PRECOMPUTE lane, the heavy, research-chosen SOTA engines, in .venv-pipeline (local-only, never deployed).
 # Run ONLY for `python -m twlab.pipeline all --retrain` (forward sim -> SBAS -> conv-AE/CNN train -> ONNX export).
 # Each engine is documented in docs/frameworks/. torch is the CPU build.
 #   install torch CPU via:  pip install torch==2.12.1 --index-url https://download.pytorch.org/whl/cpu

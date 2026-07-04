@@ -1,5 +1,5 @@
 """Standard-format readers/writers. EXAMPLE: CSV in (params), JSON out (compact committed artifact). A real product
-adds the formats its domain demands here (parquet/npz/.vtk/.vtu/.h5/GeoTIFF) — never a bespoke ad-hoc format."""
+adds the formats its domain demands here (parquet/npz/.vtk/.vtu/.h5/GeoTIFF), never a bespoke ad-hoc format."""
 from __future__ import annotations
 
 import csv

@@ -1,4 +1,4 @@
-# TailWatch — InSAR deformation monitoring & early-warning
+# TailWatch, InSAR deformation monitoring & early-warning
 
 [![CI](https://img.shields.io/github/actions/workflow/status/fsantibanezleal/CAOS_TailWatch/ci.yml?branch=main&label=CI)](https://github.com/fsantibanezleal/CAOS_TailWatch/actions)
 [![License](https://img.shields.io/github/license/fsantibanezleal/CAOS_TailWatch)](LICENSE)
@@ -23,12 +23,12 @@ classical **inverse-velocity** (Fukuzono) baseline projects failure time with a 
 
 ## The six pages
 
-- **App** — case selector (5 deformation regimes) + the reactive view set: LOS velocity, Up/East decomposition,
+- **App**, case selector (5 deformation regimes) + the reactive view set: LOS velocity, Up/East decomposition,
   AE anomaly + CNN class maps, cumulative scrubber, inverse-velocity forecast, TARP.
-- **Introduction / Methodology / Implementation** — the problem, the term-by-term math (SBAS, decomposition,
+- **Introduction / Methodology / Implementation**, the problem, the term-by-term math (SBAS, decomposition,
   inverse-velocity, the learned tier) with figures, and the two-lane architecture.
-- **Experiments** — the leakage-safe by-scene split + the forecaster Monte-Carlo self-validation.
-- **Benchmark** — the held-out learned-vs-classical numbers (CNN macro-F1, AE/velocity AUC, confusion) — honest, no
+- **Experiments**, the leakage-safe by-scene split + the forecaster Monte-Carlo self-validation.
+- **Benchmark**, the held-out learned-vs-classical numbers (CNN macro-F1, AE/velocity AUC, confusion), honest, no
   fabricated wins.
 
 ## Architecture
@@ -69,7 +69,7 @@ cd frontend && npm run build  # tsc --noEmit && vite build (+ copy-data overlay 
 
 The scenes are **synthetic Sentinel-1 simulations**, NOT real SAR. The held-out split is by scene. Real failures
 (Brumadinho 2019, Cadia 2018) are documented cautionary/forecastable analogs, not re-hosted data. The learned tier is
-measured AGAINST the strong classical velocity baseline — its value is per-pixel TYPE + a label-free anomaly, not a
+measured AGAINST the strong classical velocity baseline, its value is per-pixel TYPE + a label-free anomaly, not a
 fabricated win. No fabricated benchmark numbers. Didactic + decision-support, not a certified alarm.
 
 ## License

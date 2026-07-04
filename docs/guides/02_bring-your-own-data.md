@@ -1,6 +1,6 @@
-# 02 — Bring your own InSAR scene
+# 02, Bring your own InSAR scene
 
-TailWatch is not limited to the 5 baked cases — Contract 1 is the gate that lets it ingest a NEW displacement scene.
+TailWatch is not limited to the 5 baked cases, Contract 1 is the gate that lets it ingest a NEW displacement scene.
 
 ## 1. Describe the scene (Contract 1)
 
@@ -23,5 +23,5 @@ unreliable). The forward sim (`science/forward.py`) generates a conforming scene
 
 Offline: feed the scene through `--retrain` (or the named stages) to get the 2-geometry decomposition, the CNN class
 map + AE anomaly map, and the inverse-velocity forecast. Live: the browser's TS DSP runs the inverse-velocity + TARP,
-and onnxruntime-web runs the CNN per picked pixel (the AE anomaly map comes precomputed from the offline lane). The honesty caveat stands — the scenes are synthetic; this is
+and onnxruntime-web runs the CNN per picked pixel (the AE anomaly map comes precomputed from the offline lane). The honesty caveat stands, the scenes are synthetic; this is
 didactic + decision-support, not a certified alarm (see `docs/cases/README.md`).

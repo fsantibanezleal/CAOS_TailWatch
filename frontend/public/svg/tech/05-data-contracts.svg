@@ -22,7 +22,7 @@
     </marker>
   </defs>
 
-  <text class="ttl" x="22" y="30">The design — two data contracts + the lane gate</text>
+  <text class="ttl" x="22" y="30">The design, two data contracts + the lane gate</text>
   <text class="sub" x="22" y="47">a contract is a validated schema; everything in and out of the pipeline passes one, so the app is bring-your-own-data</text>
 
   <!-- Contract 1: ingestion -->
@@ -53,7 +53,7 @@
   <rect class="bx" x="340" y="220" width="220" height="54" rx="6"/>
   <text class="it" x="352" y="238">manifest = provenance</text>
   <text class="cd mono" x="352" y="254">core/manifest.py</text>
-  <text class="mu" x="352" y="268">seeds, inputs, hashes — reproducible</text>
+  <text class="mu" x="352" y="268">seeds, inputs, hashes, reproducible</text>
 
   <!-- Contract 2: artifact -->
   <rect class="bx bx-out" x="634" y="68" width="252" height="220" rx="11"/>
@@ -79,8 +79,8 @@
   <rect class="grp" x="14" y="312" width="430" height="142" rx="10"/>
   <text class="it" x="30" y="334" style="font-weight:700">Cases by category</text>
   <text class="cd mono" x="30" y="350">cases/insar_cases.py · registry.py</text>
-  <text class="mu" x="30" y="372">• failure regimes — accel / linear / step</text>
-  <text class="mu" x="30" y="392">• control (must-not-false-alarm) — stable / seasonal</text>
+  <text class="mu" x="30" y="372">• failure regimes, accel / linear / step</text>
+  <text class="mu" x="30" y="392">• control (must-not-false-alarm), stable / seasonal</text>
   <text class="mu" x="30" y="412">• all synthetic, labelled honestly (real cases: roadmap)</text>
   <text class="mu" x="30" y="438">each case carries its own units + provenance</text>
 

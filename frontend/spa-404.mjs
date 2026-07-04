@@ -11,7 +11,7 @@ import { fileURLToPath } from 'node:url';
 const dist = resolve(dirname(fileURLToPath(import.meta.url)), 'dist');
 const index = resolve(dist, 'index.html');
 if (!existsSync(index)) {
-  console.error('[spa-404] dist/index.html not found — run after `vite build`');
+  console.error('[spa-404] dist/index.html not found, run after `vite build`');
   process.exit(1);
 }
 copyFileSync(index, resolve(dist, '404.html'));

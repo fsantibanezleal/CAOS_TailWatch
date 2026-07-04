@@ -1,4 +1,4 @@
-# 03 — GPU lane (DORMANT)
+# 03, GPU lane (DORMANT)
 
 This solution does not require a GPU at the moment. TailWatch's training is modest (a small 1-D CNN + a conv-AE over
 patches from 16 synthetic scenes, minutes on CPU). `requirements-gpu.txt` is a dormant placeholder.

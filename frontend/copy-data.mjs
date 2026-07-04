@@ -1,5 +1,5 @@
 // Prebuild overlay: copy the committed CONTRACT-2 artifacts (../data/derived) into the SPA's public/ so the static
-// site serves them. Canonical copies live in ../data/derived — public/ is a build-time overlay (git-ignored). The
+// site serves them. Canonical copies live in ../data/derived, public/ is a build-time overlay (git-ignored). The
 // served paths match what frontend/src/lib/ort.ts + data/demo.ts fetch (root: /cnn.onnx, /ae.onnx, /tw-cases.json,
 // /tw-<id>.bin); manifests + per-case traces go under /data/ for the index loader.
 import { copyFileSync, cpSync, existsSync, mkdirSync, readdirSync } from 'node:fs';
@@ -12,7 +12,7 @@ const DERIVED = join(ROOT, 'data', 'derived');
 const PUB = join(HERE, 'public');
 
 if (!existsSync(DERIVED)) {
-  console.warn('[copy-data] no data/derived — run scripts/precompute first');
+  console.warn('[copy-data] no data/derived, run scripts/precompute first');
   process.exit(0);
 }
 mkdirSync(PUB, { recursive: true });

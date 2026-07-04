@@ -1,8 +1,8 @@
-# 07 — Deploy (GitHub Pages, static deterministic-replay)
+# 07, Deploy (GitHub Pages, static deterministic-replay)
 
 TailWatch is static-first (no backend at request time). `.github/workflows/deploy-pages.yml` on push to `main`:
 
-1. installs the **light** Python lane (`requirements.txt` + `-e .`, numpy-only — **no torch**) and runs
+1. installs the **light** Python lane (`requirements.txt` + `-e .`, numpy-only, **no torch**) and runs
    `python -m twlab.pipeline all` to regenerate the per-case traces + manifests from the committed `tw-cases.json`;
 2. builds the SPA (`cd frontend && npm ci && npm run build`; `copy-data.mjs` overlays `data/derived/` into `public/`);
 3. uploads `frontend/dist` and deploys to Pages.
