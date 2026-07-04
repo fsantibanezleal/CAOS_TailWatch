@@ -27,7 +27,7 @@ const config: ShellConfig = {
     { path: '/benchmark', en: 'Benchmark', es: 'Benchmark' },
   ],
   links: { github: 'https://github.com/fsantibanezleal/CAOS_TailWatch' },
-  version: '0.09.000',
+  version: '0.10.000',
   architecture,
 };
 

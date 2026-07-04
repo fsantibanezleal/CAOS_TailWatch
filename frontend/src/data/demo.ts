@@ -7,7 +7,8 @@ export interface Benchmark { macroF1: number; aeAuc: number; velAuc: number; aeR
 export interface LatentPt { x: number; y: number; cls: number }
 export interface CaseInfo { id: string; en: string; es: string; regime: string; latent: LatentPt[] }
 export interface LeadBucket { lo: number; hi: number; n: number; medErr: number | null }
-export interface Forecast { detectRate: number; nTraj: number; medErrPct: number | null; leadCurve: LeadBucket[] }
+export interface ControlRegime { n: number; falseAlarms: number }
+export interface Forecast { detectRate: number; nTraj: number; medErrPct: number | null; leadCurve: LeadBucket[]; falseAlarmRate?: number; nControl?: number; controlRegimes?: Record<string, ControlRegime> }
 export interface Manifest {
   W: number; H: number; nEp: number; days: number[]; classes: string[];
   cumScale: number; velScale: number; patch: number; components: string[];
