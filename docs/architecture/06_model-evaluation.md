@@ -25,7 +25,9 @@ patches reconstruct poorly → high anomaly.
 The offline Monte-Carlo forecaster benchmark (`science/train_models.py`) runs the EXACT inverse-velocity pipeline
 over 40 seeded accelerating trajectories and reports detection rate, median t_f error, and the lead-time accuracy
 curve — the `forecast` block in `tw-cases.json`, the numbers the current pipeline reproduces. The false-alarm
-contract (a stable/seasonal/linear control must NOT trigger a finite failure-time projection) is a design requirement
-that the current pipeline does not yet re-verify: the legacy `forecast-benchmark.json` that reported the
-zero-false-alarm number was found degenerate and has no in-repo generator, so that number is under re-evaluation
-(see issue #24).
+contract (a stable/seasonal/linear control must NOT trigger a finite failure-time projection) is now RE-VERIFIED
+each run by a real seeded control bank: 60 controls (stable / linear-settling / seasonal, 20 seeds each) go through
+the same inverse-velocity detector, and the fraction that ever fire a finite failure time is reported as
+`falseAlarmRate` (with `nControl` and a per-regime breakdown) in the same `forecast` block. This replaces the legacy
+`forecast-benchmark.json`, which was found degenerate (180 claimed trajectories, 3 unique tuples) with no in-repo
+generator and has been removed (issue #24).

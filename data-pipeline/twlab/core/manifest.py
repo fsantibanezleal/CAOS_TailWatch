@@ -30,7 +30,6 @@ def shared_artifacts() -> dict:
             {"id": "ae", "file": "ae.onnx", "opset": 17, "kind": "2-D conv autoencoder spatial anomaly"},
         ],
         "manifest": "tw-cases.json",
-        "forecast_benchmark": "forecast-benchmark.json",
     }
 
 

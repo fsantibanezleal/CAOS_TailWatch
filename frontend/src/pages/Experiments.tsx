@@ -31,10 +31,17 @@ export default function Experiments() {
               <Stat v={`${(f.detectRate * 100).toFixed(0)}%`} l={es ? `detección de falla (n=${f.nTraj})` : `failure detection (n=${f.nTraj})`} />
               <Stat v={`${f.medErrPct}%`} l={es ? 'error mediano de t_f' : 'median t_f error'} />
               <Stat v={`${f.leadCurve.filter((b) => b.medErr != null)[0]?.medErr != null ? (f.leadCurve.find((b) => b.lo === 0)!.medErr! * 100).toFixed(1) : '—'}%`} l={es ? 'error a <40 días de la falla' : 'error <40 days to failure'} />
-              <Stat v={'4'} l={es ? 'escenas held-out' : 'held-out scenes'} />
+              {f.falseAlarmRate != null && f.nControl != null
+                ? <Stat v={`${(f.falseAlarmRate * 100).toFixed(0)}%`} l={es ? `falsas alarmas (n=${f.nControl} controles)` : `false alarms (n=${f.nControl} controls)`} />
+                : <Stat v={'4'} l={es ? 'escenas held-out' : 'held-out scenes'} />}
             </div>
             <LeadChart f={f} es={es} />
             <p className="tw-note">{es ? `Sobre ${f.nTraj} escenas acelerantes no vistas, la velocidad inversa (Fukuzono) recupera el tiempo de falla al ${f.medErrPct}% mediano, PERO la exactitud depende del adelanto — su firma distintiva: cae a ~2% dentro de 40 días de la falla y se ensancha lejos. Un pronóstico accionable solo emerge a medida que la falla se acerca. La serie se promedia en un parche + se filtra en el tiempo (el APS es el ruido #1 del InSAR).` : `Over ${f.nTraj} unseen accelerating scenes, inverse velocity (Fukuzono) recovers the failure time to ${f.medErrPct}% median, BUT accuracy is lead-time-dependent — its hallmark: it falls to ~2% within 40 days of failure and widens far out. An actionable forecast only emerges as failure approaches. The series is patch-averaged + temporally filtered (APS is the #1 InSAR noise).`}</p>
+            {f.falseAlarmRate != null && f.nControl != null && (
+              <p className="tw-note">{es
+                ? `Control de falsas alarmas: ${f.nControl} escenas NO fallantes (estable / asentamiento lineal / estacional, 20 semillas cada una) pasan por el MISMO detector de velocidad inversa; ${(f.falseAlarmRate * 100).toFixed(0)}% dispara un tiempo de falla finito (${f.controlRegimes ? Object.entries(f.controlRegimes).map(([r, c]) => `${r} ${c.falseAlarms}/${c.n}`).join(', ') : ''}). Esto REEMPLAZA el artefacto forecast-benchmark.json degenerado (180 trayectorias reclamadas, 3 tuplas únicas, sin generador) que antes respaldaba solo la afirmación de cero falsas alarmas (issue #24).`
+                : `False-alarm control: ${f.nControl} NON-failing scenes (stable / linear settling / seasonal, 20 seeds each) pass through the SAME inverse-velocity detector; ${(f.falseAlarmRate * 100).toFixed(0)}% fire a finite failure time (${f.controlRegimes ? Object.entries(f.controlRegimes).map(([r, c]) => `${r} ${c.falseAlarms}/${c.n}`).join(', ') : ''}). This REPLACES the degenerate forecast-benchmark.json (180 claimed trajectories, 3 unique tuples, no generator) that formerly backed the zero-false-alarm claim alone (issue #24).`}</p>
+            )}
             <Refs ids={['fukuzono1985', 'carla2017', 'grebby2021']} label="Refs" />
           </>);
         })()}

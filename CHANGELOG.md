@@ -3,6 +3,23 @@
 All notable changes to CAOS TailWatch are documented here. Versions follow `X.XX.XXX` (major.minor.patch); the
 project stays in `0.x` while the scenes are synthetic (pending a real digitized published velocity series).
 
+## [0.10.000] — 2026-07-04
+
+### Fixed — real false-alarm control bank; degenerate forecast artifact removed (#24, deep-review critical)
+- The orphan `data/derived/forecast-benchmark.json` (180 claimed trajectories but 3 unique tuples;
+  no in-repo generator) is DELETED, along with its references (copy-data, data/README, manifest.py,
+  docs). It solely backed the zero-false-alarm claim.
+- The forecaster self-validation is extracted to a torch-free `twlab/science/forecast.py`
+  (`forecast_benchmark`) so it is the single source of truth and regenerable without the training
+  lane. It now runs a REAL seeded CONTROL BANK: 60 non-failing scenes (stable / linear-settling /
+  seasonal, 20 seeds each) through the SAME inverse-velocity detector, reporting `falseAlarmRate`,
+  `nControl` and a per-regime breakdown in the live `tw-cases.json` `forecast` block. Result:
+  detect 100%, median t_f error 5.7%, **false-alarm 0% over 60 real controls** (0/20 each regime) —
+  the zero-false-alarm claim is now backed by regenerable data, not an orphan.
+- `rebuild_forecast.py` regenerates only that block (numpy, no torch). Experiments page renders the
+  false-alarm stat + the control-bank note from the manifest. +3 guard tests (orphan gone, control
+  bank present + internally consistent, forecast not degenerate). 11 Python tests + build green.
+
 ## [0.09.000] — 2026-06-21
 
 Refactor onto the CAOS product-repo archetype (ADR-0057) — the science core is unchanged; the repo is now a real,
