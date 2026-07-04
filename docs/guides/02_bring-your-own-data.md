@@ -21,7 +21,7 @@ unreliable). The forward sim (`science/forward.py`) generates a conforming scene
 
 ## 2. Evaluate it
 
-Offline: feed the scene through `--retrain` (or the named stages) to get the SBAS decomposition, the CNN class map +
-AE anomaly map, and the inverse-velocity forecast. Live: the browser's TS DSP runs the inverse-velocity + TARP, and
-onnxruntime-web runs the CNN/AE per picked pixel/patch. The honesty caveat stands — the scenes are synthetic; this is
+Offline: feed the scene through `--retrain` (or the named stages) to get the 2-geometry decomposition, the CNN class
+map + AE anomaly map, and the inverse-velocity forecast. Live: the browser's TS DSP runs the inverse-velocity + TARP,
+and onnxruntime-web runs the CNN per picked pixel (the AE anomaly map comes precomputed from the offline lane). The honesty caveat stands — the scenes are synthetic; this is
 didactic + decision-support, not a certified alarm (see `docs/cases/README.md`).

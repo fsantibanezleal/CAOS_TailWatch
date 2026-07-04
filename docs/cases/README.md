@@ -17,8 +17,10 @@ failures the regime emulates.
 ## The controls (must NOT false-alarm)
 
 `stable` (bedrock) and `seasonal` (reversible breathing) are the false-alarm guards: the monitor must return GREEN /
-inconclusive, NOT a finite failure-time projection. The forecaster self-validation reports zero false alarms across
-the stable/seasonal/linear controls — that is the honest credibility check, not a bare detection rate.
+inconclusive, NOT a finite failure-time projection. The quantified false-alarm rate over the stable/seasonal/linear
+controls is under re-evaluation (issue #24: the legacy artifact that reported it is degenerate and non-regenerable);
+the current forecaster self-validation covers the accelerating bank only (detection rate + t_f accuracy, the
+`forecast` block in `tw-cases.json`).
 
 ## Honesty / roadmap
 

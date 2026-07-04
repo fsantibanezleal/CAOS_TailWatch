@@ -8,10 +8,13 @@
 ## 2-geometry SBAS decomposition (`science/sbas.py`)
 
 Each LOS geometry (ascending + descending) measures only the PROJECTION of the true 3-D motion onto its look vector,
-so raw ascending vs descending DISAGREE over the same dam — and that disagreement IS the horizontal signal. SBAS
-inverts the small-baseline interferogram network per geometry to cumulative LOS displacement, then a 2×2 solve
+so raw ascending vs descending DISAGREE over the same dam — and that disagreement IS the horizontal signal. In full
+SBAS, the small-baseline interferogram network is inverted per geometry to cumulative LOS displacement; in TailWatch
+the forward model emits that per-epoch displacement directly and `science/sbas.py` runs only the downstream steps
+(the network inversion itself is roadmap): a 2×2 solve
 decomposes the two LOS series into **Up** and **East** components (the N–S null space of near-polar orbits is stated,
-not faked). Up is the cleanest failure indicator; East reveals dam-face bulging.
+not faked), plus per-pixel OLS velocity + a significance test. Up is the cleanest failure indicator; East reveals
+dam-face bulging.
 
 ## Inverse-velocity forecasting (`frontend/src/dsp/forecast.ts`)
 

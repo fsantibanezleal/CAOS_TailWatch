@@ -22,7 +22,7 @@
   </defs>
 
   <text class="ttl" x="22" y="28">The science — InSAR deformation + Fukuzono inverse-velocity prognostics</text>
-  <text class="sub" x="22" y="45">frontend/src/dsp/ · the same TypeScript runs live in the browser and under Node in the offline bake</text>
+  <text class="sub" x="22" y="45">frontend/src/dsp/ · the TypeScript prognostics run live in the browser; Python bakes and trains offline</text>
 
   <!-- Stage 1 -->
   <rect class="bx bx-hi" x="16" y="66" width="170" height="104" rx="9"/>
@@ -73,7 +73,7 @@
   <text class="it" x="30" y="212" style="font-weight:700">Fukuzono inverse velocity (tertiary creep)</text>
   <text class="eqi" x="30" y="240">1/v(t) = a + b·t   (b &lt; 0 toward failure)</text>
   <text class="eq" x="30" y="266">t_fail = −a / b      (the x-intercept)</text>
-  <text class="mu" x="30" y="292">linear fit on the terminal window; gated by R², acceleration and window length so noise never raises a false alarm.</text>
+  <text class="mu" x="30" y="292">linear fit on the terminal window; gated by R², acceleration and window length before a failure time is reported.</text>
 
   <rect class="bx" x="454" y="190" width="430" height="120" rx="9"/>
   <text class="it" x="468" y="212" style="font-weight:700">Velocity + coherence</text>
@@ -90,9 +90,9 @@
   <text class="cd mono" x="30" y="436">dsp/forecast.ts (live)</text>
 
   <rect class="bx bx-good" x="454" y="330" width="430" height="124" rx="9"/>
-  <text class="it" x="468" y="352" style="font-weight:700">Learned lane (ONNX, client-side)</text>
+  <text class="it" x="468" y="352" style="font-weight:700">Learned lane (ONNX)</text>
   <text class="mu" x="468" y="374">• 1-D CNN: a pixel's 60-epoch series → 6 pattern</text>
-  <text class="mu" x="468" y="392">  classes (stable / linear / accelerating / …).</text>
-  <text class="mu" x="468" y="410">• conv-AE: a 16×16 velocity patch → anomaly (MSE).</text>
-  <text class="cd mono" x="468" y="436">train.py → cnn.onnx · ae.onnx → ort.ts</text>
+  <text class="mu" x="468" y="392">  classes (stable / linear / accelerating / …) — live, client-side.</text>
+  <text class="mu" x="468" y="410">• conv-AE: a 16×16 velocity patch → anomaly (MSE) — baked offline.</text>
+  <text class="cd mono" x="468" y="436">train_models.py → cnn.onnx (live, ort.ts) · ae.onnx (offline map)</text>
 </svg>

@@ -55,7 +55,7 @@
   <text class="mu" x="482" y="150">• series class (1-D CNN)</text>
   <text class="mu" x="482" y="166">• Fukuzono 1/v forecast</text>
   <text class="cd mono" x="482" y="190">dsp/forecast.ts · *.onnx</text>
-  <text class="mu" x="482" y="210">all live in the browser</text>
+  <text class="mu" x="482" y="210">maps baked · per-pixel inspect live</text>
 
   <!-- 4. The value: TARP -->
   <rect class="bx bx-warn" x="692" y="74" width="188" height="150" rx="11"/>
@@ -78,8 +78,8 @@
   <text class="it" x="36" y="278">It is a real system, not a demo:</text>
   <text class="mu" x="36" y="302">• the deformation engine (frontend/src/dsp/) recomputes velocity, the inverse-velocity fit and the TARP tier live on every pixel click / epoch;</text>
   <text class="mu" x="36" y="324">• the velocity field is decomposed into East/Up/LOS and masked by interferometric coherence (low over water/beach) — honest about data quality;</text>
-  <text class="mu" x="36" y="346">• a 1-D CNN classifies a pixel's displacement series (60 epochs → 6 patterns) and a conv-AE flags anomalous velocity patches — both ONNX, client-side;</text>
-  <text class="mu" x="36" y="368">• the Fukuzono inverse-velocity failure-time projection has a credibility gate (R², acceleration, window) — no false alarms from noise;</text>
+  <text class="mu" x="36" y="346">• a 1-D CNN classifies a pixel's displacement series (60 epochs → 6 patterns) live (ONNX, client-side); the conv-AE anomaly map is precomputed offline;</text>
+  <text class="mu" x="36" y="368">• the Fukuzono inverse-velocity failure-time projection is gated on fit quality (R², acceleration, window) before any failure time is reported;</text>
   <text class="mu" x="36" y="390">• Contract 1 accepts your own InSAR stack; six documented pages; every number sourced or labelled synthetic.</text>
   <text class="cd mono" x="36" y="418">InSAR stack  →  velocity (E/Up/LOS) + coherence  →  conv-AE anomaly + CNN class  →  Fukuzono 1/v → t_fail  →  TARP alarm</text>
 </svg>

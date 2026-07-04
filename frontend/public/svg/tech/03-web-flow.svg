@@ -34,17 +34,17 @@
   <text class="mu" x="28" y="110">• case selector (built-in)</text>
   <text class="mu" x="28" y="126">• drop your own data</text>
   <text class="mu" x="28" y="142">• sliders / toggles</text>
-  <text class="cd mono" x="28" y="166">Tool.tsx · cases.ts</text>
+  <text class="cd mono" x="28" y="166">Tool.tsx · data/demo.ts</text>
   <text class="mu" x="28" y="182">every page reacts to the case</text>
 
   <!-- engine -->
   <rect class="bx bx-hi" x="244" y="70" width="200" height="120" rx="10"/>
   <text class="it" x="258" y="92">Live engine (TS)</text>
   <text class="mu" x="258" y="110">re-run, no server call</text>
-  <text class="cd mono" x="258" y="130">src/&lt;domain&gt;/*.ts</text>
+  <text class="cd mono" x="258" y="130">src/dsp/*.ts</text>
   <text class="mu" x="258" y="150">+ onnxruntime-web inference</text>
   <text class="cd mono" x="258" y="170">src/lib/ort.ts</text>
-  <text class="mu" x="258" y="186">classical baseline ⇄ learned toggle</text>
+  <text class="mu" x="258" y="186">CNN class on the picked pixel</text>
 
   <!-- viz -->
   <rect class="bx bx-good" x="484" y="70" width="200" height="120" rx="10"/>
@@ -53,12 +53,12 @@
   <text class="cd mono" x="498" y="130">viz/*.tsx · uPlot · three</text>
   <text class="mu" x="498" y="150">overlays, charts, gauges</text>
   <text class="mu" x="498" y="170">hover = value readout</text>
-  <text class="mu" x="498" y="186">marks OOD / uncertain live</text>
+  <text class="mu" x="498" y="186">masks low-coherence pixels</text>
 
   <!-- baked data feeds engine -->
   <rect class="bx" x="724" y="70" width="162" height="120" rx="10"/>
   <text class="it" x="738" y="92">Baked artifacts</text>
-  <text class="cd mono" x="738" y="112">/case-results.json</text>
+  <text class="cd mono" x="738" y="112">/tw-cases.json</text>
   <text class="cd mono" x="738" y="128">/data/manifests</text>
   <text class="cd mono" x="738" y="144">/*.onnx</text>
   <text class="mu" x="738" y="166">overlaid by</text>

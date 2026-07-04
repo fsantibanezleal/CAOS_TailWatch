@@ -21,8 +21,8 @@ export default function Introduction() {
         <h2>{es ? 'El enfoque — clásico + aprendido' : 'The approach — classical + learned'}</h2>
         <OverviewSVG es={es} />
         <p>{es
-          ? 'Sobre un cubo de desplazamiento (formato LiCSBAS) corren tres capas: (1) la geodesia CLÁSICA — descomposición ascendente/descendente a vertical+Este, velocidad por mínimos cuadrados con test de significancia, y la velocidad inversa de Fukuzono para proyectar el tiempo de falla; (2) métodos APRENDIDOS — un autoencoder convolucional denoising cuya reconstrucción defectuosa marca anomalías sin etiquetas, y un CNN 1-D que clasifica la firma de cada píxel en seis tipos; (3) la capa de DECISIÓN — alarma TARP por niveles + clase de velocidad. Los métodos aprendidos se entrenan offline y se exportan a ONNX; el navegador hace inferencia en vivo.'
-          : 'On a displacement cube (LiCSBAS format) three layers run: (1) CLASSICAL geodesy — ascending/descending decomposition to vertical+East, least-squares velocity with a significance test, and Fukuzono inverse velocity to project the failure time; (2) LEARNED methods — a denoising convolutional autoencoder whose poor reconstruction flags anomalies without labels, and a 1-D CNN that classifies each pixel\'s signature into six types; (3) the DECISION layer — a tiered TARP alarm + velocity class. The learned methods are trained offline and exported to ONNX; the browser runs inference live.'}</p>
+          ? 'Sobre un cubo de desplazamiento (formato LiCSBAS) corren tres capas: (1) la geodesia CLÁSICA — descomposición ascendente/descendente a vertical+Este, velocidad por mínimos cuadrados con test de significancia, y la velocidad inversa de Fukuzono para proyectar el tiempo de falla; (2) métodos APRENDIDOS — un autoencoder convolucional denoising cuya reconstrucción defectuosa marca anomalías sin etiquetas, y un CNN 1-D que clasifica la firma de cada píxel en seis tipos; (3) la capa de DECISIÓN — alarma TARP por niveles + clase de velocidad. Los métodos aprendidos se entrenan offline y se exportan a ONNX; el navegador corre el CNN en vivo sobre el píxel elegido y el mapa de anomalía del AE llega precalculado.'
+          : 'On a displacement cube (LiCSBAS format) three layers run: (1) CLASSICAL geodesy — ascending/descending decomposition to vertical+East, least-squares velocity with a significance test, and Fukuzono inverse velocity to project the failure time; (2) LEARNED methods — a denoising convolutional autoencoder whose poor reconstruction flags anomalies without labels, and a 1-D CNN that classifies each pixel\'s signature into six types; (3) the DECISION layer — a tiered TARP alarm + velocity class. The learned methods are trained offline and exported to ONNX; the browser runs the CNN live on the picked pixel and the AE anomaly map ships precomputed.'}</p>
         <Refs ids={['berardino2002', 'rouetleduc2021', 'fukuzono1985']} label="Refs" />
 
         <h2>{es ? 'Quién lo usa' : 'Who uses it'}</h2>
@@ -62,7 +62,7 @@ function OverviewSVG({ es }: { es: boolean }) {
       {box(250, 176, 200, es ? 'Capa de decisión' : 'Decision layer', es ? 'TARP · clase de velocidad' : 'TARP · velocity class', 'color-mix(in oklab, #d29922 16%, var(--color-surface))')}
       {arrow(170, 39, 250, 39)} {arrow(170, 119, 250, 119)}
       {arrow(350, 62, 350, 96)} {arrow(350, 142, 350, 176)}
-      {box(530, 96, 170, es ? 'Workbench web' : 'Web workbench', es ? '10 mapas/gráficos interactivos' : '10 interactive maps/charts', 'var(--color-surface)')}
+      {box(530, 96, 170, es ? 'Workbench web' : 'Web workbench', es ? '8 mapas/gráficos interactivos' : '8 interactive maps/charts', 'var(--color-surface)')}
       {arrow(450, 39, 530, 110)} {arrow(450, 119, 530, 119)} {arrow(450, 199, 530, 130)}
       <text x="615" y="160" textAnchor="middle" fill="var(--color-fg-subtle)" fontSize="10.5">{es ? 'inferencia ONNX en vivo' : 'live ONNX inference'}</text>
     </svg>

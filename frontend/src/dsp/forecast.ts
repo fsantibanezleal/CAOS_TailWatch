@@ -1,7 +1,8 @@
 // Prognostics: velocity / inverse-velocity (Fukuzono) failure-time projection + tiered TARP alarm.
 // Fukuzono (1985): for tertiary creep with power-law exponent α≈2, the inverse velocity 1/v(t) decreases
 // LINEARLY toward zero at the failure time t_f. So a linear fit to 1/v on the post-onset (terminal) window
-// projects t_f as the x-intercept — reported as an interval, never a bare date, and gated on fit quality.
+// projects t_f as the x-intercept, gated on fit quality (b<0, R² > 0.55, ≥4 points). An approximate CI
+// (tFailLo/tFailHi) is computed; the App currently renders the point estimate (days to failure).
 // Refs: Fukuzono 1985; Voight 1988/1989; Rose & Hungr 2007; Carlà et al. 2017 (10.1007/s10346-016-0731-5).
 
 /** EWMA-smoothed LOS velocity (mm/day) from a cumulative-displacement series sampled at `days`. */
