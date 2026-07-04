@@ -17,7 +17,7 @@ export default function Methodology() {
     <div className="page-body prose">
       <div className="page-head">
         <h1>{es ? 'Metodología' : 'Methodology'}</h1>
-        <p className="lede">{es ? 'De la fase interferométrica al cubo de desplazamiento, las componentes vertical/Este, el modelado temporal y los métodos aprendidos — con la física término por término y un diagrama por método.' : 'From the interferometric phase to the displacement cube, the vertical/East components, the temporal modelling and the learned methods — with the physics term by term and a diagram per method.'}</p>
+        <p className="lede">{es ? 'De la fase interferométrica al cubo de desplazamiento, las componentes vertical/Este, el modelado temporal y los métodos aprendidos, con la física término por término y un diagrama por método.' : 'From the interferometric phase to the displacement cube, the vertical/East components, the temporal modelling and the learned methods, with the physics term by term and a diagram per method.'}</p>
       </div>
       <section><SubTabs tabs={tabs} ariaLabel="methodology" /></section>
     </div>
@@ -74,7 +74,7 @@ function Decomp({ es }: { es: boolean }) {
       <text x={Px + 46} y={Py + 34} fill="#e5534b">{es ? 'mov. real' : 'true motion'}</text>
       <text x={Px + 14} y={Py - 6} fill="var(--color-fg-subtle)">θ≈39°</text>
     </svg>
-    <p>{es ? <>El Norte–Sur queda en el espacio nulo (sensibilidad Norte ≈ 0), así que <InlineMath tex={String.raw`m_N`} /> es inobservable con dos pasadas — y la app lo declara.</> : <>North–South lies in the null space (North sensitivity ≈ 0), so <InlineMath tex={String.raw`m_N`} /> is unobservable from two passes — and the app states it.</>}</p>
+    <p>{es ? <>El Norte–Sur queda en el espacio nulo (sensibilidad Norte ≈ 0), así que <InlineMath tex={String.raw`m_N`} /> es inobservable con dos pasadas, y la app lo declara.</> : <>North–South lies in the null space (North sensitivity ≈ 0), so <InlineMath tex={String.raw`m_N`} /> is unobservable from two passes, and the app states it.</>}</p>
     <Refs ids={['wright2004']} label="Refs" />
   </>);
 }
@@ -118,21 +118,21 @@ function Learned({ es }: { es: boolean }) {
       <text x="400" y="20" textAnchor="middle" fill="var(--color-fg-subtle)">CNN 1-D: {es ? 'serie→conv→6 clases' : 'series→conv→6 classes'}</text>
       <text x="456" y="78" textAnchor="middle" fill="#3fb950" fontSize="10">{es ? 'clase' : 'class'}</text>
     </svg>
-    <p>{es ? 'Un AE simple puede reconstruir también las anomalías (atajo de identidad; el cuello solo no basta — Bouman & Heskes 2025); el denoising lo mitiga (MemAE, Gong 2019, es el paso siguiente). El AE convolucional para InSAR está establecido (Rouet-Leduc 2021). El CNN 1-D (estilo WDCNN) clasifica el tipo de deformación; la saliencia temporal tipo CAM (Selvaraju 2017) es roadmap, aún no se computa.' : 'A plain AE can reconstruct anomalies too (identity shortcut; the bottleneck alone is insufficient — Bouman & Heskes 2025); denoising mitigates it (MemAE, Gong 2019, is the next step). The convolutional AE for InSAR is established (Rouet-Leduc 2021). The 1-D CNN (WDCNN-style) classifies the deformation type; CAM-style temporal saliency (Selvaraju 2017) is roadmap, not yet computed.'}</p>
+    <p>{es ? 'Un AE simple puede reconstruir también las anomalías (atajo de identidad; el cuello solo no basta, Bouman & Heskes 2025); el denoising lo mitiga (MemAE, Gong 2019, es el paso siguiente). El AE convolucional para InSAR está establecido (Rouet-Leduc 2021). El CNN 1-D (estilo WDCNN) clasifica el tipo de deformación; la saliencia temporal tipo CAM (Selvaraju 2017) es roadmap, aún no se computa.' : 'A plain AE can reconstruct anomalies too (identity shortcut; the bottleneck alone is insufficient, Bouman & Heskes 2025); denoising mitigates it (MemAE, Gong 2019, is the next step). The convolutional AE for InSAR is established (Rouet-Leduc 2021). The 1-D CNN (WDCNN-style) classifies the deformation type; CAM-style temporal saliency (Selvaraju 2017) is roadmap, not yet computed.'}</p>
     <Refs ids={['vincent2008', 'bouman2025', 'gong2019', 'rouetleduc2021', 'anantra2018', 'zhang2017', 'selvaraju2017', 'mcinnes2018']} label="Refs" />
   </>);
 }
 
 function Decision({ es }: { es: boolean }) {
   return (<>
-    <p>{es ? 'La capa de decisión fusiona la velocidad de estado y el pronóstico: una alarma TARP por niveles con dos gatillos paralelos — la velocidad |Up| y el tiempo-a-falla por velocidad inversa. La estructura de bandas es práctica de industria; los cortes son valores por defecto configurables, NO límites regulatorios.' : 'The decision layer fuses the state velocity and the forecast: a tiered TARP alarm with two parallel triggers — the |Up| velocity and the inverse-velocity time-to-failure. The band structure is industry practice; the cut-points are configurable defaults, NOT regulatory limits.'}</p>
+    <p>{es ? 'La capa de decisión fusiona la velocidad de estado y el pronóstico: una alarma TARP por niveles con dos gatillos paralelos, la velocidad |Up| y el tiempo-a-falla por velocidad inversa. La estructura de bandas es práctica de industria; los cortes son valores por defecto configurables, NO límites regulatorios.' : 'The decision layer fuses the state velocity and the forecast: a tiered TARP alarm with two parallel triggers, the |Up| velocity and the inverse-velocity time-to-failure. The band structure is industry practice; the cut-points are configurable defaults, NOT regulatory limits.'}</p>
     <svg viewBox="0 0 560 110" width="100%" style={svgStyle} role="img" aria-label="TARP bands">
       {[['#3fb950', 0, 0.42, es ? 'VERDE' : 'GREEN'], ['#d29922', 0.42, 0.34, es ? 'ÁMBAR' : 'AMBER'], ['#f85149', 0.76, 0.24, es ? 'ROJO' : 'RED']].map(([c, x0, w, l], i) => (
         <g key={i}><rect x={10 + (x0 as number) * 540} y={36} width={(w as number) * 540 - 2} height="30" rx="4" fill={c as string} opacity="0.78" /><text x={10 + ((x0 as number) + (w as number) / 2) * 540} y={55} textAnchor="middle" fill="#0d1117" fontWeight="700" fontSize="11">{l as string}</text></g>))}
       <text x="10" y="26" fill="var(--color-fg-subtle)">{es ? 'gatillo 1: velocidad |Up| →' : 'trigger 1: |Up| velocity →'}</text>
-      <text x="10" y="88" fill="var(--color-fg-subtle)">{es ? 'gatillo 2: falla proyectada (velocidad inversa) — <60 d ámbar, <14 d rojo' : 'trigger 2: projected failure (inverse velocity) — <60 d amber, <14 d red'}</text>
+      <text x="10" y="88" fill="var(--color-fg-subtle)">{es ? 'gatillo 2: falla proyectada (velocidad inversa), <60 d ámbar, <14 d rojo' : 'trigger 2: projected failure (inverse velocity), <60 d amber, <14 d red'}</text>
     </svg>
-    <p>{es ? 'El mapa de clase del CNN y el de anomalía del AE auditan la alarma: una alarma por velocidad sobre un píxel "estacional"/"decorrelado" se baja de prioridad; una anomalía AE sin firma de velocidad se eleva. Honesto: InSAR puede perder una falla rápida por licuefacción — es un tamiz continuo, no una garantía.' : 'The CNN class map and the AE anomaly map audit the alarm: a velocity alarm on a "seasonal"/"decorrelated" pixel is de-prioritised; an AE anomaly with no velocity signature is raised. Honest: InSAR can miss a fast liquefaction failure — a continuous screen, not a guarantee.'}</p>
+    <p>{es ? 'El mapa de clase del CNN y el de anomalía del AE auditan la alarma: una alarma por velocidad sobre un píxel "estacional"/"decorrelado" se baja de prioridad; una anomalía AE sin firma de velocidad se eleva. Honesto: InSAR puede perder una falla rápida por licuefacción, es un tamiz continuo, no una garantía.' : 'The CNN class map and the AE anomaly map audit the alarm: a velocity alarm on a "seasonal"/"decorrelated" pixel is de-prioritised; an AE anomaly with no velocity signature is raised. Honest: InSAR can miss a fast liquefaction failure, a continuous screen, not a guarantee.'}</p>
     <Refs ids={['grebby2021', 'carla2017']} label="Refs" />
   </>);
 }

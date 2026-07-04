@@ -15,7 +15,7 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip
-      - name: Install (light lane + dev + editable pkg — no torch; the ONNX/cubes/tw-cases.json are committed)
+      - name: Install (light lane + dev + editable pkg, no torch; the ONNX/cubes/tw-cases.json are committed)
         run: pip install -r requirements.txt -r requirements-dev.txt -e .
       - name: Lint
         run: ruff check data-pipeline tests scripts
@@ -23,7 +23,7 @@ jobs:
         run: pytest
       - name: Pipeline smoke (rebuild the replay layer from the committed manifest)
         run: python -m twlab.pipeline all
-      - name: CONTRACT 2 — manifests <-> traces consistent (no drift)
+      - name: CONTRACT 2, manifests <-> traces consistent (no drift)
         run: python scripts/check_artifacts.py
 
   web:
@@ -56,10 +56,15 @@ jobs:
             echo "::error::a real .env is tracked (only .env.example may be)"; fail=1; fi
           if git ls-files | grep -qiE '(^|/)\.?venv|\.(dll|so|dylib|pt|pth)$'; then
             echo "::error::a venv or native/heavy binary is tracked (recreate from requirements; keep models small/LFS)"; fail=1; fi
-          # the 168MB synthetic .h5 scenes must NEVER be tracked — they regenerate from the forward sim
+          # the 168MB synthetic .h5 scenes must NEVER be tracked, they regenerate from the forward sim
           if git ls-files | grep -qiE '\.(h5|hdf5|nc|npy|parquet|jsonl)$'; then
-            echo "::error::raw/heavy data tracked — commit only compact derived artifacts (data/derived/)"; fail=1; fi
+            echo "::error::raw/heavy data tracked, commit only compact derived artifacts (data/derived/)"; fail=1; fi
           if git grep -nF 'D:\_Repos' -- . ':!.github' >/dev/null 2>&1; then
             echo "::error::leaked local machine path (D:\\_Repos) in a tracked file"; fail=1; fi
           if [ "$fail" -eq 0 ]; then echo "guards: OK"; fi
           exit $fail
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: No em-dash or emoji in product content (ADR-0067)
+        run: python scripts/check_content_standards.py

@@ -1,4 +1,4 @@
-# 01 — Regenerate the models (`--retrain`)
+# 01, Regenerate the models (`--retrain`)
 
 The heavy lane reproduces `cnn.onnx`, `ae.onnx`, the per-case cubes, and the rich `tw-cases.json` from the synthetic
 forward simulation. Local-only (CI never retrains). Deterministic from the fixed seeds.

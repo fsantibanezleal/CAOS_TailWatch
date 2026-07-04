@@ -16,7 +16,7 @@ export default function Experiments() {
       </div>
       <section>
         <h2>{es ? 'Protocolo sin fuga (split por escena)' : 'Leakage-safe protocol (split by scene)'}</h2>
-        <p>{es ? '20 escenas con verdad de terreno etiquetada se separan POR ESCENA: 16 para entrenar, 4 held-out para evaluar. Nunca por píxel aleatorio — los píxeles vecinos comparten la misma realización de APS y error-DEM, lo que filtraría. El autoencoder se entrena solo con parches NORMALES.' : '20 scenes with labelled ground truth are split BY SCENE: 16 to train, 4 held-out to evaluate. Never random per pixel — neighbouring pixels share the same APS and DEM-error realisation, which would leak. The autoencoder trains on NORMAL patches only.'}</p>
+        <p>{es ? '20 escenas con verdad de terreno etiquetada se separan POR ESCENA: 16 para entrenar, 4 held-out para evaluar. Nunca por píxel aleatorio, los píxeles vecinos comparten la misma realización de APS y error-DEM, lo que filtraría. El autoencoder se entrena solo con parches NORMALES.' : '20 scenes with labelled ground truth are split BY SCENE: 16 to train, 4 held-out to evaluate. Never random per pixel, neighbouring pixels share the same APS and DEM-error realisation, which would leak. The autoencoder trains on NORMAL patches only.'}</p>
         <SplitSVG es={es} />
 
         <h2>{es ? 'Cobertura de casos × clases' : 'Case × class coverage'}</h2>
@@ -30,13 +30,13 @@ export default function Experiments() {
             <div className="tw-stats">
               <Stat v={`${(f.detectRate * 100).toFixed(0)}%`} l={es ? `detección de falla (n=${f.nTraj})` : `failure detection (n=${f.nTraj})`} />
               <Stat v={`${f.medErrPct}%`} l={es ? 'error mediano de t_f' : 'median t_f error'} />
-              <Stat v={`${f.leadCurve.filter((b) => b.medErr != null)[0]?.medErr != null ? (f.leadCurve.find((b) => b.lo === 0)!.medErr! * 100).toFixed(1) : '—'}%`} l={es ? 'error a <40 días de la falla' : 'error <40 days to failure'} />
+              <Stat v={`${f.leadCurve.filter((b) => b.medErr != null)[0]?.medErr != null ? (f.leadCurve.find((b) => b.lo === 0)!.medErr! * 100).toFixed(1) : ', '}%`} l={es ? 'error a <40 días de la falla' : 'error <40 days to failure'} />
               {f.falseAlarmRate != null && f.nControl != null
                 ? <Stat v={`${(f.falseAlarmRate * 100).toFixed(0)}%`} l={es ? `falsas alarmas (n=${f.nControl} controles)` : `false alarms (n=${f.nControl} controls)`} />
                 : <Stat v={'4'} l={es ? 'escenas held-out' : 'held-out scenes'} />}
             </div>
             <LeadChart f={f} es={es} />
-            <p className="tw-note">{es ? `Sobre ${f.nTraj} escenas acelerantes no vistas, la velocidad inversa (Fukuzono) recupera el tiempo de falla al ${f.medErrPct}% mediano, PERO la exactitud depende del adelanto — su firma distintiva: cae a ~2% dentro de 40 días de la falla y se ensancha lejos. Un pronóstico accionable solo emerge a medida que la falla se acerca. La serie se promedia en un parche + se filtra en el tiempo (el APS es el ruido #1 del InSAR).` : `Over ${f.nTraj} unseen accelerating scenes, inverse velocity (Fukuzono) recovers the failure time to ${f.medErrPct}% median, BUT accuracy is lead-time-dependent — its hallmark: it falls to ~2% within 40 days of failure and widens far out. An actionable forecast only emerges as failure approaches. The series is patch-averaged + temporally filtered (APS is the #1 InSAR noise).`}</p>
+            <p className="tw-note">{es ? `Sobre ${f.nTraj} escenas acelerantes no vistas, la velocidad inversa (Fukuzono) recupera el tiempo de falla al ${f.medErrPct}% mediano, PERO la exactitud depende del adelanto, su firma distintiva: cae a ~2% dentro de 40 días de la falla y se ensancha lejos. Un pronóstico accionable solo emerge a medida que la falla se acerca. La serie se promedia en un parche + se filtra en el tiempo (el APS es el ruido #1 del InSAR).` : `Over ${f.nTraj} unseen accelerating scenes, inverse velocity (Fukuzono) recovers the failure time to ${f.medErrPct}% median, BUT accuracy is lead-time-dependent, its hallmark: it falls to ~2% within 40 days of failure and widens far out. An actionable forecast only emerges as failure approaches. The series is patch-averaged + temporally filtered (APS is the #1 InSAR noise).`}</p>
             {f.falseAlarmRate != null && f.nControl != null && (
               <p className="tw-note">{es
                 ? `Control de falsas alarmas: ${f.nControl} escenas NO fallantes (estable / asentamiento lineal / estacional, 20 semillas cada una) pasan por el MISMO detector de velocidad inversa; ${(f.falseAlarmRate * 100).toFixed(0)}% dispara un tiempo de falla finito (${f.controlRegimes ? Object.entries(f.controlRegimes).map(([r, c]) => `${r} ${c.falseAlarms}/${c.n}`).join(', ') : ''}). Esto REEMPLAZA el artefacto forecast-benchmark.json degenerado (180 trayectorias reclamadas, 3 tuplas únicas, sin generador) que antes respaldaba solo la afirmación de cero falsas alarmas (issue #24).`
@@ -58,7 +58,7 @@ function SplitSVG({ es }: { es: boolean }) {
       {Array.from({ length: 20 }, (_, i) => { const train = i < 16; const x = 14 + (i % 10) * 56; const y = 20 + Math.floor(i / 10) * 40; return (
         <g key={i}><rect x={x} y={y} width="44" height="30" rx="5" fill={train ? 'color-mix(in oklab, var(--color-accent) 22%, var(--color-surface))' : 'color-mix(in oklab, #d29922 30%, var(--color-surface))'} stroke="var(--color-border)" />
           <text x={x + 22} y={y + 19} textAnchor="middle" fill="var(--color-fg)" fontSize="10">s{i + 1}</text></g>); })}
-      <text x="14" y="115" fill="var(--color-fg-subtle)"><tspan fill="var(--color-accent)">■</tspan> {es ? '16 entrenamiento' : '16 train'}   <tspan fill="#d29922">■</tspan> {es ? '4 held-out (evaluación)' : '4 held-out (evaluation)'} — {es ? 'split por ESCENA, sin fuga espacial' : 'split by SCENE, no spatial leakage'}</text>
+      <text x="14" y="115" fill="var(--color-fg-subtle)"><tspan fill="var(--color-accent)">■</tspan> {es ? '16 entrenamiento' : '16 train'}   <tspan fill="#d29922">■</tspan> {es ? '4 held-out (evaluación)' : '4 held-out (evaluation)'}, {es ? 'split por ESCENA, sin fuga espacial' : 'split by SCENE, no spatial leakage'}</text>
     </svg>
   );
 }

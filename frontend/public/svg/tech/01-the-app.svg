@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 460" width="900" class="arch-svg" role="img" aria-label="TailWatch — InSAR tailings-dam deformation to a TARP alarm">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 460" width="900" class="arch-svg" role="img" aria-label="TailWatch, InSAR tailings-dam deformation to a TARP alarm">
   <style>
     .arch-svg text { font-family: var(--font-sans, Inter, "Segoe UI", system-ui, sans-serif); }
     .arch-svg .mono { font-family: var(--font-mono, ui-monospace, Consolas, monospace); }
@@ -22,7 +22,7 @@
     </marker>
   </defs>
 
-  <text class="ttl" x="22" y="30">TailWatch — is the tailings dam deforming toward failure?</text>
+  <text class="ttl" x="22" y="30">TailWatch, is the tailings dam deforming toward failure?</text>
   <text class="sub" x="22" y="47">a TSF-monitoring product: a stack of satellite InSAR images → the surface deformation velocity → an anomaly map + a Fukuzono failure-time forecast + a TARP alarm</text>
 
   <!-- 1. The question -->
@@ -77,7 +77,7 @@
   <rect class="bx" x="20" y="252" width="860" height="184" rx="11"/>
   <text class="it" x="36" y="278">It is a real system, not a demo:</text>
   <text class="mu" x="36" y="302">• the deformation engine (frontend/src/dsp/) recomputes velocity, the inverse-velocity fit and the TARP tier live on every pixel click / epoch;</text>
-  <text class="mu" x="36" y="324">• the velocity field is decomposed into East/Up/LOS and masked by interferometric coherence (low over water/beach) — honest about data quality;</text>
+  <text class="mu" x="36" y="324">• the velocity field is decomposed into East/Up/LOS and masked by interferometric coherence (low over water/beach), honest about data quality;</text>
   <text class="mu" x="36" y="346">• a 1-D CNN classifies a pixel's displacement series (60 epochs → 6 patterns) live (ONNX, client-side); the conv-AE anomaly map is precomputed offline;</text>
   <text class="mu" x="36" y="368">• the Fukuzono inverse-velocity failure-time projection is gated on fit quality (R², acceleration, window) before any failure time is reported;</text>
   <text class="mu" x="36" y="390">• Contract 1 accepts your own InSAR stack; six documented pages; every number sourced or labelled synthetic.</text>

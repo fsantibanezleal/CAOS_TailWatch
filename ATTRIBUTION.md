@@ -1,6 +1,6 @@
-# Attribution — methods & data
+# Attribution, methods & data
 
-## Methods (DOI-verified — see `frontend/src/data/citations.ts`)
+## Methods (DOI-verified, see `frontend/src/data/citations.ts`)
 
 | Method | Reference |
 |---|---|
@@ -17,6 +17,6 @@
 TailWatch uses **no real SAR data**. The scenes are a high-fidelity **synthetic Sentinel-1 forward simulation**
 (von-Kármán APS + decorrelation + DEM-error + orbital ramps); the SBAS decomposition and the inverse-velocity physics
 are exact, but the scenes are simulated and clearly labelled. The held-out split is by scene (17-20). Real tailings-dam
-failures (Brumadinho 2019 — only a retrospective ISBAS precursor; Cadia 2018 — a clear forecastable precursor) are
+failures (Brumadinho 2019, only a retrospective ISBAS precursor; Cadia 2018, a clear forecastable precursor) are
 documented as cautionary/forecastable analogs, NOT re-hosted data. TailWatch is didactic + decision-support, NOT a
 certified safety/alarm system. No fabricated benchmark numbers.

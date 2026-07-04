@@ -1,4 +1,4 @@
-# CORE / LIVE-thin lane — what the DEFAULT (no --retrain) pipeline needs: build the per-case replay traces +
+# CORE / LIVE-thin lane, what the DEFAULT (no --retrain) pipeline needs: build the per-case replay traces +
 # manifests from the committed rich manifest (tw-cases.json). NumPy only, instant, no torch.
 # The deployed live inference runs in the BROWSER (onnxruntime-web), not here.
 numpy==2.4.6

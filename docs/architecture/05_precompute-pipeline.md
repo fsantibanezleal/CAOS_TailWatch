@@ -1,6 +1,6 @@
-# 05 — The staged precompute pipeline
+# 05, The staged precompute pipeline
 
-`data-pipeline/twlab/stages/` — six named, seeded steps. The real science is preserved verbatim in `twlab/science/`
+`data-pipeline/twlab/stages/`, six named, seeded steps. The real science is preserved verbatim in `twlab/science/`
 (the forward sim + SBAS + the conv-AE/CNN training + the cube/manifest export); the stage modules are thin wrappers
 that name the steps and delegate to it, and `pipeline.retrain` runs the preserved orchestrator
 (`science/train_models.main`). The science is kept verbatim because it is real research code, run only via `--retrain`.
@@ -20,5 +20,5 @@ over the committed `tw-cases.json`; `--retrain` runs the science.
 ## Leakage-safe by scene
 
 The split is **by scene** (train 1-16, held-out 17-20), so no patch or pixel-series from a test scene is ever seen in
-training — the realistic question is generalization to an unseen scene. The forward sim plants the kinematic
+training, the realistic question is generalization to an unseen scene. The forward sim plants the kinematic
 deformation regimes; the scenes are synthetic but the SBAS + the inverse-velocity physics are exact.

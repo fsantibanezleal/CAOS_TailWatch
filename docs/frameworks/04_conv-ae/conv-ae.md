@@ -1,7 +1,7 @@
-# Method — denoising convolutional autoencoder (spatial anomaly)
+# Method, denoising convolutional autoencoder (spatial anomaly)
 
 **Provenance:** Vincent et al. 2008 (denoising autoencoders); Gong et al. 2019 (memory-augmented AE for anomaly);
-Bouman & Heskes 2025 (why a bottleneck alone is insufficient — a plain AE reconstructs anomalies too).
+Bouman & Heskes 2025 (why a bottleneck alone is insufficient, a plain AE reconstructs anomalies too).
 
 **What:** a 2-D conv-AE trained ONLY on **NORMAL** velocity patches (stable / seasonal / decorrelated zones); its
 per-pixel reconstruction error is an unsupervised spatial **anomaly score** that flags deformation the velocity map

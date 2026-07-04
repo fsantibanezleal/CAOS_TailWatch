@@ -1,4 +1,4 @@
-# Method — 1-D CNN per-pixel deformation classifier
+# Method, 1-D CNN per-pixel deformation classifier
 
 **Provenance:** Zhang et al. 2017 (1-D CNN on raw time-series);
 Anantrasirichai et al. 2018/2020 (deep learning of volcanic/ground deformation, RSE).
@@ -24,7 +24,7 @@ held-out scenes 17-20 (by-scene split → no spatial leakage). Reported: held-ou
 
 ## Why it fits
 
-Velocity (a scalar rate) cannot tell a one-off step from steady creep from acceleration — but the failure-relevant
+Velocity (a scalar rate) cannot tell a one-off step from steady creep from acceleration, but the failure-relevant
 distinction (forecastable acceleration vs reversible seasonal vs benign step) IS the type, which the CNN reads from
 the temporal shape. The global-mean head keeps it length-agnostic. CAM-style temporal saliency (Selvaraju et al.
 2017), which would make the class evidence auditable, is roadmap: nothing in the repo computes it yet.

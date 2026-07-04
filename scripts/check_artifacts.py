@@ -2,7 +2,7 @@
 manifest exists; each artifact exists, is non-empty, and its byte size matches the manifest; the lane matches the
 gate verdict. Stdlib only (runs in CI WITHOUT installing the package). Exit non-zero on any drift.
 
-Used by scripts/smoke.* and by .github/workflows/ci.yml — the mechanical guard that a product can't regress to
+Used by scripts/smoke.* and by .github/workflows/ci.yml, the mechanical guard that a product can't regress to
 serving artifacts that don't match their manifests."""
 from __future__ import annotations
 

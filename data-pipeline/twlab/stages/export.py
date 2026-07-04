@@ -1,10 +1,10 @@
-"""Stage 6 — export (CONTRACT 2). Two paths:
+"""Stage 6, export (CONTRACT 2). Two paths:
 
 * build_replay (LIGHT, stdlib): the default pipeline path. Builds the compact per-case trace from the committed rich
-  manifest (tw-cases.json), runs the lane gate, and writes the manifest. No torch/scipy/h5 — so the contract + replay
+  manifest (tw-cases.json), runs the lane gate, and writes the manifest. No torch/scipy/h5, so the contract + replay
   regenerate deterministically anywhere, and CI stays fast.
 * export_models (HEAVY, torch): the --retrain path. Writes cnn.onnx + ae.onnx (opset 17), the decimated per-case
-  cubes (tw-<id>.bin), and the rich tw-cases.json — the artifacts the LIGHT path then consumes.
+  cubes (tw-<id>.bin), and the rich tw-cases.json, the artifacts the LIGHT path then consumes.
 """
 from __future__ import annotations
 
@@ -37,5 +37,5 @@ def build_replay(case: Any, *, derived_dir: str, manifests_dir: str,
     return manifest
 
 # The HEAVY export (writing cnn.onnx + ae.onnx + the per-case cubes + tw-cases.json) is done by the preserved
-# science orchestrator `twlab/science/train_models.py::main()` — invoked by `pipeline.retrain` — which writes those
+# science orchestrator `twlab/science/train_models.py::main()`, invoked by `pipeline.retrain`, which writes those
 # artifacts to data/derived/. The named export step there is `export`; this module is the LIGHT replay builder.

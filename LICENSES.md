@@ -2,7 +2,7 @@
 
 TailWatch depends on the following open-source components. Each retains its own license.
 
-## Offline lane (Python — `requirements*.txt`)
+## Offline lane (Python, `requirements*.txt`)
 
 | Package | License |
 |---|---|
@@ -15,7 +15,7 @@ TailWatch depends on the following open-source components. Each retains its own 
 | ruff | MIT |
 | pytest | MIT |
 
-## Frontend (npm — `frontend/package.json`)
+## Frontend (npm, `frontend/package.json`)
 
 | Package | License |
 |---|---|

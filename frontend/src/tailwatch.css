@@ -1,5 +1,5 @@
-/* TailWatch — app styles on top of @fasl-work/caos-app-shell/styles.css. The shell does NOT ship `.chip`,
-   `.gauge` or the control/diagnosis/plot patterns — they are defined here, ported from the validated
+/* TailWatch, app styles on top of @fasl-work/caos-app-shell/styles.css. The shell does NOT ship `.chip`,
+   `.gauge` or the control/diagnosis/plot patterns, they are defined here, ported from the validated
    RotorVitals visual language so every product looks identical. Light AND dark via shell tokens. */
 
 /* ---- workbench layout ---- */

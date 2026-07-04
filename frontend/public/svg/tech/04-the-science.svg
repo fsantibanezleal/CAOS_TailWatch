@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" width="900" class="arch-svg" role="img" aria-label="TailWatch science — InSAR velocity, coherence, Fukuzono inverse-velocity forecast, the CNN + AE">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" width="900" class="arch-svg" role="img" aria-label="TailWatch science, InSAR velocity, coherence, Fukuzono inverse-velocity forecast, the CNN + AE">
   <style>
     .arch-svg text { font-family: var(--font-sans, Inter, "Segoe UI", system-ui, sans-serif); }
     .arch-svg .mono { font-family: var(--font-mono, ui-monospace, Consolas, monospace); }
@@ -21,7 +21,7 @@
     </marker>
   </defs>
 
-  <text class="ttl" x="22" y="28">The science — InSAR deformation + Fukuzono inverse-velocity prognostics</text>
+  <text class="ttl" x="22" y="28">The science, InSAR deformation + Fukuzono inverse-velocity prognostics</text>
   <text class="sub" x="22" y="45">frontend/src/dsp/ · the TypeScript prognostics run live in the browser; Python bakes and trains offline</text>
 
   <!-- Stage 1 -->
@@ -85,14 +85,14 @@
   <rect class="bx" x="16" y="330" width="430" height="124" rx="9"/>
   <text class="it" x="30" y="352" style="font-weight:700">Deterministic engine (always on)</text>
   <text class="mu" x="30" y="374">the transparent velocity + inverse-velocity</text>
-  <text class="mu" x="30" y="392">+ TARP — the reference every alarm is</text>
+  <text class="mu" x="30" y="392">+ TARP, the reference every alarm is</text>
   <text class="mu" x="30" y="410">measured against; recomputes live.</text>
   <text class="cd mono" x="30" y="436">dsp/forecast.ts (live)</text>
 
   <rect class="bx bx-good" x="454" y="330" width="430" height="124" rx="9"/>
   <text class="it" x="468" y="352" style="font-weight:700">Learned lane (ONNX)</text>
   <text class="mu" x="468" y="374">• 1-D CNN: a pixel's 60-epoch series → 6 pattern</text>
-  <text class="mu" x="468" y="392">  classes (stable / linear / accelerating / …) — live, client-side.</text>
-  <text class="mu" x="468" y="410">• conv-AE: a 16×16 velocity patch → anomaly (MSE) — baked offline.</text>
+  <text class="mu" x="468" y="392">  classes (stable / linear / accelerating / …), live, client-side.</text>
+  <text class="mu" x="468" y="410">• conv-AE: a 16×16 velocity patch → anomaly (MSE), baked offline.</text>
   <text class="cd mono" x="468" y="436">train_models.py → cnn.onnx (live, ort.ts) · ae.onnx (offline map)</text>
 </svg>

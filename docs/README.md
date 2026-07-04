@@ -1,4 +1,4 @@
-# TailWatch — documentation wiki
+# TailWatch, documentation wiki
 
 The navigable wiki for TailWatch (ADR-0056), authored as the product is built. TailWatch is a public, didactic
 **InSAR ground-deformation monitoring + early-warning studio** for tailings dams and pit walls: a synthetic
@@ -9,7 +9,7 @@ onnxruntime-web), with the classical **inverse-velocity** (Fukuzono) failure-tim
 
 ## What it is / what it is NOT
 
-* **Is:** a real, interactive deformation studio — pick one of 5 regime cases (accelerating / linear / step failure;
+* **Is:** a real, interactive deformation studio, pick one of 5 regime cases (accelerating / linear / step failure;
   stable / seasonal control), watch the LOS velocity map, the Up/East decomposition, the AE anomaly + CNN class maps,
   the cumulative scrubber, the inverse-velocity 1/v forecast, and the tiered TARP alarm; the held-out benchmark + the
   Monte-Carlo forecaster self-validation are reported honestly.
@@ -29,8 +29,8 @@ onnxruntime-web), with the classical **inverse-velocity** (Fukuzono) failure-tim
 
 ## The three lanes (at a glance)
 
-1. **Offline (precompute, heavy)** — torch + scipy + h5py run the forward sim → SBAS → train the conv-AE + CNN and
+1. **Offline (precompute, heavy)**, torch + scipy + h5py run the forward sim → SBAS → train the conv-AE + CNN and
    export ONNX + the decimated cubes. Local-only (`--retrain`); the 168 MB of scenes are git-ignored.
-2. **Live (client-side)** — onnxruntime-web runs the exported CNN on the picked pixel + a TypeScript DSP
+2. **Live (client-side)**, onnxruntime-web runs the exported CNN on the picked pixel + a TypeScript DSP
    (inverse-velocity, TARP); the AE anomaly map ships precomputed.
-3. **Replay (static)** — the committed cubes + tw-cases.json; the default (numpy-only) pipeline rebuilds the traces.
+3. **Replay (static)**, the committed cubes + tw-cases.json; the default (numpy-only) pipeline rebuilds the traces.

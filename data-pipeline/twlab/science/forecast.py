@@ -1,4 +1,4 @@
-"""Inverse-velocity forecaster self-validation — PURE NUMPY (no torch), so it is the single
+"""Inverse-velocity forecaster self-validation, PURE NUMPY (no torch), so it is the single
 source of truth for the tw-cases.json `forecast` block and can be regenerated in isolation
 (rebuild_forecast) without the heavy training lane. Extracted from train_models.py (#24)."""
 from __future__ import annotations

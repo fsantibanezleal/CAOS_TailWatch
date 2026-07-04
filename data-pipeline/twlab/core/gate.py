@@ -1,7 +1,7 @@
 """The measured live-vs-precompute GATE (ADR-0054), adapted for TailWatch's client-side lane.
 
-TailWatch runs its live inference ENTIRELY in the browser — onnxruntime-web executes the trained conv-AE + 1-D CNN
-ONNX models over the committed decimated cubes, and a TypeScript DSP does the inverse-velocity forecast — so the
+TailWatch runs its live inference ENTIRELY in the browser, onnxruntime-web executes the trained conv-AE + 1-D CNN
+ONNX models over the committed decimated cubes, and a TypeScript DSP does the inverse-velocity forecast, so the
 "live wheels" of the SIR template become "client-side runtimes". A case runs LIVE iff it is client-side AND its
 runtimes are a subset of the deployed set AND a single forward pass + its replay cube are within budget; otherwise it
 is PRECOMPUTE. The conv-AE/CNN forward passes are milliseconds; the cubes are committed (lazy-loaded per case). The

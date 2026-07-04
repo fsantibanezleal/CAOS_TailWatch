@@ -2,10 +2,10 @@
 committed web artifacts + the honest learned-vs-classical benchmark.
 
 Two convolutional models (the learned tier; classical velocity/inverse-velocity are the BASELINES they are
-measured against — on the held-out scenes the classical |v| detector wins, and the benchmark says so):
-  • AE  — a 2-D convolutional AUTOENCODER trained ONLY on NORMAL velocity patches; the reconstruction error
+measured against, on the held-out scenes the classical |v| detector wins, and the benchmark says so):
+  • AE , a 2-D convolutional AUTOENCODER trained ONLY on NORMAL velocity patches; the reconstruction error
           is an unsupervised, label-free spatial ANOMALY score over the velocity pattern.
-  • CNN — a 1-D convolutional CLASSIFIER on per-pixel displacement time-series → 6 deformation classes.
+  • CNN, a 1-D convolutional CLASSIFIER on per-pixel displacement time-series → 6 deformation classes.
 Train on scenes 1–16, evaluate on HELD-OUT scenes 17–20 (split by scene ⇒ no spatial leakage). Demo scene
 17 is exported for the web. Everything deterministic (fixed seeds).
 
@@ -117,7 +117,7 @@ def train_ae():
     n = len(Xtr); bs = 128
     # DENOISING autoencoder (Vincent et al. 2008): corrupt the input, reconstruct the clean patch. With a
     # tight bottleneck + NORMAL-only training this resists the identity shortcut (a plain AE can reconstruct
-    # anomalies too; bottleneck alone is insufficient — Bouman & Heskes 2025), so anomalies reconstruct poorly.
+    # anomalies too; bottleneck alone is insufficient, Bouman & Heskes 2025), so anomalies reconstruct poorly.
     for ep in range(24):
         perm = torch.randperm(n); tot = 0
         for b in range(0, n, bs):

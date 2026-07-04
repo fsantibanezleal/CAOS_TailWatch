@@ -1,4 +1,4 @@
-"""Stage 2 — feature_extraction (heavy lane): build the two learned-tier inputs — per-pixel displacement
+"""Stage 2, feature_extraction (heavy lane): build the two learned-tier inputs, per-pixel displacement
 time-series (the 1-D CNN's input) and 16x16 velocity patches (the conv-AE's input). Delegates to the preserved
 science (twlab/science/train_models). NumPy."""
 from __future__ import annotations

@@ -1,10 +1,10 @@
-# 00 — Run TailWatch
+# 00, Run TailWatch
 
-A clone replays with **no torch and no 168 MB scenes** — the trained ONNX + cubes + tw-cases.json are committed under
+A clone replays with **no torch and no 168 MB scenes**, the trained ONNX + cubes + tw-cases.json are committed under
 `data/derived/`.
 
 ```bash
-# 1) venvs + light deps + editable package (instant — numpy + ruff + pytest)
+# 1) venvs + light deps + editable package (instant, numpy + ruff + pytest)
 ./scripts/setup.sh            #  (PowerShell:  ./scripts/setup.ps1)
 
 # 2) rebuild the per-case replay traces + manifests from the committed tw-cases.json (numpy-only)
