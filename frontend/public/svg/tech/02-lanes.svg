@@ -31,7 +31,7 @@
   </defs>
 
   <text class="ttl" x="22" y="30">Three lanes — what runs WHERE</text>
-  <text class="sub" x="22" y="47">the same TypeScript engine runs in the browser AND under Node; Python only bakes &amp; trains offline</text>
+  <text class="sub" x="22" y="47">the TypeScript engine runs live in the browser; Python bakes &amp; trains offline</text>
 
   <!-- ===== WEB lane ===== -->
   <rect class="bx bx-web" x="14" y="66" width="290" height="392" rx="11"/>
@@ -40,13 +40,13 @@
 
   <rect class="bx" x="30" y="122" width="258" height="58" rx="7"/>
   <text class="it" x="42" y="142">Deterministic engine (TS)</text>
-  <text class="cd mono" x="42" y="158">frontend/src/&lt;domain&gt;/</text>
+  <text class="cd mono" x="42" y="158">frontend/src/dsp/</text>
   <text class="mu" x="42" y="172">re-runs on every control change</text>
 
   <rect class="bx" x="30" y="190" width="258" height="58" rx="7"/>
   <text class="it" x="42" y="210">In-browser inference</text>
   <text class="cd mono" x="42" y="226">onnxruntime-web · WASM</text>
-  <text class="mu" x="42" y="240">*.onnx loaded from /public, numThreads=1</text>
+  <text class="mu" x="42" y="240">cnn.onnx per picked pixel, numThreads=1</text>
 
   <rect class="bx" x="30" y="258" width="258" height="58" rx="7"/>
   <text class="it" x="42" y="278">6-page SPA + live viz</text>
@@ -55,7 +55,7 @@
 
   <rect class="bx" x="30" y="326" width="258" height="58" rx="7"/>
   <text class="it" x="42" y="346">Loads baked artifacts</text>
-  <text class="cd mono" x="42" y="362">/case-results.json · /data/manifests</text>
+  <text class="cd mono" x="42" y="362">/tw-cases.json · /data/manifests</text>
   <text class="mu" x="42" y="376">read-only — never recomputes the bake</text>
   <text class="mu" x="30" y="406">User: pick a case OR drop your own data</text>
   <text class="mu" x="30" y="420">→ engine + inference run client-side, live</text>
@@ -76,9 +76,9 @@
   <text class="mu" x="346" y="240">exports torch → ONNX, never ships the venv</text>
 
   <rect class="bx" x="334" y="258" width="258" height="58" rx="7"/>
-  <text class="it" x="346" y="278">Two-language bake (parity)</text>
-  <text class="cd mono" x="346" y="294">science/bake_cases.mjs · tsx</text>
-  <text class="mu" x="346" y="308">Node runs the SAME TS engine</text>
+  <text class="it" x="346" y="278">Forward simulation (labelled)</text>
+  <text class="cd mono" x="346" y="294">science/forward.py · h5py</text>
+  <text class="mu" x="346" y="308">synthetic Sentinel-1 scenes, 6 classes</text>
 
   <rect class="bx" x="334" y="326" width="258" height="58" rx="7"/>
   <text class="it" x="346" y="346">Writes canonical artifacts</text>
@@ -109,9 +109,9 @@
 
   <text class="mu" x="638" y="356">Replay = how the live app shows real,</text>
   <text class="mu" x="638" y="370">reproducible results with no backend.</text>
-  <text class="mu" x="638" y="392">If a model is pending, the app still</text>
-  <text class="mu" x="638" y="406">runs the classical baseline; the toggle</text>
-  <text class="mu" x="638" y="420">turns on once the ONNX exists.</text>
+  <text class="mu" x="638" y="392">Both learned models ship trained</text>
+  <text class="mu" x="638" y="406">(cnn.onnx + ae.onnx committed); the</text>
+  <text class="mu" x="638" y="420">classical engine is always the reference.</text>
 
   <!-- flows compute -> replay -> web -->
   <path class="flow" d="M608,355 H636" marker-end="url(#ln-arrow)"/>

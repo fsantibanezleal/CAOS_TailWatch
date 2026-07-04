@@ -17,7 +17,7 @@ algorithm + its provenance.
 | Card | Provenance |
 |---|---|
 | [Denoising conv-AE (spatial anomaly)](04_conv-ae/conv-ae.md) | Vincent et al. 2008 (denoising AE); Gong 2019 (MemAE); Bouman & Heskes 2025 |
-| [1-D CNN (per-pixel classifier) + Grad-CAM](05_cnn/cnn.md) | Zhang et al. 2017 (1-D CNN); Selvaraju et al. 2017 (Grad-CAM); Anantrasirichai 2018/2020 |
+| [1-D CNN (per-pixel classifier)](05_cnn/cnn.md) | Zhang et al. 2017 (1-D CNN); Anantrasirichai 2018/2020 |
 | [2-geometry SBAS + inverse-velocity](06_sbas-inverse-velocity/sbas.md) | Berardino 2002 (SBAS); Fukuzono inverse-velocity; Carlà 2017/2019; McInnes 2018 (UMAP) |
 
 All DOI-verified references are in `frontend/src/data/citations.ts` and surfaced in the Methodology page.

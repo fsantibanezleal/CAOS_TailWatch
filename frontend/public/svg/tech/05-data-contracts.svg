@@ -62,7 +62,7 @@
   <text class="mu" x="650" y="128">what a valid OUTPUT looks like:</text>
   <rect class="bx" x="650" y="138" width="220" height="40" rx="6"/>
   <text class="it" x="662" y="156">per-case results + metrics</text>
-  <text class="key mono" x="662" y="170">case-results.json</text>
+  <text class="key mono" x="662" y="170">&lt;case&gt;/trace.json</text>
   <rect class="bx" x="650" y="184" width="220" height="40" rx="6"/>
   <text class="it" x="662" y="202">model index (onnx + meta)</text>
   <text class="key mono" x="662" y="216">manifests/index.json</text>
@@ -78,10 +78,10 @@
   <!-- cases by category + mirror -->
   <rect class="grp" x="14" y="312" width="430" height="142" rx="10"/>
   <text class="it" x="30" y="334" style="font-weight:700">Cases by category</text>
-  <text class="cd mono" x="30" y="350">cases/&lt;domain&gt;_cases.py · registry.py</text>
-  <text class="mu" x="30" y="372">• control / degenerate — sanity anchors</text>
-  <text class="mu" x="30" y="392">• canonical regimes — the science range</text>
-  <text class="mu" x="30" y="412">• real-data — sourced, labelled honestly</text>
+  <text class="cd mono" x="30" y="350">cases/insar_cases.py · registry.py</text>
+  <text class="mu" x="30" y="372">• failure regimes — accel / linear / step</text>
+  <text class="mu" x="30" y="392">• control (must-not-false-alarm) — stable / seasonal</text>
+  <text class="mu" x="30" y="412">• all synthetic, labelled honestly (real cases: roadmap)</text>
   <text class="mu" x="30" y="438">each case carries its own units + provenance</text>
 
   <rect class="grp" x="460" y="312" width="426" height="142" rx="10"/>
