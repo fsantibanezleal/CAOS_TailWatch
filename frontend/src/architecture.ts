@@ -18,9 +18,10 @@ export const architecture: ArchitectureConfig = {
         '"is the dam wall subsiding / accelerating, and when would it fail?". You click any pixel to inspect its ' +
         'displacement series, its velocity (East/Up/LOS), its anomaly and its inverse-velocity forecast.\n\n' +
         'It is a real system, not a demo. The deformation engine (frontend/src/dsp/) recomputes velocity, the Fukuzono ' +
-        'inverse-velocity fit and the TARP tier live in the browser. A 1-D CNN classifies a pixel’s series and a ' +
-        'conv-autoencoder flags anomalous velocity patches — both ONNX, client-side. The velocity field is masked by ' +
-        'interferometric coherence, and the failure projection has a credibility gate so noise never raises a false alarm.',
+        'inverse-velocity fit and the TARP tier live in the browser. A 1-D CNN classifies a pixel’s series live ' +
+        '(ONNX, client-side); the conv-autoencoder anomaly map is precomputed offline by the training pipeline. The ' +
+        'velocity field is masked by interferometric coherence, and the failure projection is gated on fit quality ' +
+        '(R², acceleration, window length) before any failure time is reported.',
       body_es:
         'TailWatch es un producto de monitoreo de depósitos de relaves (TSF): desde un stack de imágenes InSAR ' +
         'satelitales deriva la velocidad de deformación superficial del muro, marca anomalías y proyecta un tiempo de ' +
@@ -29,9 +30,10 @@ export const architecture: ArchitectureConfig = {
         'velocidad inversa.\n\n' +
         'Es un sistema real, no un demo. El motor de deformación (frontend/src/dsp/) recalcula la velocidad, el ajuste ' +
         'de velocidad inversa de Fukuzono y el nivel TARP en vivo en el navegador. Un CNN 1-D clasifica la serie de un ' +
-        'píxel y un autoencoder convolucional marca parches de velocidad anómalos — ambos ONNX, en el cliente. El ' +
-        'campo de velocidad se enmascara por coherencia interferométrica, y la proyección de falla tiene una compuerta ' +
-        'de credibilidad para que el ruido nunca levante una falsa alarma.',
+        'píxel en vivo (ONNX, en el cliente); el mapa de anomalía del autoencoder convolucional se precalcula offline ' +
+        'en el pipeline de entrenamiento. El campo de velocidad se enmascara por coherencia interferométrica, y la ' +
+        'proyección de falla se filtra por calidad de ajuste (R², aceleración, largo de ventana) antes de reportar ' +
+        'cualquier tiempo de falla.',
     },
     {
       id: 'lanes',
@@ -40,7 +42,8 @@ export const architecture: ArchitectureConfig = {
       svg: 'svg/tech/02-lanes.svg',
       body_en:
         'Three lanes, and the split is the point. WEB (live, in the browser): the TypeScript deformation engine ' +
-        '(frontend/src/dsp/) re-runs on every pixel click / epoch and onnxruntime-web runs cnn.onnx + ae.onnx — no ' +
+        '(frontend/src/dsp/) re-runs on every pixel click / epoch and onnxruntime-web runs cnn.onnx on the picked ' +
+        'pixel (ae.onnx ships exported; its anomaly map is baked offline) — no ' +
         'server. OFFLINE / COMPUTE (your machine, isolated .venv): the Python pipeline bakes the canonical case ' +
         'artifacts (the velocity / anomaly / coherence fields) and the heavy lane (--retrain, .venv-precompute, torch) ' +
         'trains the 1-D CNN + the conv-AE and exports them to ONNX. REPLAY: the small, committed artifacts in ' +
@@ -48,8 +51,9 @@ export const architecture: ArchitectureConfig = {
         'fails the build if the web and the pipeline shapes ever diverge.',
       body_es:
         'Tres carriles, y la división es lo central. WEB (en vivo, en el navegador): el motor de deformación en ' +
-        'TypeScript (frontend/src/dsp/) re-corre con cada clic de píxel / época y onnxruntime-web ejecuta cnn.onnx + ' +
-        'ae.onnx — sin servidor. OFFLINE / CÓMPUTO (tu máquina, .venv aislado): el pipeline Python hornea los ' +
+        'TypeScript (frontend/src/dsp/) re-corre con cada clic de píxel / época y onnxruntime-web ejecuta cnn.onnx ' +
+        'sobre el píxel elegido (ae.onnx se exporta; su mapa de anomalía se hornea offline) ' +
+        '— sin servidor. OFFLINE / CÓMPUTO (tu máquina, .venv aislado): el pipeline Python hornea los ' +
         'artefactos canónicos por caso (los campos de velocidad / anomalía / coherencia) y el carril pesado (--retrain, ' +
         '.venv-precompute, torch) entrena el CNN 1-D + el conv-AE y los exporta a ONNX. REPLAY: los artefactos pequeños ' +
         'y versionados en data/derived se superponen al SPA con copy-data.mjs y se cargan en vivo; el espejo tipado ' +
@@ -91,8 +95,9 @@ export const architecture: ArchitectureConfig = {
         't_fail=−a/b, gated by R², acceleration and window length; ⑤ the TARP tier follows from |v| and the days-to-fail.\n\n' +
         'The deterministic engine is always on and transparent — the reference every alarm is measured against. The ' +
         'learned lane enriches the click-to-inspect: a 1-D CNN classifies a pixel’s 60-epoch series into 6 deformation ' +
-        'patterns, and a conv-autoencoder reconstructs a 16×16 velocity patch (MSE = anomaly). Both run client-side as ' +
-        'ONNX, reported next to the physics, never as a black box. Refs: Fukuzono 1985, Voight 1988, Carlà 2017.',
+        'patterns, and a conv-autoencoder reconstructs a 16×16 velocity patch (MSE = anomaly), computed offline into ' +
+        'the anomaly map. The CNN runs client-side as ONNX; both are ' +
+        'reported next to the physics, never as a black box. Refs: Fukuzono 1985, Voight 1988, Carlà 2017.',
       body_es:
         'El pipeline, paso a paso: ① el stack InSAR da el desplazamiento acumulado (mm) por época por píxel; ② una ' +
         'pendiente robusta da la velocidad, descompuesta en Este/Up/LOS por la geometría de vista y enmascarada donde la ' +
@@ -103,7 +108,8 @@ export const architecture: ArchitectureConfig = {
         'El motor determinista está siempre activo y es transparente — la referencia contra la que se mide toda alarma. ' +
         'El carril aprendido enriquece el click-to-inspect: un CNN 1-D clasifica la serie de 60 épocas de un píxel en 6 ' +
         'patrones de deformación, y un autoencoder convolucional reconstruye un parche de velocidad de 16×16 (MSE = ' +
-        'anomalía). Ambos corren en el cliente como ONNX, reportados junto a la física, nunca como caja negra. Refs: ' +
+        'anomalía), computado offline en el mapa de anomalía. El CNN corre en el cliente como ONNX; ambos se reportan ' +
+        'junto a la física, nunca como caja negra. Refs: ' +
         'Fukuzono 1985, Voight 1988, Carlà 2017.',
     },
     {

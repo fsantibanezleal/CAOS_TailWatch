@@ -1,16 +1,16 @@
 """Train the learned TailWatch methods on the labelled forward dataset, export to ONNX, and emit the
 committed web artifacts + the honest learned-vs-classical benchmark.
 
-Two convolutional models (the SOTA core; classical velocity/inverse-velocity are the BASELINES they beat):
+Two convolutional models (the learned tier; classical velocity/inverse-velocity are the BASELINES they are
+measured against — on the held-out scenes the classical |v| detector wins, and the benchmark says so):
   • AE  — a 2-D convolutional AUTOENCODER trained ONLY on NORMAL velocity patches; the reconstruction error
-          is an unsupervised spatial ANOMALY score (flags deformation the velocity map alone misses).
-  • CNN — a 1-D convolutional CLASSIFIER on per-pixel displacement time-series → 6 deformation classes,
-          with Grad-CAM-style temporal saliency.
+          is an unsupervised, label-free spatial ANOMALY score over the velocity pattern.
+  • CNN — a 1-D convolutional CLASSIFIER on per-pixel displacement time-series → 6 deformation classes.
 Train on scenes 1–16, evaluate on HELD-OUT scenes 17–20 (split by scene ⇒ no spatial leakage). Demo scene
 17 is exported for the web. Everything deterministic (fixed seeds).
 
 Refs: Anantrasirichai et al. 2018 (deep learning of volcanic deformation, RSE); Zhang et al. 2017 (WDCNN
-1-D CNN); Selvaraju et al. 2017 (Grad-CAM); McInnes et al. 2018 (UMAP). ONNX → onnxruntime-web in-browser.
+1-D CNN); McInnes et al. 2018 (UMAP). ONNX → onnxruntime-web in-browser (CNN; the AE map ships precomputed).
 
 Run:  python train_models.py
 """

@@ -4,8 +4,9 @@
 [![License](https://img.shields.io/github/license/fsantibanezleal/CAOS_TailWatch)](LICENSE)
 [![Live demo](https://img.shields.io/badge/demo-live-2ea44f)](https://tailwatch.fasl-work.com)
 
-> Monitor tailings dams and pit walls for ground deformation from synthetic Sentinel-1 InSAR: a 2-geometry SBAS
-> displacement decomposition, a velocity map, a learned anomaly + deformation-type tier, and inverse-velocity failure
+> Monitor tailings dams and pit walls for ground deformation from synthetic Sentinel-1 InSAR: a 2-geometry
+> SBAS-consistent displacement decomposition (the small-baseline network inversion itself is roadmap), a velocity map,
+> a learned anomaly + deformation-type tier, and inverse-velocity failure
 > forecasting with tiered TARP alarms. Didactic + decision-support, **not a certified safety system**. Part of the
 > **[Faena](https://faena.fasl-work.com)** mining-analytics hub.
 
@@ -14,9 +15,10 @@ Live: **https://tailwatch.fasl-work.com**
 ## What it is
 
 A real, in-browser InSAR deformation studio. A high-fidelity **synthetic Sentinel-1 forward simulation** (von-Kármán
-APS + decorrelation + DEM-error + orbital ramps) feeds a **2-geometry SBAS** Up/East decomposition; a **denoising
-conv-autoencoder** flags spatial anomalies (label-free) and a **1-D CNN** classifies each pixel's deformation type
-(stable / linear / accelerating / seasonal / step / decorrelated), both running **live** (onnxruntime-web); the
+APS + decorrelation + DEM-error + orbital ramps) feeds a **2-geometry (SBAS-consistent)** Up/East decomposition; a
+**denoising conv-autoencoder** flags spatial anomalies (label-free; its map is precomputed offline) and a **1-D CNN**
+classifies each pixel's deformation type (stable / linear / accelerating / seasonal / step / decorrelated), running
+**live** on the picked pixel (onnxruntime-web); the
 classical **inverse-velocity** (Fukuzono) baseline projects failure time with a tiered TARP alarm.
 
 ## The six pages
@@ -37,7 +39,7 @@ by two data contracts. See [`STRUCTURE.md`](STRUCTURE.md) and the [`docs/`](docs
 ```
 OFFLINE  data-pipeline/twlab/ (torch+scipy+h5py)     LIVE  frontend/src/ (browser, TypeScript)
   science/forward.py  synthetic Sentinel-1 sim          dsp/forecast.ts  inverse-velocity + TARP
-  science/sbas.py     2-geometry SBAS decomposition     lib/ort.ts       onnxruntime-web (conv-AE + CNN)
+  science/sbas.py     2-geom SBAS-consistent decomp     lib/ort.ts       onnxruntime-web (CNN live; AE offline)
   science/train_models.py  conv-AE + 1-D CNN -> ONNX    viz/             FieldMap / LatentScatter / charts
         │  --retrain regenerates the artifacts
         ▼

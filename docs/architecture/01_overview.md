@@ -12,7 +12,7 @@ forward sim (science/forward.py) ──► 20 synthetic Sentinel-1 scenes (.h5, 
 conv-AE + 1-D CNN (science/train_models) ►├─► cnn.onnx, ae.onnx                          ┐
 held-out eval + forecaster benchmark ────►├─► tw-cases.json (rich manifest + benchmark)  │ data/derived/
 decimated per-case cubes ────────────────┴─► tw-<id>.bin (5 cases)                       │ (committed)
-                                          │   forecast-benchmark.json                    ┘
+                                          │   forecast-benchmark.json (legacy; issue #24) ┘
 per-case replay (pipeline, numpy) ──(CONTRACT 2: core/manifest.py)─► data/derived/<case>/trace.json + manifests/
                                           │
 frontend (copy-data.mjs overlays data/derived) ──► onnxruntime-web + TS DSP run LIVE in the browser
