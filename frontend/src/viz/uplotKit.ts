@@ -13,7 +13,7 @@ function vars() {
 
 /** Base uPlot options for a themed line chart (zoom/pan/crosshair built in).
  * The legend is LIVE: it reads out the (x, y) values at the cursor with units, so hovering a comb
- * (BPFO, fr, …) tells you the exact frequency/amplitude — not just a bare crosshair. */
+ * (BPFO, fr, …) tells you the exact frequency/amplitude, not just a bare crosshair. */
 export function lineOpts(
   width: number, height: number,
   opts: { label: string; color?: string; xUnit?: string; yUnit?: string; xPrec?: number; yPrec?: number; yRange?: [number, number]; dragSetScale?: boolean },
@@ -92,7 +92,7 @@ export function regionsPlugin(regions: [number, number][], color: string): uPlot
 }
 
 /** Band-brush: when the chart is in select mode (dragSetScale:false), a drag emits the selected
- * x-range [lo,hi] (data units) and clears the selection — used to re-pick the demod band → live SES. */
+ * x-range [lo,hi] (data units) and clears the selection, used to re-pick the demod band → live SES. */
 export function selectPlugin(onSelect: (lo: number, hi: number) => void): uPlot.Plugin {
   return {
     hooks: {

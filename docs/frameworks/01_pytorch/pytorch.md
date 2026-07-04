@@ -3,7 +3,7 @@
 **What:** trains the 1-D CNN classifier + the denoising conv-AE and exports them to ONNX.
 **Why binding:** the learned tier (per-pixel deformation TYPE + a label-free spatial anomaly) is the SOTA core the
 classical velocity baseline is measured against. Training is modest (a small CNN + conv-AE over patches from 16
-synthetic scenes, minutes on CPU) — no GPU.
+synthetic scenes, minutes on CPU), no GPU.
 
 **Lane:** offline only (`twlab/science/train_models.py`, named by `stages/{train,infer,evaluate,export}`). Never
 shipped to the browser.
@@ -27,4 +27,4 @@ dynamo=False, dynamic_axes={0:'n'})`.
 ## Applying to other data
 
 Re-run `--retrain` after regenerating or extending the scene set (more regimes / severities). The CNN input is a
-per-pixel displacement series; the AE input is a 16×16 velocity patch — nothing is plant-specific.
+per-pixel displacement series; the AE input is a 16×16 velocity patch, nothing is plant-specific.

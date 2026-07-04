@@ -1,4 +1,4 @@
-"""The case registry — cases grouped by CATEGORY (the deformation-regime taxonomy). The App shows ONE selected
+"""The case registry, cases grouped by CATEGORY (the deformation-regime taxonomy). The App shows ONE selected
 case; Experiments/Benchmark show cross-case summaries by category (failure regimes vs control/normal)."""
 from __future__ import annotations
 

@@ -14,7 +14,7 @@ export const architecture: ArchitectureConfig = {
       svg: 'svg/tech/01-the-app.svg',
       body_en:
         'TailWatch is a tailings-storage-facility (TSF) monitoring product: from a stack of satellite InSAR images it ' +
-        'derives the surface deformation velocity of the dam, flags anomalies, and projects a failure time — answering ' +
+        'derives the surface deformation velocity of the dam, flags anomalies, and projects a failure time, answering ' +
         '"is the dam wall subsiding / accelerating, and when would it fail?". You click any pixel to inspect its ' +
         'displacement series, its velocity (East/Up/LOS), its anomaly and its inverse-velocity forecast.\n\n' +
         'It is a real system, not a demo. The deformation engine (frontend/src/dsp/) recomputes velocity, the Fukuzono ' +
@@ -25,7 +25,7 @@ export const architecture: ArchitectureConfig = {
       body_es:
         'TailWatch es un producto de monitoreo de depósitos de relaves (TSF): desde un stack de imágenes InSAR ' +
         'satelitales deriva la velocidad de deformación superficial del muro, marca anomalías y proyecta un tiempo de ' +
-        'falla — respondiendo "¿se está hundiendo / acelerando el muro, y cuándo fallaría?". Haces clic en cualquier ' +
+        'falla, respondiendo "¿se está hundiendo / acelerando el muro, y cuándo fallaría?". Haces clic en cualquier ' +
         'píxel para inspeccionar su serie de desplazamiento, su velocidad (Este/Up/LOS), su anomalía y su pronóstico de ' +
         'velocidad inversa.\n\n' +
         'Es un sistema real, no un demo. El motor de deformación (frontend/src/dsp/) recalcula la velocidad, el ajuste ' +
@@ -37,13 +37,13 @@ export const architecture: ArchitectureConfig = {
     },
     {
       id: 'lanes',
-      en: 'Lanes — web / offline / compute',
-      es: 'Carriles — web / offline / cómputo',
+      en: 'Lanes, web / offline / compute',
+      es: 'Carriles, web / offline / cómputo',
       svg: 'svg/tech/02-lanes.svg',
       body_en:
         'Three lanes, and the split is the point. WEB (live, in the browser): the TypeScript deformation engine ' +
         '(frontend/src/dsp/) re-runs on every pixel click / epoch and onnxruntime-web runs cnn.onnx on the picked ' +
-        'pixel (ae.onnx ships exported; its anomaly map is baked offline) — no ' +
+        'pixel (ae.onnx ships exported; its anomaly map is baked offline), no ' +
         'server. OFFLINE / COMPUTE (your machine, isolated .venv): the Python pipeline bakes the canonical case ' +
         'artifacts (the velocity / anomaly / coherence fields) and the heavy lane (--retrain, .venv-precompute, torch) ' +
         'trains the 1-D CNN + the conv-AE and exports them to ONNX. REPLAY: the small, committed artifacts in ' +
@@ -53,7 +53,7 @@ export const architecture: ArchitectureConfig = {
         'Tres carriles, y la división es lo central. WEB (en vivo, en el navegador): el motor de deformación en ' +
         'TypeScript (frontend/src/dsp/) re-corre con cada clic de píxel / época y onnxruntime-web ejecuta cnn.onnx ' +
         'sobre el píxel elegido (ae.onnx se exporta; su mapa de anomalía se hornea offline) ' +
-        '— sin servidor. OFFLINE / CÓMPUTO (tu máquina, .venv aislado): el pipeline Python hornea los ' +
+        ',  sin servidor. OFFLINE / CÓMPUTO (tu máquina, .venv aislado): el pipeline Python hornea los ' +
         'artefactos canónicos por caso (los campos de velocidad / anomalía / coherencia) y el carril pesado (--retrain, ' +
         '.venv-precompute, torch) entrena el CNN 1-D + el conv-AE y los exporta a ONNX. REPLAY: los artefactos pequeños ' +
         'y versionados en data/derived se superponen al SPA con copy-data.mjs y se cargan en vivo; el espejo tipado ' +
@@ -67,7 +67,7 @@ export const architecture: ArchitectureConfig = {
       body_en:
         'The App page recomputes live: inputs (the case selector or your own InSAR stack, plus the component, epoch and ' +
         'coherence-mask controls) feed the TypeScript deformation engine and the onnxruntime-web inference, which feed ' +
-        'the interactive maps — the velocity / anomaly / coherence / cumulative fields, the displacement series, the ' +
+        'the interactive maps, the velocity / anomaly / coherence / cumulative fields, the displacement series, the ' +
         'inverse-velocity fit and the TARP gauge, each reading values back on hover/click. The six sibling pages (App · ' +
         'Introduction · Methodology · Implementation · Experiments · Benchmark) are identical across every CAOS ' +
         'product. The build is gated by the contract-type mirror, the artifacts are overlaid by copy-data, vite builds ' +
@@ -75,7 +75,7 @@ export const architecture: ArchitectureConfig = {
       body_es:
         'La página App recalcula en vivo: las entradas (el selector de casos o tu propio stack InSAR, más los controles ' +
         'de componente, época y máscara de coherencia) alimentan el motor de deformación en TypeScript y la inferencia ' +
-        'onnxruntime-web, que alimentan los mapas interactivos — los campos de velocidad / anomalía / coherencia / ' +
+        'onnxruntime-web, que alimentan los mapas interactivos, los campos de velocidad / anomalía / coherencia / ' +
         'acumulado, la serie de desplazamiento, el ajuste de velocidad inversa y el gauge TARP, cada uno devolviendo ' +
         'valores al pasar/hacer clic. Las seis páginas hermanas (App · Introducción · Metodología · Implementación · ' +
         'Experimentos · Benchmark) son idénticas en todos los productos CAOS. El build lo controla el espejo de tipos ' +
@@ -93,7 +93,7 @@ export const architecture: ArchitectureConfig = {
         'interferometric coherence γ < γ_min (water/beach are not trusted); ③ tertiary-creep onset is detected and a ' +
         'terminal window is picked; ④ a Fukuzono inverse-velocity fit 1/v(t)=a+b·t (b<0) projects the failure time ' +
         't_fail=−a/b, gated by R², acceleration and window length; ⑤ the TARP tier follows from |v| and the days-to-fail.\n\n' +
-        'The deterministic engine is always on and transparent — the reference every alarm is measured against. The ' +
+        'The deterministic engine is always on and transparent, the reference every alarm is measured against. The ' +
         'learned lane enriches the click-to-inspect: a 1-D CNN classifies a pixel’s 60-epoch series into 6 deformation ' +
         'patterns, and a conv-autoencoder reconstructs a 16×16 velocity patch (MSE = anomaly), computed offline into ' +
         'the anomaly map. The CNN runs client-side as ONNX; both are ' +
@@ -105,7 +105,7 @@ export const architecture: ArchitectureConfig = {
         'elige una ventana terminal; ④ un ajuste de velocidad inversa de Fukuzono 1/v(t)=a+b·t (b<0) proyecta el tiempo ' +
         'de falla t_fail=−a/b, con compuerta por R², aceleración y largo de ventana; ⑤ el nivel TARP sigue de |v| y los ' +
         'días-a-falla.\n\n' +
-        'El motor determinista está siempre activo y es transparente — la referencia contra la que se mide toda alarma. ' +
+        'El motor determinista está siempre activo y es transparente, la referencia contra la que se mide toda alarma. ' +
         'El carril aprendido enriquece el click-to-inspect: un CNN 1-D clasifica la serie de 60 épocas de un píxel en 6 ' +
         'patrones de deformación, y un autoencoder convolucional reconstruye un parche de velocidad de 16×16 (MSE = ' +
         'anomalía), computado offline en el mapa de anomalía. El CNN corre en el cliente como ONNX; ambos se reportan ' +
@@ -118,17 +118,17 @@ export const architecture: ArchitectureConfig = {
       es: 'Contratos de datos / diseño',
       svg: 'svg/tech/05-data-contracts.svg',
       body_en:
-        'Two validated data contracts bracket the pipeline. Contract 1 (ingestion) defines a valid InSAR stack — the ' +
+        'Two validated data contracts bracket the pipeline. Contract 1 (ingestion) defines a valid InSAR stack, the ' +
         'grid dimensions, epochs/days, the displacement + coherence fields and the viewing geometry, with range/NaN ' +
-        'guards — so the app accepts your data, not just the built-in cases. Contract 2 (artifact) defines the output ' +
+        'guards, so the app accepts your data, not just the built-in cases. Contract 2 (artifact) defines the output ' +
         'the web reads (per-case velocity/anomaly/coherence fields, the prognostics, the model index), mirrored exactly ' +
         'by contract.types.ts. Between them the staged, deterministic pipeline runs the lane gate (numpy-light by ' +
         'default, --retrain for the heavy torch lane) and writes a provenance manifest, so every result is reproducible ' +
         'and the web can never silently drift.',
       body_es:
-        'Dos contratos de datos validados encierran el pipeline. El Contrato 1 (ingesta) define un stack InSAR válido — ' +
+        'Dos contratos de datos validados encierran el pipeline. El Contrato 1 (ingesta) define un stack InSAR válido, ' +
         'las dimensiones de la grilla, épocas/días, los campos de desplazamiento + coherencia y la geometría de vista, ' +
-        'con guardas de rango/NaN — para que la app acepte tus datos, no sólo los casos incluidos. El Contrato 2 ' +
+        'con guardas de rango/NaN, para que la app acepte tus datos, no sólo los casos incluidos. El Contrato 2 ' +
         '(artefacto) define la salida que lee la web (campos de velocidad/anomalía/coherencia por caso, los ' +
         'prognósticos, el índice de modelos), espejada exactamente por contract.types.ts. Entre ambos, el pipeline por ' +
         'etapas y determinista corre el lane gate (numpy-light por defecto, --retrain para el carril pesado de torch) y ' +

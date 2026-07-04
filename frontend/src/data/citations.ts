@@ -21,7 +21,7 @@ export const CITATIONS: Citation[] = [
   // InSAR error physics
   { id: 'zebker1992', label: 'Zebker & Villasenor 1992', citation: 'Zebker, H.A., Villasenor, J. (1992). Decorrelation in interferometric radar echoes. IEEE TGRS 30(5), 950–959.', doi: '10.1109/36.175330' },
   { id: 'fattahi2013', label: 'Fattahi & Amelung 2013', citation: 'Fattahi, H., Amelung, F. (2013). DEM error correction in InSAR time series. IEEE TGRS 51(7), 4249–4259.', doi: '10.1109/TGRS.2012.2227761' },
-  // learned methods — autoencoders, CNN, attention, saliency, embeddings
+  // learned methods, autoencoders, CNN, attention, saliency, embeddings
   { id: 'rouetleduc2021', label: 'Rouet-Leduc et al. 2021', citation: 'Rouet-Leduc, B., Jolivet, R., Dalaison, M., Johnson, P.A., Hulbert, C. (2021). Autonomous extraction of millimeter-scale deformation in InSAR time series using deep learning. Nature Communications 12, 6480.', doi: '10.1038/s41467-021-26254-3' },
   { id: 'anantra2018', label: 'Anantrasirichai et al. 2018', citation: 'Anantrasirichai, N., Biggs, J., Albino, F., Hill, P., Bull, D. (2018). Application of machine learning to classification of volcanic deformation in routinely generated InSAR data. JGR Solid Earth 123, 6592–6606.', doi: '10.1029/2018JB015911' },
   { id: 'anantra2020', label: 'Anantrasirichai et al. 2020', citation: 'Anantrasirichai, N., Biggs, J., Kelevitz, K., et al. (2020). Detecting ground deformation in the built environment using sparse satellite InSAR data with a convolutional neural network. IEEE TGRS 59(4), 2940–2950.', doi: '10.1109/TGRS.2020.3018315' },

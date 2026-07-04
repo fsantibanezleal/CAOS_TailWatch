@@ -25,7 +25,7 @@
     </marker>
   </defs>
 
-  <text class="ttl" x="22" y="30">Web-app flow — the App page recomputes live</text>
+  <text class="ttl" x="22" y="30">Web-app flow, the App page recomputes live</text>
   <text class="sub" x="22" y="47">no round-trip to a server: the engine + inference run in the browser on every control change</text>
 
   <!-- input -->
@@ -71,7 +71,7 @@
 
   <!-- 6 pages -->
   <rect class="grp" x="14" y="214" width="872" height="120" rx="10"/>
-  <text class="pg" x="28" y="234">Six sibling pages — identical across every product (ADR-0057)</text>
+  <text class="pg" x="28" y="234">Six sibling pages, identical across every product (ADR-0057)</text>
   <rect class="bx bx-hi" x="28" y="246" width="132" height="72" rx="7"/>
   <text class="it" x="40" y="266">App / Tool</text>
   <text class="mu" x="40" y="282">live engine + controls</text>
@@ -99,7 +99,7 @@
 
   <!-- build/deploy -->
   <rect class="grp" x="14" y="352" width="872" height="100" rx="10"/>
-  <text class="pg" x="28" y="372">Build &amp; deploy — typed mirror gates, static output, GitHub Pages</text>
+  <text class="pg" x="28" y="372">Build &amp; deploy, typed mirror gates, static output, GitHub Pages</text>
   <rect class="bx bx-good" x="28" y="384" width="200" height="54" rx="7"/>
   <text class="it" x="40" y="404">Contract-type mirror</text>
   <text class="cd mono" x="40" y="422">src/lib/contract.types.ts</text>

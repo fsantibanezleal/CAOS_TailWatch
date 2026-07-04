@@ -5,7 +5,7 @@ the inverse-velocity baseline) is real and SOTA-pinned; the base around it is th
 
 | # | Doc | What |
 |---|---|---|
-| 01 | [overview](01_overview.md) | the repo at a glance — lanes, packages, data flow |
+| 01 | [overview](01_overview.md) | the repo at a glance, lanes, packages, data flow |
 | 02 | [determinism-and-trace](02_determinism-and-trace.md) | seeded determinism; the compact per-case replay trace |
 | 03 | [the-gate](03_the-gate.md) | the measured live-vs-precompute lane gate (client-side TS DSP + ONNX) |
 | 04 | [the-live-lane](04_the-live-lane.md) | onnxruntime-web + the TS DSP (inverse-velocity / TARP) in the browser |

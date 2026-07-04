@@ -1,4 +1,4 @@
-# scripts/ — environment + pipeline orchestration (cross-platform)
+# scripts/, environment + pipeline orchestration (cross-platform)
 
 Local scripts so **anyone** can configure the env and run the flow. Provide every script in BOTH `*.sh`
 (macOS/Linux/Git-Bash) and `*.ps1` (Windows PowerShell, since Felipe runs PS).
@@ -13,4 +13,4 @@ Local scripts so **anyone** can configure the env and run the flow. Provide ever
 | `serve-api.sh` / `serve-api.ps1` | (optional, only if `api/` is active) `uvicorn api.main:app --reload`. |
 
 Rules: idempotent; detect `.venv/bin/python` vs `.venv/Scripts/python.exe`; never use global Python/Node.
-Pin nothing here — versions live in `requirements-*.txt`.
+Pin nothing here, versions live in `requirements-*.txt`.

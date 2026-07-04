@@ -30,13 +30,13 @@
     </marker>
   </defs>
 
-  <text class="ttl" x="22" y="30">Three lanes — what runs WHERE</text>
+  <text class="ttl" x="22" y="30">Three lanes, what runs WHERE</text>
   <text class="sub" x="22" y="47">the TypeScript engine runs live in the browser; Python bakes &amp; trains offline</text>
 
   <!-- ===== WEB lane ===== -->
   <rect class="bx bx-web" x="14" y="66" width="290" height="392" rx="11"/>
   <text class="lnt lnt-web" x="30" y="92">WEB · live, in the browser</text>
-  <text class="sub" x="30" y="108">no server — static GitHub Pages</text>
+  <text class="sub" x="30" y="108">no server, static GitHub Pages</text>
 
   <rect class="bx" x="30" y="122" width="258" height="58" rx="7"/>
   <text class="it" x="42" y="142">Deterministic engine (TS)</text>
@@ -56,14 +56,14 @@
   <rect class="bx" x="30" y="326" width="258" height="58" rx="7"/>
   <text class="it" x="42" y="346">Loads baked artifacts</text>
   <text class="cd mono" x="42" y="362">/tw-cases.json · /data/manifests</text>
-  <text class="mu" x="42" y="376">read-only — never recomputes the bake</text>
+  <text class="mu" x="42" y="376">read-only, never recomputes the bake</text>
   <text class="mu" x="30" y="406">User: pick a case OR drop your own data</text>
   <text class="mu" x="30" y="420">→ engine + inference run client-side, live</text>
 
   <!-- ===== COMPUTE lane ===== -->
   <rect class="bx bx-comp" x="318" y="66" width="290" height="392" rx="11"/>
   <text class="lnt lnt-comp" x="334" y="92">OFFLINE · compute (your machine)</text>
-  <text class="sub" x="334" y="108">Python, isolated .venv — never in the browser</text>
+  <text class="sub" x="334" y="108">Python, isolated .venv, never in the browser</text>
 
   <rect class="bx" x="334" y="122" width="258" height="58" rx="7"/>
   <text class="it" x="346" y="142">Precompute / bake pipeline</text>
@@ -83,7 +83,7 @@
   <rect class="bx" x="334" y="326" width="258" height="58" rx="7"/>
   <text class="it" x="346" y="346">Writes canonical artifacts</text>
   <text class="cd mono" x="346" y="362">data/derived/ + manifests + trace</text>
-  <text class="mu" x="346" y="376">deterministic — git-clean after re-run</text>
+  <text class="mu" x="346" y="376">deterministic, git-clean after re-run</text>
   <text class="mu" x="334" y="406">Run once per data/model change; the</text>
   <text class="mu" x="334" y="420">artifacts are committed, the venvs are not</text>
 

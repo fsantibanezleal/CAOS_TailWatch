@@ -1,6 +1,6 @@
 # ONNX / onnxruntime / onnxruntime-web
 
-**What:** the portable model format (`onnx==1.22.0`) + the runtimes — `onnxruntime==1.27.0` (offline parity) and
+**What:** the portable model format (`onnx==1.22.0`) + the runtimes, `onnxruntime==1.27.0` (offline parity) and
 `onnxruntime-web^1.27.0` (the live in-browser inference).
 **Why binding:** ONNX is the contract between the heavy torch training lane and the light client-side lane. The
 exported `cnn.onnx` (per-pixel series → 6 logits) and `ae.onnx` (16×16 velocity patch → reconstruction) are small

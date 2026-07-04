@@ -2,7 +2,7 @@
 trace from the committed rich manifest (tw-cases.json), runs the lane gate, and writes the manifest + a flat index
 (CONTRACT 2). The committed ONNX + cubes + tw-cases.json ARE the heavy lane's real outputs, so the DEFAULT path is
 light (stdlib, no torch) and deterministic. `--retrain` regenerates those artifacts from the synthetic forward
-simulation (torch + scipy + h5py) — see stages/.
+simulation (torch + scipy + h5py), see stages/.
 
     python -m twlab.pipeline                 # rebuild all replay traces + manifests from the committed manifest
     python -m twlab.pipeline accel           # one case
@@ -31,14 +31,14 @@ def _load_manifest() -> dict:
     p = DERIVED / "tw-cases.json"
     if not p.exists():
         raise SystemExit(
-            f"missing committed artifact {p}. tw-cases.json is the heavy lane's rich output — run "
+            f"missing committed artifact {p}. tw-cases.json is the heavy lane's rich output, run "
             f"`python -m twlab.pipeline all --retrain` to regenerate it, or restore the committed copy."
         )
     return read_json(p)
 
 
 def _contract_flags(manifest_json: dict) -> list[dict]:
-    """Apply CONTRACT 1 to the 5 cases' scene descriptors — proves the ingestion gate, carries flags."""
+    """Apply CONTRACT 1 to the 5 cases' scene descriptors, proves the ingestion gate, carries flags."""
     W, H, n_ep = manifest_json.get("W", 160), manifest_json.get("H", 120), manifest_json.get("nEp", 60)
     rows = [{"scene_id": c.id, "W": W, "H": H, "n_ep": n_ep, "regime": c.regime} for c in registry.list_cases()]
     return validate_records(rows).flagged
@@ -62,7 +62,7 @@ def retrain(seed: int = 42) -> None:
     the cube+tw-cases.json write=export). Needs torch + scipy + h5py + the scenes in data/raw/scenes."""
     if not RAW_SCENES.exists():
         raise SystemExit(f"raw scenes not found in {RAW_SCENES}. Generate them with the forward sim first "
-                         f"(twlab/science/forward.py) — see docs/guides/01_precompute-pipeline.md.")
+                         f"(twlab/science/forward.py), see docs/guides/01_precompute-pipeline.md.")
     from .science import train_models
     print(f"[retrain] forward sim + SBAS + conv-AE/CNN train over {RAW_SCENES} ...", flush=True)
     train_models.main()

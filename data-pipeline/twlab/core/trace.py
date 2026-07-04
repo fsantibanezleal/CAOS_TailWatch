@@ -1,6 +1,6 @@
 """The compact per-case TRACE = the web-replay artifact. Part of CONTRACT 2: its shape is mirrored by
 frontend/src/lib/contract.types.ts, so a drift fails the web build. Each trace is built deterministically from the
-committed rich manifest (tw-cases.json, the heavy lane's real output) — it references the shared decimated cube
+committed rich manifest (tw-cases.json, the heavy lane's real output), it references the shared decimated cube
 (tw-<id>.bin) and the global held-out benchmark + forecast, never copying them."""
 from __future__ import annotations
 

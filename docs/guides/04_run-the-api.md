@@ -1,4 +1,4 @@
-# 04 — The `app/` backend (DORMANT)
+# 04, The `app/` backend (DORMANT)
 
 TailWatch is static deterministic-replay: the SPA + the committed artifacts serve from GitHub Pages with **no backend
 at request time** (the ONNX + the TS DSP run entirely in the browser). The `app/` FastAPI module ships dormant (it
