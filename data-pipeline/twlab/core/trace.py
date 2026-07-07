@@ -14,17 +14,22 @@ def build_trace(case: Any, *, manifest_json: dict) -> dict:
     if cm is None:
         raise KeyError(f"case {case.id!r} not found in tw-cases.json")
     bench = manifest_json.get("benchmark", {})
+    # per-case grid override (real cubes are a different size / epoch count than the synthetic global grid)
+    grid = {"W": cm.get("W", manifest_json.get("W")), "H": cm.get("H", manifest_json.get("H")),
+            "nEp": cm.get("nEp", manifest_json.get("nEp"))}
     return {
         "schema": TRACE_SCHEMA,
         "case_id": case.id,
         "category": case.category,
         "regime": case.regime,
         "real_or_synthetic": case.real_or_synthetic,
+        "source": cm.get("source", "synthetic"),
+        "provenance": cm.get("provenance"),
         "expected_band": case.expected_band,
         "labels": {"en": cm.get("en"), "es": cm.get("es")},
         "latent": cm.get("latent"),
         "cube": f"tw-{case.id}.bin",
-        "grid": {"W": manifest_json.get("W"), "H": manifest_json.get("H"), "nEp": manifest_json.get("nEp")},
+        "grid": grid,
         # the global held-out numbers this case is evaluated within (referenced, not recomputed)
         "benchmark": {"macroF1": bench.get("macroF1"), "aeAuc": bench.get("aeAuc"), "velAuc": bench.get("velAuc"),
                       "heldOut": bench.get("heldOut"), "trainScenes": bench.get("trainScenes")},

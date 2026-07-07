@@ -1,0 +1,52 @@
+{
+  "source": "COMET LiCSAR + LiCSBAS (real Sentinel-1 InSAR)",
+  "frameId": "124D_04854_171313",
+  "site": "Campi Flegrei caldera (Pozzuoli, Italy)",
+  "geometry": "descending (single geometry)",
+  "dates": "20160909 to 20180508",
+  "nEpochsUsed": 40,
+  "nEpochsAvailable": 67,
+  "aoiPixels": {
+    "y0": 20,
+    "x0": 86,
+    "size": 64
+  },
+  "aoiBBox": {
+    "latMin": 40.8162,
+    "latMax": 40.8802,
+    "lonMin": 14.1164,
+    "lonMax": 14.1804
+  },
+  "postDeg": {
+    "lat": -0.0009999992325901985,
+    "lon": 0.0009999992325901985
+  },
+  "license": "modified Copernicus Sentinel data, Copernicus free and open license (redistribution + modification permitted with attribution)",
+  "attribution": "LiCSAR contains modified Copernicus Sentinel data 2016-2021 analysed by the Centre for the Observation and Modelling of Earthquakes, Volcanoes and Tectonics (COMET); time series by LiCSBAS (Morishita et al. 2020).",
+  "citations": [
+    "Lazecky et al. 2020, Remote Sens. 12(15):2430, DOI 10.3390/rs12152430 (LiCSAR)",
+    "Morishita et al. 2020, Remote Sens. 12(3):424, DOI 10.3390/rs12030424 (LiCSBAS)"
+  ],
+  "cumH5Sha256": "8299111b6497e9626fbc1399d9d36162fc5f9d073195c0ab456c33a5fa2a0ec0",
+  "honesty": {
+    "real": [
+      "velocity (descending LOS)",
+      "coherence (coh_avg)",
+      "cumulative series",
+      "cumulative-vs-time",
+      "inverse-velocity 1/v (classical)"
+    ],
+    "verticalAssumption": [
+      "velUp and cumUp use the real LOS up-vector under a single-geometry vertical-only assumption; East/Ascending are unavailable from this descending-only frame"
+    ],
+    "crossDomain": [
+      "AE anomaly",
+      "CNN class",
+      "AE latent",
+      "zone (derived)"
+    ],
+    "syntheticOnly": [
+      "failure / collapse-time forecast stays illustrative"
+    ]
+  }
+}

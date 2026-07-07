@@ -15,11 +15,19 @@ MANIFEST_SCHEMA = "tailwatch.manifest/v2"
 INDEX_SCHEMA = "tailwatch.index/v1"
 
 DATASET = "synthetic Sentinel-1 InSAR forward simulation (von-Kármán APS + decorrelation + DEM-error + orbital ramps)"
+REAL_DATASET = "real Sentinel-1 InSAR (COMET LiCSAR frame 124D_04854_171313 processed with LiCSBAS, Campi Flegrei, descending LOS)"
 SPLIT = "train scenes 1-16, held-out scenes 17-20 (split by scene -> no spatial leakage)"
 HONESTY = (
     "The scenes are SYNTHETIC Sentinel-1 simulations, NOT real SAR, TailWatch is didactic + decision-support, not a "
     "certified alarm. The held-out split is by scene (17-20) so no patch leaks. Real tailings-dam failures (Brumadinho "
     "2019, Cadia 2018) are documented as cautionary/forecastable analogs, not re-hosted data."
+)
+REAL_HONESTY = (
+    "REAL Sentinel-1 InSAR (COMET LiCSAR frame processed with LiCSBAS, modified Copernicus Sentinel data, descending "
+    "single geometry). Velocity, coherence and the cumulative series are real; velUp uses the real LOS up-vector under "
+    "a single-geometry vertical-only assumption (East/Ascending unavailable). The AE anomaly, CNN class and AE latent "
+    "are the SYNTHETIC-trained ONNX applied cross-domain (model output, not verified ground truth); the failure "
+    "forecast stays illustrative. TailWatch is didactic + decision-support, not a certified alarm."
 )
 
 
@@ -45,7 +53,7 @@ def build_case_manifest(*, case: Any, seed: int, artifact_rel: str, trace_bytes:
         "validation_anchor": case.validation_anchor,
         "engine": {"package": "twlab", "version": __version__,
                    "model": "conv-AE (anomaly) + 1-D CNN (classifier) on 2-geometry SBAS; classical inverse-velocity baseline"},
-        "dataset": DATASET,
+        "dataset": REAL_DATASET if getattr(case, "real_or_synthetic", "synthetic") == "real" else DATASET,
         "split": SPLIT,
         "seed": seed,
         "shared": shared_artifacts(),
@@ -54,7 +62,7 @@ def build_case_manifest(*, case: Any, seed: int, artifact_rel: str, trace_bytes:
         "gate": gate,
         "flags": flags,
         "metrics": metrics,
-        "honesty": HONESTY,
+        "honesty": REAL_HONESTY if getattr(case, "real_or_synthetic", "synthetic") == "real" else HONESTY,
     }
 
 

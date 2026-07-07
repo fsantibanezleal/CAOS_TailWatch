@@ -1,7 +1,28 @@
 # Changelog
 
 All notable changes to CAOS TailWatch are documented here. Versions follow `X.XX.XXX` (major.minor.patch); the
-project stays in `0.x` while the scenes are synthetic (pending a real digitized published velocity series).
+project stays in `0.x`; the App now serves both the synthetic simulator and a real Sentinel-1 InSAR sample.
+
+## [0.11.000], 2026-07-07
+
+### Added, Synthetic | Real Source lane on real Sentinel-1 InSAR (corrected-Faena real-artifacts-live)
+- First-level `Synthetic | Real sample` source selector at the top of the App sidebar. In Real mode the
+  scenario/regime knobs disable and you pick the real cube; all 8 tabs run on it (5 genuinely REAL,
+  3 synthetic-model-on-real-input, badged honestly per tab).
+- New offline ingest stage `twlab.science.ingest_real`: reads a LiCSBAS `cum.h5` (LOS displacement time
+  series), clips a ~64x64 AOI, decimates the epochs, projects LOS to the vertical with the real per-pixel LOS
+  up-vector, runs the EXISTING synthetic-trained ONNX (conv-AE + 1-D CNN + AE-encoder latent) cross-domain,
+  and exports the identical `f32x8 + i16 cum` layout as `tw-real-<site>.bin` + a per-case entry in
+  `tw-cases.json` (per-case grid + real `days` + `source` + `provenance`).
+- Shipped real cube: COMET LiCSAR frame `124D_04854_171313` (descending), processed with LiCSBAS over the
+  Campi Flegrei caldera (Pozzuoli, Italy); 64x64 px, 40 epochs, real Sentinel-1 uplift up to ~65 mm/yr.
+  Attribution + DOIs surfaced in-app and in `ATTRIBUTION.md` (Lazecky et al. 2020 DOI 10.3390/rs12152430;
+  Morishita et al. 2020 DOI 10.3390/rs12030424).
+- Schema: per-case grid (`W`/`H`/`nEp`/`days`) + `source` + `provenance` in the trace/manifest; per-case
+  honesty note in the manifest. `classifySeries` resamples any series to the CNN's fixed length 60.
+
+### Changed
+- Version drift fixed: the App footer string now reads `0.11.000` (was `0.10.000`, one patch behind).
 
 ## [0.10.001], 2026-07-04
 
