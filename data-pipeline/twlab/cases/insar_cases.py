@@ -8,6 +8,7 @@ from dataclasses import dataclass
 
 FAILURE = "failure deformation (forecastable / must detect)"
 CONTROL = "control / normal (must NOT false-alarm)"
+REAL = "real Sentinel-1 observation (documented deformation site)"
 
 
 @dataclass(frozen=True)
@@ -36,4 +37,13 @@ CASES: list[Case] = [
     Case("seasonal", CONTROL, "seasonal",
          "reversible annual breathing (beach/thermal) -> oscillating series, no net failure; CNN labels seasonal",
          "reversible seasonal beach cycle"),
+    # The Synthetic | Real Source lane: a REAL Sentinel-1 InSAR clip (COMET LiCSAR frame 124D_04854_171313,
+    # descending) processed with LiCSBAS over the Campi Flegrei caldera. velocity/coherence/series/1-v are REAL;
+    # the AE/CNN/latent maps are the synthetic-trained ONNX applied cross-domain (labelled honestly in-app).
+    # Its cube + per-case grid + real dates + provenance live in tw-cases.json (written by science/ingest_real.py).
+    Case("real-cf", REAL, "accelerating",
+         "real InSAR: Campi Flegrei caldera resurgence (accelerating uplift); velocity/coherence/cumulative series "
+         "are real Sentinel-1 motion, the learned anomaly/class/latent are synthetic-trained cross-domain",
+         "Campi Flegrei unrest (De Martino et al. 2021; Del Gaudio et al. 2010)",
+         real_or_synthetic="real"),
 ]

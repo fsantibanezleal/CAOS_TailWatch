@@ -40,7 +40,12 @@ def _load_manifest() -> dict:
 def _contract_flags(manifest_json: dict) -> list[dict]:
     """Apply CONTRACT 1 to the 5 cases' scene descriptors, proves the ingestion gate, carries flags."""
     W, H, n_ep = manifest_json.get("W", 160), manifest_json.get("H", 120), manifest_json.get("nEp", 60)
-    rows = [{"scene_id": c.id, "W": W, "H": H, "n_ep": n_ep, "regime": c.regime} for c in registry.list_cases()]
+    by_id = {c["id"]: c for c in manifest_json.get("cases", [])}
+    rows = []
+    for c in registry.list_cases():
+        cm = by_id.get(c.id, {})   # a real case carries its own (smaller) grid + epoch count
+        rows.append({"scene_id": c.id, "W": cm.get("W", W), "H": cm.get("H", H),
+                     "n_ep": cm.get("nEp", n_ep), "regime": c.regime})
     return validate_records(rows).flagged
 
 

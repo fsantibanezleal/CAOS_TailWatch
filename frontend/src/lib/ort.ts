@@ -16,10 +16,27 @@ const getAe = () => (ae ??= ort.InferenceSession.create(`${base()}ae.onnx`));
 
 const softmax = (a: Float32Array | number[]) => { const m = Math.max(...a); const e = Array.from(a, (v) => Math.exp(v - m)); const s = e.reduce((x, y) => x + y, 0); return e.map((v) => v / s); };
 
-/** CNN: a per-pixel displacement series (length 60) → class probabilities (length 6). The series is
- * standardised exactly as in training. */
-export async function classifySeries(series: number[]): Promise<number[]> {
+// The committed cnn.onnx fixes the series length to 60. Real cubes have a different epoch count (e.g. 40), so
+// linear-resample any series to 60 before inference (a 60-length series is unchanged). Matches the offline
+// ingest (twlab.science.ingest_real._resample_to), so live and baked class maps agree.
+const CNN_LEN = 60;
+function resampleTo(series: number[], n: number): number[] {
+  const L = series.length;
+  if (L === n) return series.slice();
+  const out = new Array<number>(n);
+  for (let i = 0; i < n; i++) {
+    const t = (i * (L - 1)) / (n - 1);
+    const lo = Math.floor(t), hi = Math.min(lo + 1, L - 1);
+    out[i] = series[lo] + (series[hi] - series[lo]) * (t - lo);
+  }
+  return out;
+}
+
+/** CNN: a per-pixel displacement series (any length, resampled to 60) → class probabilities (length 6). The
+ * series is standardised exactly as in training. */
+export async function classifySeries(raw: number[]): Promise<number[]> {
   const s = await getCnn();
+  const series = resampleTo(raw, CNN_LEN);
   const mu = series.reduce((a, b) => a + b, 0) / series.length;
   const sd = Math.sqrt(series.reduce((a, b) => a + (b - mu) ** 2, 0) / series.length) || 1e-6;
   const x = Float32Array.from(series, (v) => (v - mu) / sd);
