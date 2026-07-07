@@ -32,6 +32,7 @@ frontend/public/tw-linear.bin
 frontend/public/tw-seasonal.bin
 frontend/public/tw-stable.bin
 frontend/public/tw-step.bin
+frontend/public/tw-real-cf.bin
 frontend/public/tw-cases.json
 frontend/public/forecast-benchmark.json
 *.tsbuildinfo

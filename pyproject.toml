@@ -7,8 +7,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "twlab"
-# PEP 440 form of the display version X.XX.XXX (see CHANGELOG.md + twlab.__version__ = "0.09.000").
-version = "0.10.1"
+# PEP 440 form of the display version X.XX.XXX (see CHANGELOG.md + twlab.__version__ = "0.11.000").
+version = "0.11.0"
 description = "TailWatch, InSAR tailings-dam deformation monitoring (conv-AE anomaly + 1-D CNN classifier on a synthetic Sentinel-1 sim) as a staged offline pipeline with two data contracts (ADR-0057)."
 readme = "README.md"
 requires-python = ">=3.11"

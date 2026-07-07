@@ -45,10 +45,29 @@
 /* ---- plot cards ---- */
 .tw-vizstack { display: flex; flex-direction: column; gap: 1rem; }
 .tw-plot { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 10px; padding: 0.6rem 0.75rem; }
-.tw-plot-t { font-size: 0.82rem; color: var(--color-fg-subtle); margin-bottom: 0.3rem; }
+.tw-plot-t { font-size: 0.82rem; color: var(--color-fg-subtle); margin-bottom: 0.3rem; display: flex; align-items: baseline; justify-content: space-between; gap: 0.6rem; flex-wrap: wrap; }
 .tw-plot-th { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
 .tw-hint { font-size: 0.82rem; color: var(--color-fg-subtle); }
 .tw-note { font-size: 0.78rem; border-left: 3px solid var(--color-warn, #d29922); padding-left: 0.6rem; color: var(--color-fg-subtle); }
+
+/* ---- Source lane: honesty badges + real-data provenance ---- */
+.tw-source .chip { padding: 0.24rem 0.7rem; font-size: 0.8rem; }
+.tw-badge { font-size: 0.66rem; font-weight: 700; letter-spacing: 0.02em; text-transform: uppercase; padding: 0.1rem 0.45rem; border-radius: 999px; border: 1px solid transparent; white-space: nowrap; }
+.tw-badge-real { color: #1a7f37; background: color-mix(in oklab, #3fb950 22%, transparent); border-color: color-mix(in oklab, #3fb950 45%, transparent); }
+.tw-badge-assume { color: #9a6700; background: color-mix(in oklab, #d29922 22%, transparent); border-color: color-mix(in oklab, #d29922 45%, transparent); }
+.tw-badge-cross { color: #8250df; background: color-mix(in oklab, #8b5cf6 20%, transparent); border-color: color-mix(in oklab, #8b5cf6 45%, transparent); }
+@media (prefers-color-scheme: dark) { .tw-badge-real { color: #56d364; } .tw-badge-assume { color: #e3b341; } .tw-badge-cross { color: #c297ff; } }
+:root[data-theme="dark"] .tw-badge-real { color: #56d364; }
+:root[data-theme="dark"] .tw-badge-assume { color: #e3b341; }
+:root[data-theme="dark"] .tw-badge-cross { color: #c297ff; }
+:root[data-theme="light"] .tw-badge-real { color: #1a7f37; }
+:root[data-theme="light"] .tw-badge-assume { color: #9a6700; }
+:root[data-theme="light"] .tw-badge-cross { color: #8250df; }
+.tw-prov { border-left: 4px solid var(--color-accent); }
+.tw-prov-h { font-size: 0.82rem; font-weight: 700; color: var(--color-fg); margin-bottom: 0.45rem; }
+.tw-prov .tw-attr { border-left-color: var(--color-accent); margin-top: 0.5rem; }
+.tw-cites { margin: 0.4rem 0 0; padding-left: 1rem; font-size: 0.72rem; color: var(--color-fg-faint); }
+.tw-cites li { margin-bottom: 0.15rem; }
 
 /* ---- maps (canvas) ---- */
 .tw-map-wrap { position: relative; }
