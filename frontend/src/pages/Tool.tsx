@@ -3,7 +3,7 @@ import type uPlot from 'uplot';
 import { Tabs, useShellLang } from '@fasl-work/caos-app-shell';
 import { loadManifest, loadCase, velOf, seriesAt, pctNorm, gridOf, componentsOf, CLASS_COLORS, CLASS_EN, CLASS_ES, COMP_EN, COMP_ES, type Manifest, type CaseData, type CaseInfo, type Component, type Provenance } from '../data/demo';
 import { vik, batlow, rgbCss } from '../lib/colormap';
-import { inverseVelocity, tarp } from '../dsp/forecast';
+import { inverseVelocity, tarp, conformalInterval } from '../dsp/forecast';
 import { classifySeries } from '../lib/ort';
 import { FieldMap } from '../viz/FieldMap';
 import { LatentScatter } from '../viz/LatentScatter';
@@ -89,9 +89,26 @@ function Workbench({ m }: { m: Manifest }) {
   const velField = cd ? velOf(cd, comp) : null;
   const vel = velField ? velField[i] : 0;
   const velUp = cd ? cd.velUp[i] : 0;
-  const iv = useMemo(() => (series.length ? inverseVelocity(series, days) : null), [series, days]);
+  // The failure forecast runs on a coherence-masked 5x5 PATCH MEAN around the pixel (spatial averaging is
+  // standard InSAR forecasting practice, Carla et al.), which suppresses per-pixel noise so the inverse-
+  // velocity fit is credible on a deforming area. The single-pixel series stays on the Series + fit tab.
+  const fcSeries = useMemo(() => {
+    if (!cd) return series;
+    const R = 2; const out = new Array(m.nEp).fill(0); let cnt = 0;
+    for (let dy = -R; dy <= R; dy++) for (let dx = -R; dx <= R; dx++) {
+      const x = sel.x + dx, y = sel.y + dy;
+      if (x < 0 || y < 0 || x >= W || y >= H) continue;
+      const k = y * W + x; if (cd.coh[k] < 0.4) continue;
+      for (let ep = 0; ep < m.nEp; ep++) out[ep] += cd.cumUp[ep * W * H + k] / m.cumScale;
+      cnt++;
+    }
+    return cnt ? out.map((v) => v / cnt) : series;
+  }, [cd, m, sel, W, H, series]);
+  const iv = useMemo(() => (fcSeries.length ? inverseVelocity(fcSeries, days) : null), [fcSeries, days]);
   const lastDay = days[days.length - 1];
   const daysToFail = iv && iv.tFail != null && iv.credible ? iv.tFail - lastDay : null;
+  // NOVEL beyond-SOTA: split-conformal prediction interval on t_f, calibrated per lead-time on the MC bank.
+  const conf = useMemo(() => (iv && iv.tFail != null && iv.credible ? conformalInterval(iv.tFail, lastDay, m.forecast?.conformal ?? null) : null), [iv, lastDay, m]);
   const alarm = tarp(velUp, daysToFail);
   const anomN = useMemo(() => (cd ? pctNorm(cd.anomaly) : null), [cd]);
   const cnnClass = cnnProbs ? cnnProbs.indexOf(Math.max(...cnnProbs)) : (cd ? Math.round(cd.classMap[i]) : 0);
@@ -128,7 +145,11 @@ function Workbench({ m }: { m: Manifest }) {
     { id: 'class', label: es ? 'Clase (CNN)' : 'Class (CNN)', content: <Panel badge={rb('class')} t={es ? 'Mapa de clase de deformación, clasificador CNN 1-D por píxel (6 clases)' : 'Deformation-class map, 1-D CNN per-pixel classifier (6 classes)'}>{loadingMap || <><FieldMap W={W} H={H} colorAt={classColor} sel={sel} onPick={(x, y) => setSel({ x, y })} readout={(x, y, k) => `${x},${y} · ${CLS[cd ? Math.round(cd.classMap[k]) : 0]}`} /><ClassLegend cls={CLS} /></>}</Panel> },
     { id: 'lat', label: es ? 'Espacio latente' : 'Latent space', content: <Panel badge={rb('lat')} t={es ? 'Espacio latente del AE (UMAP) para este caso, la representación aprendida, por clase' : 'AE latent space (UMAP) for this case, the learned representation, by class'}><LatentScatter pts={caseInfo.latent} names={CLS} /><ClassLegend cls={CLS} /></Panel> },
     { id: 'series', label: es ? 'Serie + ajuste' : 'Series + fit', content: <Panel badge={rb('series')} t={es ? 'Desplazamiento vertical (Up) acumulado (mm) del píxel, negativo = hundimiento' : 'Cumulative vertical (Up) displacement (mm) at the pixel, negative = subsiding'}><UPlotChart data={tsData} build={buildTs} height={200} /><p className="tw-hint">{es ? 'Clic en cualquier mapa para inspeccionar otro píxel.' : 'Click any map to inspect another pixel.'}</p></Panel> },
-    { id: 'iv', label: es ? 'Velocidad inversa' : 'Inverse velocity', content: <Panel badge={rb('iv')} t={es ? 'Velocidad inversa 1/|v| (Fukuzono), el ajuste lineal proyecta el tiempo de falla' : 'Inverse velocity 1/|v| (Fukuzono), the linear fit projects the failure time'}><UPlotChart data={ivData} build={buildIv} height={200} /></Panel> },
+    { id: 'iv', label: es ? 'Velocidad inversa' : 'Inverse velocity', content: <Panel badge={rb('iv')} t={es ? 'Velocidad inversa 1/|v| (Fukuzono), el ajuste lineal proyecta el tiempo de falla' : 'Inverse velocity 1/|v| (Fukuzono), the linear fit projects the failure time'}><UPlotChart data={ivData} build={buildIv} height={200} />
+      {conf ? (
+        <p className="tw-hint"><b>{es ? 'Intervalo conformal (propuesta novel)' : 'Conformal interval (novel proposal)'}:</b> {es ? 'falla en' : 'failure in'} <b className="mono">{(iv!.tFail! - lastDay).toFixed(0)} d</b>, {es ? 'rango' : 'range'} <span className="mono">[{(conf.lo - lastDay).toFixed(0)}, {(conf.hi - lastDay).toFixed(0)}] d</span> {es ? 'a' : 'at'} {Math.round((m.forecast!.conformal!.nominal) * 100)}% {es ? 'conformal split (Vovk et al.)' : 'split-conformal (Vovk et al.)'}{conf.coverage != null ? `, ${es ? 'cobertura medida' : 'measured coverage'} ${Math.round(conf.coverage * 100)}%` : ''}. {es ? 'Calibrado en escenas sintéticas; en datos reales es un prior (cambio de dominio).' : 'Calibrated on synthetic scenes; on real data it is a prior (distribution shift).'}</p>
+      ) : (iv && !iv.credible ? <p className="tw-hint">{es ? 'Sin tendencia acelerante creible: no se proyecta tiempo de falla ni intervalo.' : 'No credible accelerating trend: no failure time or interval projected.'}</p> : null)}
+    </Panel> },
     { id: 'coh', label: es ? 'Coherencia' : 'Coherence', content: <Panel badge={rb('coh')} t={es ? 'Coherencia temporal media, calidad interferométrica (baja en agua/playa)' : 'Mean temporal coherence, interferometric quality (low over water/beach)'}>{loadingMap || <><FieldMap W={W} H={H} colorAt={cohColor} sel={sel} onPick={(x, y) => setSel({ x, y })} readout={(x, y, k) => `${x},${y} · coh ${(cd ? cd.coh[k] : 0).toFixed(2)}`} /><Cbar lo={es ? 'incoherente' : 'incoherent'} hi={es ? 'coherente' : 'coherent'} ramp={[rgbCss(batlow(0)), rgbCss(batlow(0.5)), rgbCss(batlow(1))]} unit="0–1" /></>}</Panel> },
     { id: 'cum', label: es ? 'Acumulado (tiempo)' : 'Cumulative (time)', content: <Panel badge={rb('cum')} t={`${es ? 'Desplazamiento acumulado, época' : 'Cumulative displacement, epoch'} ${epoch + 1}/${nEp} (${es ? 'día' : 'day'} ${days[epoch].toFixed(0)})`}>{loadingMap || <><FieldMap W={W} H={H} colorAt={cumColor} sel={sel} onPick={(x, y) => setSel({ x, y })} mask={maskCoh ? lowCoh : undefined} readout={(x, y, k) => `${x},${y} · ${(cd ? cd.cumUp[epoch * W * H + k] / m.cumScale : 0).toFixed(1)} mm`} /><input className="range" type="range" min={0} max={nEp - 1} value={epoch} onChange={(e) => setEpoch(+e.target.value)} style={{ width: '100%', marginTop: '0.4rem' }} /><Cbar lo={es ? '← hundimiento' : '← subsiding'} hi={es ? 'alza →' : 'uplift →'} ramp={[rgbCss(vik(-80, 80)), rgbCss(vik(0, 80)), rgbCss(vik(80, 80))]} unit="mm ±80" /></>}</Panel> },
     // The held-out ROC + confusion matrix are cross-case (aggregate) views that do NOT react to the case selector,

@@ -9,4 +9,4 @@ pipeline, the lane gate, the manifest/trace, the cases-by-category registry) is 
 here, not redesigned.
 """
 
-__version__ = "0.11.000"  # display X.XX.XXX; PEP 440 form in pyproject.toml (0.11.0)
+__version__ = "0.12.000"  # display X.XX.XXX; PEP 440 form in pyproject.toml (0.11.0)

@@ -22,7 +22,9 @@ export interface CaseInfo {
 }
 export interface LeadBucket { lo: number; hi: number; n: number; medErr: number | null }
 export interface ControlRegime { n: number; falseAlarms: number }
-export interface Forecast { detectRate: number; nTraj: number; medErrPct: number | null; leadCurve: LeadBucket[]; falseAlarmRate?: number; nControl?: number; controlRegimes?: Record<string, ControlRegime> }
+export interface ConformalBucketDoc { lo: number; hi: number; q: number | null; coverage: number | null; nCal?: number; nTest?: number }
+export interface ConformalDoc { method: string; alpha: number; nominal: number; meanCoverage: number | null; buckets: ConformalBucketDoc[] }
+export interface Forecast { detectRate: number; nTraj: number; medErrPct: number | null; leadCurve: LeadBucket[]; falseAlarmRate?: number; nControl?: number; controlRegimes?: Record<string, ControlRegime>; conformal?: ConformalDoc }
 export interface Manifest {
   W: number; H: number; nEp: number; days: number[]; classes: string[];
   cumScale: number; velScale: number; patch: number; components: string[];
