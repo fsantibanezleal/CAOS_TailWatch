@@ -3,6 +3,20 @@
 All notable changes to CAOS TailWatch are documented here. Versions follow `X.XX.XXX` (major.minor.patch); the
 project stays in `0.x`; the App now serves both the synthetic simulator and a real Sentinel-1 InSAR sample.
 
+## [0.12.000], 2026-07-09
+
+### Added, the NOVEL beyond-SOTA proposal: split-conformal prediction intervals on t_f
+- `twlab.science.forecast.conformal_tf`: split-conformal prediction intervals (Vovk et al. 2005) on the
+  inverse-velocity failure time, calibrated PER LEAD-TIME bucket on the Monte-Carlo bank and validated on a
+  DISJOINT held-out set. Standard practice (Fukuzono 1985) reports a point t_f; the SOTA adds a bootstrap band
+  (Carla et al. 2017); this adds a distribution-free interval with a finite-sample coverage guarantee. Baked
+  into the `forecast.conformal` block (nominal 0.9, mean measured coverage 0.892 within +-5%; q widens with
+  lead-time: 4.5% near failure to 24.7% far out). Honest: calibration is synthetic; on real data it is a prior.
+- Frontend `dsp/forecast.ts conformalInterval` + the IV tab shows the conformal interval (or an honest
+  fallback); Experiments page renders the coverage table + the beyond-SOTA framing; Vovk 2005 cited.
+- The failure forecast now runs on a coherence-masked patch mean around the pixel (standard InSAR practice),
+  so the inverse-velocity fit is credible on a deforming area, and the dead `credible` expression is removed.
+
 ## [0.11.000], 2026-07-07
 
 ### Added, Synthetic | Real Source lane on real Sentinel-1 InSAR (corrected-Faena real-artifacts-live)

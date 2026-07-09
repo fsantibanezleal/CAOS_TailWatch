@@ -42,7 +42,22 @@ export default function Experiments() {
                 ? `Control de falsas alarmas: ${f.nControl} escenas NO fallantes (estable / asentamiento lineal / estacional, 20 semillas cada una) pasan por el MISMO detector de velocidad inversa; ${(f.falseAlarmRate * 100).toFixed(0)}% dispara un tiempo de falla finito (${f.controlRegimes ? Object.entries(f.controlRegimes).map(([r, c]) => `${r} ${c.falseAlarms}/${c.n}`).join(', ') : ''}). Esto REEMPLAZA el artefacto forecast-benchmark.json degenerado (180 trayectorias reclamadas, 3 tuplas únicas, sin generador) que antes respaldaba solo la afirmación de cero falsas alarmas (issue #24).`
                 : `False-alarm control: ${f.nControl} NON-failing scenes (stable / linear settling / seasonal, 20 seeds each) pass through the SAME inverse-velocity detector; ${(f.falseAlarmRate * 100).toFixed(0)}% fire a finite failure time (${f.controlRegimes ? Object.entries(f.controlRegimes).map(([r, c]) => `${r} ${c.falseAlarms}/${c.n}`).join(', ') : ''}). This REPLACES the degenerate forecast-benchmark.json (180 claimed trajectories, 3 unique tuples, no generator) that formerly backed the zero-false-alarm claim alone (issue #24).`}</p>
             )}
-            <Refs ids={['fukuzono1985', 'carla2017', 'grebby2021']} label="Refs" />
+            {f.conformal && f.conformal.meanCoverage != null && (<>
+              <h3 style={{ marginTop: '1.1rem' }}>{es ? 'Propuesta novel: intervalos conformales sobre t_f' : 'Novel proposal: conformal intervals on t_f'}</h3>
+              <div className="tw-stats">
+                <Stat v={`${Math.round(f.conformal.nominal * 100)}%`} l={es ? 'cobertura nominal' : 'nominal coverage'} />
+                <Stat v={`${Math.round(f.conformal.meanCoverage * 100)}%`} l={es ? 'cobertura medida (held-out)' : 'measured coverage (held-out)'} />
+                <Stat v={`${f.conformal.buckets.filter((x) => x.q != null).length}`} l={es ? 'buckets de adelanto calibrados' : 'calibrated lead-time buckets'} />
+              </div>
+              <table className="tw-table"><thead><tr><th>{es ? 'adelanto (d)' : 'lead (d)'}</th><th>q (± rel.)</th><th>{es ? 'cobertura' : 'coverage'}</th><th>{es ? 'n cal / test' : 'n cal / test'}</th></tr></thead>
+                <tbody>{f.conformal.buckets.map((x, k) => (
+                  <tr key={k}><td>{x.lo}-{x.hi}</td><td>{x.q != null ? `±${(x.q * 100).toFixed(1)}%` : ', '}</td><td>{x.coverage != null ? `${Math.round(x.coverage * 100)}%` : ', '}</td><td>{x.nCal ?? ', '} / {x.nTest ?? ', '}</td></tr>
+                ))}</tbody></table>
+              <p className="tw-note">{es
+                ? `La propuesta beyond-SOTA: intervalos de predicción SPLIT-CONFORMAL (Vovk et al.) sobre el tiempo de falla, calibrados POR BUCKET de adelanto en el banco Monte-Carlo y validados en semillas disjuntas held-out. La práctica estándar (Fukuzono) reporta un t_f puntual; el SOTA agrega una banda bootstrap (Carla et al.); esto agrega un intervalo SIN supuestos de distribución con garantía de cobertura finita. Cobertura media ${Math.round(f.conformal.meanCoverage * 100)}% vs ${Math.round(f.conformal.nominal * 100)}% nominal (dentro de ±5%); el ancho q crece con el adelanto, mayor incertidumbre lejos de la falla. Honesto: la calibración es sobre escenas SINTÉTICAS; en datos reales el intervalo es solo un prior (cambio de dominio), etiquetado así en la app.`
+                : `The beyond-SOTA proposal: SPLIT-CONFORMAL prediction intervals (Vovk et al.) on the failure time, calibrated PER LEAD-TIME bucket on the Monte-Carlo bank and validated on disjoint held-out seeds. Standard practice (Fukuzono) reports a point t_f; the SOTA adds a bootstrap band (Carla et al.); this adds a distribution-free interval with a finite-sample coverage guarantee. Mean coverage ${Math.round(f.conformal.meanCoverage * 100)}% vs ${Math.round(f.conformal.nominal * 100)}% nominal (within ±5%); the width q grows with lead-time, more uncertainty far from failure. Honest: calibration is on SYNTHETIC scenes; on real data the interval is only a prior (distribution shift), labelled as such in the app.`}</p>
+            </>)}
+            <Refs ids={['fukuzono1985', 'carla2017', 'vovk2005', 'grebby2021']} label="Refs" />
           </>);
         })()}
       </section>

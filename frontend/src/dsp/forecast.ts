@@ -58,10 +58,30 @@ export function inverseVelocity(cum: number[], days: number[]): InvVel {
     const tFail = -a / b;
     const se = Math.sqrt(ssr / Math.max(1, n - 2)) / Math.sqrt(sxx);      // se(slope)
     const dt = (1.96 * se * tFail) / Math.abs(b);                          // propagate to intercept (approx)
-    res = { ...res, tFail, tFailLo: tFail - dt, tFailHi: tFail + dt, credible: tFail > days[days.length - 1] - days[days.length - 1] };
-    res.credible = true;
+    // credible when the projected failure lies in the FUTURE (beyond the last observation)
+    res = { ...res, tFail, tFailLo: tFail - dt, tFailHi: tFail + dt, credible: tFail > days[days.length - 1] };
   }
   return res;
+}
+
+// ---- The NOVEL beyond-SOTA proposal: split-conformal prediction intervals on t_f (Vovk et al.) ----
+export interface ConformalBucket { lo: number; hi: number; q: number | null; coverage: number | null; nCal?: number; nTest?: number }
+export interface Conformal { method: string; alpha: number; nominal: number; meanCoverage: number | null; buckets: ConformalBucket[] }
+
+/** Split-conformal prediction interval on the failure time. Given the point t_f and the current lead-time
+ *  (t_f - t_now), select the calibrated bucket quantile q and return t_f x [1-q, 1+q]: a DISTRIBUTION-FREE
+ *  interval that covers the true t_f with probability >= nominal (1-alpha) on held-out synthetic scenes,
+ *  beyond the point estimate (Fukuzono) and the bootstrap band (Carla). On real data it is a calibrated
+ *  PRIOR only (distribution shift), labelled as such in the UI. */
+export function conformalInterval(
+  tFail: number, tNow: number, conf: Conformal | null,
+): { lo: number; hi: number; q: number; coverage: number | null } | null {
+  if (!conf || !conf.buckets?.length || !(tFail > tNow)) return null;
+  const lead = tFail - tNow;
+  const inBucket = conf.buckets.find((b) => b.q != null && lead >= b.lo && lead < b.hi);
+  const bkt = inBucket ?? [...conf.buckets].reverse().find((b) => b.q != null);   // clamp to the widest calibrated bucket
+  if (!bkt || bkt.q == null) return null;
+  return { lo: tFail * (1 - bkt.q), hi: tFail * (1 + bkt.q), q: bkt.q, coverage: bkt.coverage };
 }
 
 export type Alarm = 'green' | 'amber' | 'red';
