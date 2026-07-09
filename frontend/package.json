@@ -1,6 +1,6 @@
 {
   "name": "caos-tailwatch",
-  "version": "0.11.000",
+  "version": "0.12.000",
   "private": true,
   "type": "module",
   "description": "TailWatch \u2014 InSAR ground-deformation monitoring & early-warning for tailings dams and pit walls (SBAS displacement, velocity maps, inverse-velocity failure forecasting, GISTM-aligned TARP alarms). Didactic + decision-support, not a certified safety system.",
