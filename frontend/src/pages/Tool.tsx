@@ -10,6 +10,7 @@ import { LatentScatter } from '../viz/LatentScatter';
 import { Gauge } from '../viz/Gauge';
 import { UPlotChart } from '../viz/UPlotChart';
 import { lineOpts } from '../viz/uplotKit';
+import { PanelBoundary } from '../viz/PanelBoundary';
 
 const hexRgb = (h: string): [number, number, number] => [parseInt(h.slice(1, 3), 16) / 255, parseInt(h.slice(3, 5), 16) / 255, parseInt(h.slice(5, 7), 16) / 255];
 const ALARM_C: Record<string, string> = { green: '#3fb950', amber: '#d29922', red: '#f85149' };
@@ -197,7 +198,7 @@ function Workbench({ m }: { m: Manifest }) {
           ? (es ? 'Sentinel-1 InSAR REAL (LiCSAR/LiCSBAS, geometría descendente): velocidad, coherencia y serie acumulada son reales; anomalía/clase/latente son el modelo sintético aplicado cross-domain (no verdad de terreno); el pronóstico de falla es ilustrativo. NO es un sistema de alarma certificado.' : 'REAL Sentinel-1 InSAR (LiCSAR/LiCSBAS, descending): velocity, coherence and cumulative series are real; anomaly/class/latent are the synthetic model applied cross-domain (not ground truth); the failure forecast is illustrative. NOT a certified alarm system.')
           : (es ? 'Datos SINTÉTICOS físicamente fundados (formato LiCSBAS); modelos entrenados offline, inferencia ONNX en vivo. NO es un sistema de alarma certificado.' : 'SYNTHETIC physics-grounded data (LiCSBAS format); models trained offline, live ONNX inference. NOT a certified alarm system.')}</p>
       </aside>
-      <div className="tw-main"><Tabs tabs={tabs} ariaLabel="methods" /></div>
+      <div className="tw-main"><Tabs tabs={tabs.map((t) => ({ ...t, content: <PanelBoundary key={`${source}-${caseId}-${t.id}`} lang={es ? 'es' : 'en'}>{t.content}</PanelBoundary> }))} ariaLabel="methods" /></div>
     </div>
   );
 }

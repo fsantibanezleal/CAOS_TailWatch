@@ -3,6 +3,25 @@
 All notable changes to CAOS TailWatch are documented here. Versions follow `X.XX.XXX` (major.minor.patch); the
 project stays in `0.x`; the App now serves both the synthetic simulator and a real Sentinel-1 InSAR sample.
 
+## [0.12.001], 2026-07-11
+
+### Fixed
+- Reference integrity: `mirmaz2022` conflated two papers. Its title was "Classification of ground deformation
+  using sentinel-1 persistent scatterer interferometry time series" (GIScience & Remote Sensing 59(1)), but the
+  attached DOI 10.5194/isprs-archives-XLIII-B3-2022-307-2022 resolves to a DIFFERENT paper. Corrected the title,
+  authors and venue to match the DOI: Mirmazloumi et al. (2022), "InSAR deformation time series classification
+  using a convolutional neural network", ISPRS Archives XLIII-B3-2022, 307-312.
+- Honesty vs the engine (Methodology, Decision tab): the tab stated as current behavior that the CNN class map
+  and the AE anomaly map "audit the alarm" (de-prioritise seasonal/decorrelated velocity alarms, raise silent AE
+  anomalies). The engine `tarp()` computes the alarm ONLY from velocity and projected days-to-failure and ignores
+  class/anomaly. Reworded to state the truth (the maps are shown alongside the alarm, they do not modify it) and
+  labelled the fusion as planned/not-implemented, rather than silently wiring an unvalidated safety behavior.
+
+### Added
+- Per-panel error boundary (`viz/PanelBoundary.tsx`, mirroring the RotorVitals reference): a crash inside one
+  method tab now renders a small inline message instead of unmounting the whole App to a blank page; keyed by
+  source + case + tab so it resets when the datum changes.
+
 ## [0.12.000], 2026-07-09
 
 ### Added, the NOVEL beyond-SOTA proposal: split-conformal prediction intervals on t_f
