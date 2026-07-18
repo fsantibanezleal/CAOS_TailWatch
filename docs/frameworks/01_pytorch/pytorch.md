@@ -1,7 +1,7 @@
 # PyTorch (`torch==2.12.1`, CPU)
 
 **What:** trains the 1-D CNN classifier + the denoising conv-AE and exports them to ONNX.
-**Why binding:** the learned tier (per-pixel deformation TYPE + a label-free spatial anomaly) is the SOTA core the
+**Why binding:** the learned tier (per-pixel deformation type + a label-free spatial anomaly) is the SOTA core the
 classical velocity baseline is measured against. Training is modest (a small CNN + conv-AE over patches from 16
 synthetic scenes, minutes on CPU), no GPU.
 

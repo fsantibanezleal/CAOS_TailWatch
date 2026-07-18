@@ -1,6 +1,6 @@
 // Prognostics: velocity / inverse-velocity (Fukuzono) failure-time projection + tiered TARP alarm.
 // Fukuzono (1985): for tertiary creep with power-law exponent α≈2, the inverse velocity 1/v(t) decreases
-// LINEARLY toward zero at the failure time t_f. So a linear fit to 1/v on the post-onset (terminal) window
+// linearly toward zero at the failure time t_f. So a linear fit to 1/v on the post-onset (terminal) window
 // projects t_f as the x-intercept, gated on fit quality (b<0, R² > 0.55, ≥4 points). An approximate CI
 // (tFailLo/tFailHi) is computed; the App currently renders the point estimate (days to failure).
 // Refs: Fukuzono 1985; Voight 1988/1989; Rose & Hungr 2007; Carlà et al. 2017 (10.1007/s10346-016-0731-5).
@@ -64,15 +64,15 @@ export function inverseVelocity(cum: number[], days: number[]): InvVel {
   return res;
 }
 
-// ---- The NOVEL beyond-SOTA proposal: split-conformal prediction intervals on t_f (Vovk et al.) ----
+// ---- The novel beyond-SOTA proposal: split-conformal prediction intervals on t_f (Vovk et al.) ----
 export interface ConformalBucket { lo: number; hi: number; q: number | null; coverage: number | null; nCal?: number; nTest?: number }
 export interface Conformal { method: string; alpha: number; nominal: number; meanCoverage: number | null; buckets: ConformalBucket[] }
 
 /** Split-conformal prediction interval on the failure time. Given the point t_f and the current lead-time
- *  (t_f - t_now), select the calibrated bucket quantile q and return t_f x [1-q, 1+q]: a DISTRIBUTION-FREE
+ *  (t_f - t_now), select the calibrated bucket quantile q and return t_f x [1-q, 1+q]: a distribution-free
  *  interval that covers the true t_f with probability >= nominal (1-alpha) on held-out synthetic scenes,
  *  beyond the point estimate (Fukuzono) and the bootstrap band (Carla). On real data it is a calibrated
- *  PRIOR only (distribution shift), labelled as such in the UI. */
+ *  prior only (distribution shift), labelled as such in the UI. */
 export function conformalInterval(
   tFail: number, tNow: number, conf: Conformal | null,
 ): { lo: number; hi: number; q: number; coverage: number | null } | null {
@@ -87,9 +87,9 @@ export function conformalInterval(
 export type Alarm = 'green' | 'amber' | 'red';
 export interface Tarp { level: Alarm; reason: string; reasonEs: string }
 
-/** Tiered TARP alarm with two parallel triggers (state velocity AND forecast time-to-failure). The band
- * STRUCTURE is industry practice (GISTM/ANCOLD/CDA); the mm/yr · day cut-points are configurable site
- * defaults, NOT universal regulatory limits. */
+/** Tiered TARP alarm with two parallel triggers (state velocity and forecast time-to-failure). The band
+ * structure is industry practice (GISTM/ANCOLD/CDA); the mm/yr · day cut-points are configurable site
+ * defaults, not universal regulatory limits. */
 export function tarp(velMmYr: number, daysToFail: number | null): Tarp {
   const a = Math.abs(velMmYr);
   let level: Alarm = 'green';

@@ -1,7 +1,7 @@
 import { Component, type ReactNode } from 'react';
 
 // Per-panel error boundary: a crash inside one method tab (e.g. a tool fed an edge-case real scene lacking the
-// geometry it needs) renders a small inline message INSTEAD of unmounting the whole App to a blank page. The tab
+// geometry it needs) renders a small inline message instead of unmounting the whole App to a blank page. The tab
 // bar stays usable so the user can switch away. Mirrors the RotorVitals PanelBoundary (the reference app).
 export class PanelBoundary extends Component<{ children: ReactNode; lang?: 'en' | 'es' }, { error: Error | null }> {
   state: { error: Error | null } = { error: null };

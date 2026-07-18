@@ -12,8 +12,8 @@ function vars() {
 }
 
 /** Base uPlot options for a themed line chart (zoom/pan/crosshair built in).
- * The legend is LIVE: it reads out the (x, y) values at the cursor with units, so hovering a comb
- * (BPFO, fr, …) tells you the exact frequency/amplitude, not just a bare crosshair. */
+ * The legend is live: it reads out the (x, y) values at the cursor with units, so hovering a comb
+ * (BPFO, fr, …) shows the exact frequency/amplitude, not just a bare crosshair. */
 export function lineOpts(
   width: number, height: number,
   opts: { label: string; color?: string; xUnit?: string; yUnit?: string; xPrec?: number; yPrec?: number; yRange?: [number, number]; dragSetScale?: boolean },
