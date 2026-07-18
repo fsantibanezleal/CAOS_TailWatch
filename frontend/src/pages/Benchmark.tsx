@@ -11,7 +11,7 @@ export default function Benchmark() {
     <div className="page-body prose">
       <div className="page-head">
         <h1>Benchmark</h1>
-        <p className="lede">{es ? 'Métodos APRENDIDOS vs el baseline CLÁSICO sobre escenas HELD-OUT (sin fuga). Números reales desde los artefactos versionados, sin victorias fabricadas.' : 'LEARNED methods vs the CLASSICAL baseline on HELD-OUT scenes (no leakage). Real numbers from the versioned artifacts, no fabricated wins.'}</p>
+        <p className="lede">{es ? 'Métodos aprendidos vs el baseline clásico sobre escenas held-out (sin fuga). Números reales desde los artefactos versionados, sin victorias fabricadas.' : 'Learned methods vs the classical baseline on held-out scenes (no leakage). Real numbers from the versioned artifacts, no fabricated wins.'}</p>
       </div>
       {!demo ? <p className="tw-hint">{es ? 'Cargando resultados…' : 'Loading results…'}</p> : (() => {
         const b = demo.benchmark;
@@ -26,7 +26,7 @@ export default function Benchmark() {
 
             <h2>{es ? 'Detección de falla, ROC (held-out)' : 'Failure detection, ROC (held-out)'}</h2>
             <RocSVG ae={b.aeRoc} vel={b.velRoc} aeAuc={b.aeAuc} velAuc={b.velAuc} es={es} />
-            <p className="tw-note">{es ? `Honesto: en escenas no vistas el baseline |v| (AUC ${b.velAuc}) supera al AE (AUC ${b.aeAuc}) porque las fallas simuladas tienen firma de velocidad. El valor de los métodos aprendidos NO es ganarle a la velocidad en esta tarea, sino dar la CLASIFICACIÓN de tipo (abajo) y un puntaje de anomalía SIN etiquetas sobre el patrón espacial de velocidad. Capturar anomalías sin firma de velocidad media exigiría un AE espacio-temporal (roadmap): el AE actual lee el mapa de velocidad, así que por diseño no las ve.` : `Honest: on unseen scenes the |v| baseline (AUC ${b.velAuc}) beats the AE (AUC ${b.aeAuc}) because the simulated failures carry a velocity signature. The learned methods' value is NOT beating velocity on this task, but giving the TYPE classification (below) and a label-free anomaly score over the spatial velocity pattern. Catching anomalies with no mean-velocity signature would need a spatio-temporal AE (roadmap): the current AE reads the velocity map, so it cannot see them by design.`}</p>
+            <p className="tw-note">{es ? `En escenas no vistas el baseline |v| (AUC ${b.velAuc}) supera al AE (AUC ${b.aeAuc}) porque las fallas simuladas tienen firma de velocidad. El valor de los métodos aprendidos no es ganarle a la velocidad en esta tarea, sino dar la clasificación de tipo (abajo) y un puntaje de anomalía sin etiquetas sobre el patrón espacial de velocidad. Capturar anomalías sin firma de velocidad media exigiría un AE espacio-temporal (roadmap): el AE actual lee el mapa de velocidad, así que por diseño no las ve.` : `On unseen scenes the |v| baseline (AUC ${b.velAuc}) beats the AE (AUC ${b.aeAuc}) because the simulated failures carry a velocity signature. The learned methods' value is not beating velocity on this task, but giving the type classification (below) and a label-free anomaly score over the spatial velocity pattern. Catching anomalies with no mean-velocity signature would need a spatio-temporal AE (roadmap): the current AE reads the velocity map, so it cannot see them by design.`}</p>
 
             <h2>{es ? 'Clasificación, matriz de confusión (held-out)' : 'Classification, confusion matrix (held-out)'}</h2>
             <table className="cmp-table">
@@ -34,7 +34,7 @@ export default function Benchmark() {
               <tbody>{b.confusion.map((row, r) => { const sum = row.reduce((a, c) => a + c, 0) || 1; return (
                 <tr key={r}><th className="lo">{CLS[r]}</th>{row.map((v, c) => <td key={c} style={{ background: `color-mix(in oklab, var(--color-accent) ${Math.round((v / sum) * 70)}%, transparent)`, fontWeight: r === c ? 700 : 400 }}>{v}</td>)}<td className="mono">{(row[r] / sum * 100).toFixed(0)}%</td></tr>); })}</tbody>
             </table>
-            <p className="tw-note">{es ? 'La velocidad da magnitud; el CNN da el TIPO, capacidad nueva. Las clases confusables (estable/lineal creep, estacional/decorrelado desde una serie ruidosa de 60 puntos) bajan el macro-F1 honestamente; la diagonal domina en estable/acelerando/escalón.' : 'Velocity gives magnitude; the CNN gives the TYPE, new capability. Confusable classes (stable/linear creep, seasonal/decorrelated from a 60-point noisy series) lower the macro-F1 honestly; the diagonal dominates on stable/accelerating/step.'}</p>
+            <p className="tw-note">{es ? 'La velocidad da magnitud; el CNN da el tipo, capacidad nueva. Las clases confusables (estable/lineal creep, estacional/decorrelado desde una serie ruidosa de 60 puntos) bajan el macro-F1 honestamente; la diagonal domina en estable/acelerando/escalón.' : 'Velocity gives magnitude; the CNN gives the type, new capability. Confusable classes (stable/linear creep, seasonal/decorrelated from a 60-point noisy series) lower the macro-F1 honestly; the diagonal dominates on stable/accelerating/step.'}</p>
             <Refs ids={['rouetleduc2021', 'zhang2017', 'bouman2025']} label="Refs" />
           </section>
         );

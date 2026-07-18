@@ -14,7 +14,7 @@ held-out eval + forecaster benchmark ────►├─► tw-cases.json (ric
 decimated per-case cubes ────────────────┴─► tw-<id>.bin (5 cases)     + false-alarm bank) │ (committed)
 per-case replay (pipeline, numpy) ──(CONTRACT 2: core/manifest.py)─► data/derived/<case>/trace.json + manifests/
                                           │
-frontend (copy-data.mjs overlays data/derived) ──► onnxruntime-web + TS DSP run LIVE in the browser
+frontend (copy-data.mjs overlays data/derived) ──► onnxruntime-web + TS DSP run live in the browser
 ```
 
 ## Packages

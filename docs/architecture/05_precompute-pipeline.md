@@ -9,7 +9,7 @@ that name the steps and delegate to it, and `pipeline.retrain` runs the preserve
 |---|---|---|
 | `preprocess` | load a scene + the 2-geometry SBAS Up/East decomposition + velocity (`scene_fields`) | numpy + h5py + scipy |
 | `feature_extraction` | per-pixel displacement series (CNN input) + 16×16 velocity patches (AE input) (`pixel_series_dataset`, `velocity_patches`) | numpy |
-| `train` | fit the 1-D CNN (30 ep) + the denoising conv-AE on NORMAL-only patches (24 ep, Vincent 2008) (`train_cnn`, `train_ae`) | torch |
+| `train` | fit the 1-D CNN (30 ep) + the denoising conv-AE on normal-only patches (24 ep, Vincent 2008) (`train_cnn`, `train_ae`) | torch |
 | `infer` | per-pixel AE reconstruction-error anomaly map + CNN class map (`anomaly_map`) | torch + scipy |
 | `evaluate` | held-out (scenes 17-20) macro-F1 + AE/velocity ROC-AUC + the inverse-velocity forecaster benchmark (`roc` + the held-out block of `main`) | torch |
 | `export` | write cnn.onnx + ae.onnx (opset 17) + the per-case cubes + the rich tw-cases.json (the cube/manifest block of `main`) | torch |

@@ -43,6 +43,6 @@ the shared ONNX + cube, the trace byte size, the lane/gate verdict, the Contract
 ## Provenance / honesty
 
 The scenes are **synthetic Sentinel-1 simulations** (von-Kármán APS + decorrelation + DEM-error + orbital ramps),
-NOT real SAR, TailWatch is didactic + decision-support, not a certified alarm. The held-out split is by scene
+not real SAR, TailWatch is didactic + decision-support, not a certified alarm. The held-out split is by scene
 (17-20). Real tailings-dam failures (Brumadinho 2019, Cadia 2018) are documented as cautionary/forecastable analogs,
 not re-hosted data. No fabricated benchmark numbers.

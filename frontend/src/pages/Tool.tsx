@@ -22,14 +22,14 @@ const sourceOf = (c: CaseInfo): 'synthetic' | 'real' => c.source ?? 'synthetic';
 //   cross  = synthetic-trained ONNX applied cross-domain (model output, not verified ground truth)
 type Honesty = 'real' | 'assume' | 'cross';
 const BADGE: Record<string, { kind: Honesty; en: string; es: string }> = {
-  vel: { kind: 'assume', en: 'REAL LOS motion; Up = single-geometry vertical assumption', es: 'Movimiento LOS REAL; Up = supuesto vertical de geometria unica' },
-  anom: { kind: 'cross', en: 'Synthetic-trained AE on real input (cross-domain)', es: 'AE entrenado en sintetico sobre dato real (cross-domain)' },
-  class: { kind: 'cross', en: 'Synthetic-trained CNN on real input (cross-domain)', es: 'CNN entrenada en sintetico sobre dato real (cross-domain)' },
-  lat: { kind: 'cross', en: 'Latent of real patches through the synthetic AE (cross-domain)', es: 'Latente de parches reales por el AE sintetico (cross-domain)' },
-  series: { kind: 'real', en: 'REAL cumulative displacement (Sentinel-1)', es: 'Desplazamiento acumulado REAL (Sentinel-1)' },
-  iv: { kind: 'real', en: 'REAL classical 1/v on real series; projected failure illustrative', es: '1/v clasico REAL sobre serie real; falla proyectada ilustrativa' },
-  coh: { kind: 'real', en: 'REAL temporal coherence (LiCSBAS coh_avg)', es: 'Coherencia temporal REAL (coh_avg de LiCSBAS)' },
-  cum: { kind: 'real', en: 'REAL per-epoch displacement (Sentinel-1)', es: 'Desplazamiento por epoca REAL (Sentinel-1)' },
+  vel: { kind: 'assume', en: 'Real LOS motion; Up = single-geometry vertical assumption', es: 'Movimiento LOS real; Up = supuesto vertical de geometría única' },
+  anom: { kind: 'cross', en: 'Synthetic-trained AE on real input (cross-domain)', es: 'AE entrenado en sintético sobre dato real (cross-domain)' },
+  class: { kind: 'cross', en: 'Synthetic-trained CNN on real input (cross-domain)', es: 'CNN entrenada en sintético sobre dato real (cross-domain)' },
+  lat: { kind: 'cross', en: 'Latent of real patches through the synthetic AE (cross-domain)', es: 'Latente de parches reales por el AE sintético (cross-domain)' },
+  series: { kind: 'real', en: 'Real cumulative displacement (Sentinel-1)', es: 'Desplazamiento acumulado real (Sentinel-1)' },
+  iv: { kind: 'real', en: 'Real classical 1/v on real series; projected failure illustrative', es: '1/v clásico real sobre serie real; falla proyectada ilustrativa' },
+  coh: { kind: 'real', en: 'Real temporal coherence (LiCSBAS coh_avg)', es: 'Coherencia temporal real (coh_avg de LiCSBAS)' },
+  cum: { kind: 'real', en: 'Real per-epoch displacement (Sentinel-1)', es: 'Desplazamiento por época real (Sentinel-1)' },
 };
 const BADGE_TXT: Record<Honesty, { en: string; es: string }> = {
   real: { en: 'REAL', es: 'REAL' },
@@ -91,7 +91,7 @@ function Workbench({ m }: { m: Manifest }) {
   const velField = cd ? velOf(cd, comp) : null;
   const vel = velField?.[i] ?? 0;
   const velUp = cd?.velUp[i] ?? 0;
-  // The failure forecast runs on a coherence-masked 5x5 PATCH MEAN around the pixel (spatial averaging is
+  // The failure forecast runs on a coherence-masked 5x5 patch mean around the pixel (spatial averaging is
   // standard InSAR forecasting practice, Carla et al.), which suppresses per-pixel noise so the inverse-
   // velocity fit is credible on a deforming area. The single-pixel series stays on the Series + fit tab.
   const fcSeries = useMemo(() => {
@@ -109,7 +109,7 @@ function Workbench({ m }: { m: Manifest }) {
   const iv = useMemo(() => (fcSeries.length ? inverseVelocity(fcSeries, days) : null), [fcSeries, days]);
   const lastDay = days[days.length - 1];
   const daysToFail = iv && iv.tFail != null && iv.credible ? iv.tFail - lastDay : null;
-  // NOVEL beyond-SOTA: split-conformal prediction interval on t_f, calibrated per lead-time on the MC bank.
+  // Novel beyond-SOTA: split-conformal prediction interval on t_f, calibrated per lead-time on the MC bank.
   const conf = useMemo(() => (iv && iv.tFail != null && iv.credible ? conformalInterval(iv.tFail, lastDay, m.forecast?.conformal ?? null) : null), [iv, lastDay, m]);
   const alarm = tarp(velUp, daysToFail);
   const anomN = useMemo(() => (cd ? pctNorm(cd.anomaly) : null), [cd]);
@@ -150,11 +150,11 @@ function Workbench({ m }: { m: Manifest }) {
     { id: 'iv', label: es ? 'Velocidad inversa' : 'Inverse velocity', content: <Panel badge={rb('iv')} t={es ? 'Velocidad inversa 1/|v| (Fukuzono), el ajuste lineal proyecta el tiempo de falla' : 'Inverse velocity 1/|v| (Fukuzono), the linear fit projects the failure time'}><UPlotChart data={ivData} build={buildIv} height={200} />
       {conf ? (
         <p className="tw-hint"><b>{es ? 'Intervalo conformal (propuesta novel)' : 'Conformal interval (novel proposal)'}:</b> {es ? 'falla en' : 'failure in'} <b className="mono">{(iv!.tFail! - lastDay).toFixed(0)} d</b>, {es ? 'rango' : 'range'} <span className="mono">[{(conf.lo - lastDay).toFixed(0)}, {(conf.hi - lastDay).toFixed(0)}] d</span> {es ? 'a' : 'at'} {Math.round((m.forecast!.conformal!.nominal) * 100)}% {es ? 'conformal split (Vovk et al.)' : 'split-conformal (Vovk et al.)'}{conf.coverage != null ? `, ${es ? 'cobertura medida' : 'measured coverage'} ${Math.round(conf.coverage * 100)}%` : ''}. {es ? 'Calibrado en escenas sintéticas; en datos reales es un prior (cambio de dominio).' : 'Calibrated on synthetic scenes; on real data it is a prior (distribution shift).'}</p>
-      ) : (iv && !iv.credible ? <p className="tw-hint">{es ? 'Sin tendencia acelerante creible: no se proyecta tiempo de falla ni intervalo.' : 'No credible accelerating trend: no failure time or interval projected.'}</p> : null)}
+      ) : (iv && !iv.credible ? <p className="tw-hint">{es ? 'Sin tendencia acelerante creíble: no se proyecta tiempo de falla ni intervalo.' : 'No credible accelerating trend: no failure time or interval projected.'}</p> : null)}
     </Panel> },
     { id: 'coh', label: es ? 'Coherencia' : 'Coherence', content: <Panel badge={rb('coh')} t={es ? 'Coherencia temporal media, calidad interferométrica (baja en agua/playa)' : 'Mean temporal coherence, interferometric quality (low over water/beach)'}>{loadingMap || <><FieldMap W={W} H={H} colorAt={cohColor} sel={sel} onPick={(x, y) => setSel({ x, y })} readout={(x, y, k) => `${x},${y} · coh ${(cd?.coh[k] ?? 0).toFixed(2)}`} /><Cbar lo={es ? 'incoherente' : 'incoherent'} hi={es ? 'coherente' : 'coherent'} ramp={[rgbCss(batlow(0)), rgbCss(batlow(0.5)), rgbCss(batlow(1))]} unit="0–1" /></>}</Panel> },
     { id: 'cum', label: es ? 'Acumulado (tiempo)' : 'Cumulative (time)', content: <Panel badge={rb('cum')} t={`${es ? 'Desplazamiento acumulado, época' : 'Cumulative displacement, epoch'} ${epoch + 1}/${nEp} (${es ? 'día' : 'day'} ${(days[Math.min(epoch, days.length - 1)] ?? 0).toFixed(0)})`}>{loadingMap || <><FieldMap W={W} H={H} colorAt={cumColor} sel={sel} onPick={(x, y) => setSel({ x, y })} mask={maskCoh ? lowCoh : undefined} readout={(x, y, k) => `${x},${y} · ${((cd?.cumUp[epoch * W * H + k] ?? 0) / m.cumScale).toFixed(1)} mm`} /><input className="range" type="range" min={0} max={nEp - 1} value={epoch} onChange={(e) => setEpoch(+e.target.value)} style={{ width: '100%', marginTop: '0.4rem' }} /><Cbar lo={es ? '← hundimiento' : '← subsiding'} hi={es ? 'alza →' : 'uplift →'} ramp={[rgbCss(vik(-80, 80)), rgbCss(vik(0, 80)), rgbCss(vik(80, 80))]} unit="mm ±80" /></>}</Panel> },
-    // The held-out ROC + confusion matrix are cross-case (aggregate) views that do NOT react to the case selector,
+    // The held-out ROC + confusion matrix are cross-case (aggregate) views that do not react to the case selector,
     // so per the archetype design rule they live on the Benchmark page (which already renders them), not the App.
   ];
 
@@ -168,8 +168,8 @@ function Workbench({ m }: { m: Manifest }) {
               <button className={`chip ${source === 'real' ? 'on' : ''}`} onClick={() => pickSource('real')}>{es ? 'Muestra real' : 'Real sample'}</button>
             </div>
             <span className="tw-hint">{source === 'real'
-              ? (es ? 'InSAR Sentinel-1 real (LiCSAR/LiCSBAS); los controles de escenario se desactivan, solo eliges la muestra.' : 'Real Sentinel-1 InSAR (LiCSAR/LiCSBAS); scenario knobs disabled, you only pick the sample.')
-              : (es ? 'Simulación InSAR sintética; ajusta el escenario/régimen.' : 'Synthetic InSAR simulation; adjust the scenario/regime.')}</span>
+              ? (es ? 'InSAR Sentinel-1 real (LiCSAR/LiCSBAS); los controles de escenario se desactivan, solo se elige la muestra.' : 'Real Sentinel-1 InSAR (LiCSAR/LiCSBAS); scenario knobs disabled, only the sample is selected.')
+              : (es ? 'Simulación InSAR sintética; los controles ajustan el escenario/régimen.' : 'Synthetic InSAR simulation; the knobs adjust the scenario/regime.')}</span>
           </div>
         )}
         <div className="tw-ctl"><span className="tw-ctl-lbl">{source === 'real' ? (es ? 'Muestra real' : 'Real sample') : (es ? 'Caso' : 'Case')}</span>
@@ -196,8 +196,8 @@ function Workbench({ m }: { m: Manifest }) {
         </div>
         <label className="tw-ctl tw-check"><input type="checkbox" checked={maskCoh} onChange={(e) => setMaskCoh(e.target.checked)} /> {es ? 'Máscara de coherencia' : 'Coherence mask'}</label>
         <p className="tw-note">{isReal
-          ? (es ? 'Sentinel-1 InSAR REAL (LiCSAR/LiCSBAS, geometría descendente): velocidad, coherencia y serie acumulada son reales; anomalía/clase/latente son el modelo sintético aplicado cross-domain (no verdad de terreno); el pronóstico de falla es ilustrativo. NO es un sistema de alarma certificado.' : 'REAL Sentinel-1 InSAR (LiCSAR/LiCSBAS, descending): velocity, coherence and cumulative series are real; anomaly/class/latent are the synthetic model applied cross-domain (not ground truth); the failure forecast is illustrative. NOT a certified alarm system.')
-          : (es ? 'Datos SINTÉTICOS físicamente fundados (formato LiCSBAS); modelos entrenados offline, inferencia ONNX en vivo. NO es un sistema de alarma certificado.' : 'SYNTHETIC physics-grounded data (LiCSBAS format); models trained offline, live ONNX inference. NOT a certified alarm system.')}</p>
+          ? (es ? 'Sentinel-1 InSAR real (LiCSAR/LiCSBAS, geometría descendente): velocidad, coherencia y serie acumulada son reales; anomalía/clase/latente son el modelo sintético aplicado cross-domain (no verdad de terreno); el pronóstico de falla es ilustrativo. No es un sistema de alarma certificado.' : 'Real Sentinel-1 InSAR (LiCSAR/LiCSBAS, descending): velocity, coherence and cumulative series are real; anomaly/class/latent are the synthetic model applied cross-domain (not ground truth); the failure forecast is illustrative. Not a certified alarm system.')
+          : (es ? 'Datos sintéticos físicamente fundados (formato LiCSBAS); modelos entrenados offline, inferencia ONNX en vivo. No es un sistema de alarma certificado.' : 'Synthetic physics-grounded data (LiCSBAS format); models trained offline, live ONNX inference. Not a certified alarm system.')}</p>
       </aside>
       <div className="tw-main"><Tabs tabs={tabs.map((t) => ({ ...t, content: <PanelBoundary key={`${source}-${caseId}-${t.id}`} lang={es ? 'es' : 'en'}>{t.content}</PanelBoundary> }))} ariaLabel="methods" /></div>
     </div>

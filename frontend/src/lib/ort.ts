@@ -1,7 +1,7 @@
 // Live in-browser inference of the committed ONNX models (the same conv-AE + 1-D CNN trained offline).
 // Sessions load lazily on first use; the precomputed maps render instantly without them. The CNN runs on
 // every clicked pixel (series → class probabilities). reconstructPatch (velocity patch → AE reconstruction
-// + anomaly score) is exported but NOT yet wired to any UI: the App's anomaly readout is the precomputed
+// + anomaly score) is exported but not yet wired to any UI: the App's anomaly readout is the precomputed
 // map value (a live AE patch inspector is roadmap). WASM runtime is fetched from the pinned CDN build.
 import * as ort from 'onnxruntime-web';
 
