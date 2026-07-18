@@ -3,6 +3,23 @@
 All notable changes to CAOS TailWatch are documented here. Versions follow `X.XX.XXX` (major.minor.patch); the
 project stays in `0.x`; the App now serves both the synthetic simulator and a real Sentinel-1 InSAR sample.
 
+## [0.12.002], 2026-07-11
+
+### Fixed
+- App crash on Real -> Synthetic source switch (reported live): switching back from a real case blanked the whole
+  app with `Cannot read properties of undefined (reading 'toFixed')`. Root cause: `pickCase` resets the case id,
+  pixel and epoch synchronously, but the loaded case data `cd` was only cleared in an effect AFTER the next
+  render, so one render indexed the OLD case's arrays (real grid) with the NEW case's grid indices; the sidebar
+  readouts (`cd.coh[i]`, `velField[i]`, `anomN.norm[i]`) hit undefined and the crash happened OUTSIDE the
+  per-panel boundary, unmounting the root. Three-part fix:
+  1. `pickCase` now clears `cd` synchronously, so no render ever sees stale arrays against new indices.
+  2. Every indexed readout is null-safe (`cd?.coh[i] ?? 0` etc.), the RotorVitals NaN-guard lesson applied to
+     out-of-range indexing.
+  3. The whole Workbench is wrapped in a page-level PanelBoundary, so any future render crash degrades to an
+     inline message instead of a blank page.
+  Reproduced with a Playwright harness (real -> synthetic blanked the body), re-run after the fix: full synthetic
+  view restored, 0 console errors.
+
 ## [0.12.001], 2026-07-11
 
 ### Fixed
