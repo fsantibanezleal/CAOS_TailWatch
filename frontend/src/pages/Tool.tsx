@@ -22,12 +22,12 @@ const sourceOf = (c: CaseInfo): 'synthetic' | 'real' => c.source ?? 'synthetic';
 //   cross  = synthetic-trained ONNX applied cross-domain (model output, not verified ground truth)
 type Honesty = 'real' | 'assume' | 'cross';
 const BADGE: Record<string, { kind: Honesty; en: string; es: string }> = {
-  vel: { kind: 'assume', en: 'REAL LOS motion; Up = single-geometry vertical assumption', es: 'Movimiento LOS REAL; Up = supuesto vertical de geometria unica' },
-  anom: { kind: 'cross', en: 'Synthetic-trained AE on real input (cross-domain)', es: 'AE entrenado en sintetico sobre dato real (cross-domain)' },
-  class: { kind: 'cross', en: 'Synthetic-trained CNN on real input (cross-domain)', es: 'CNN entrenada en sintetico sobre dato real (cross-domain)' },
-  lat: { kind: 'cross', en: 'Latent of real patches through the synthetic AE (cross-domain)', es: 'Latente de parches reales por el AE sintetico (cross-domain)' },
+  vel: { kind: 'assume', en: 'REAL LOS motion; Up = single-geometry vertical assumption', es: 'Movimiento LOS REAL; Up = supuesto vertical de geometría unica' },
+  anom: { kind: 'cross', en: 'Synthetic-trained AE on real input (cross-domain)', es: 'AE entrenado en sintético sobre dato real (cross-domain)' },
+  class: { kind: 'cross', en: 'Synthetic-trained CNN on real input (cross-domain)', es: 'CNN entrenada en sintético sobre dato real (cross-domain)' },
+  lat: { kind: 'cross', en: 'Latent of real patches through the synthetic AE (cross-domain)', es: 'Latente de parches reales por el AE sintético (cross-domain)' },
   series: { kind: 'real', en: 'REAL cumulative displacement (Sentinel-1)', es: 'Desplazamiento acumulado REAL (Sentinel-1)' },
-  iv: { kind: 'real', en: 'REAL classical 1/v on real series; projected failure illustrative', es: '1/v clasico REAL sobre serie real; falla proyectada ilustrativa' },
+  iv: { kind: 'real', en: 'REAL classical 1/v on real series; projected failure illustrative', es: '1/v clásico REAL sobre serie real; falla proyectada ilustrativa' },
   coh: { kind: 'real', en: 'REAL temporal coherence (LiCSBAS coh_avg)', es: 'Coherencia temporal REAL (coh_avg de LiCSBAS)' },
   cum: { kind: 'real', en: 'REAL per-epoch displacement (Sentinel-1)', es: 'Desplazamiento por epoca REAL (Sentinel-1)' },
 };
