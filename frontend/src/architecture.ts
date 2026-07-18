@@ -44,7 +44,7 @@ export const architecture: ArchitectureConfig = {
         'Three lanes, and the split is the point. WEB (live, in the browser): the TypeScript deformation engine ' +
         '(frontend/src/dsp/) re-runs on every pixel click / epoch and onnxruntime-web runs cnn.onnx on the picked ' +
         'pixel (ae.onnx ships exported; its anomaly map is baked offline), no ' +
-        'server. OFFLINE / COMPUTE (your machine, isolated .venv): the Python pipeline bakes the canonical case ' +
+        'server. offline / COMPUTE (your machine, isolated .venv): the Python pipeline bakes the canonical case ' +
         'artifacts (the velocity / anomaly / coherence fields) and the heavy lane (--retrain, .venv-precompute, torch) ' +
         'trains the 1-D CNN + the conv-AE and exports them to ONNX. REPLAY: the small, committed artifacts in ' +
         'data/derived are overlaid into the SPA by copy-data.mjs and loaded live; the typed mirror (contract.types.ts) ' +
@@ -53,7 +53,7 @@ export const architecture: ArchitectureConfig = {
         'Tres carriles, y la división es lo central. WEB (en vivo, en el navegador): el motor de deformación en ' +
         'TypeScript (frontend/src/dsp/) re-corre con cada clic de píxel / época y onnxruntime-web ejecuta cnn.onnx ' +
         'sobre el píxel elegido (ae.onnx se exporta; su mapa de anomalía se hornea offline) ' +
-        ',  sin servidor. OFFLINE / CÓMPUTO (tu máquina, .venv aislado): el pipeline Python hornea los ' +
+        ',  sin servidor. offline / CÓMPUTO (tu máquina, .venv aislado): el pipeline Python hornea los ' +
         'artefactos canónicos por caso (los campos de velocidad / anomalía / coherencia) y el carril pesado (--retrain, ' +
         '.venv-precompute, torch) entrena el CNN 1-D + el conv-AE y los exporta a ONNX. REPLAY: los artefactos pequeños ' +
         'y versionados en data/derived se superponen al SPA con copy-data.mjs y se cargan en vivo; el espejo tipado ' +
