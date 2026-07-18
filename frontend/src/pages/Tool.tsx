@@ -44,7 +44,7 @@ export default function Tool() {
   useEffect(() => { loadManifest().then(setM).catch((e) => setErr(String(e))); }, []);
   if (err) return <div className="page-body"><p className="tw-note">Failed to load artifacts: {err}</p></div>;
   if (!m) return <div className="page-body"><p className="tw-hint">{es ? 'Cargando artefactos del modelo…' : 'Loading model artifacts…'}</p></div>;
-  return <Workbench m={m} />;
+  return <PanelBoundary><Workbench m={m} /></PanelBoundary>;
 }
 
 function Workbench({ m }: { m: Manifest }) {
@@ -70,6 +70,7 @@ function Workbench({ m }: { m: Manifest }) {
   // Switching case (or Source) resets the pixel/epoch/component to values valid for the new grid + geometry.
   const pickCase = useCallback((id: string) => {
     const c = m.cases.find((x) => x.id === id)!; const g = gridOf(m, c); const cc = componentsOf(c);
+    setCd(null); // synchronously: never render the old case's arrays against the new case's grid indices
     setCaseId(id); setSel({ x: Math.floor(g.W / 2), y: Math.floor(g.H / 2) }); setEpoch(g.nEp - 1);
     setComp((p) => (cc.includes(p) ? p : cc[0]));
   }, [m]);
@@ -88,8 +89,8 @@ function Workbench({ m }: { m: Manifest }) {
   const i = sel.y * W + sel.x;
   const series = useMemo(() => (cd ? seriesAt(grid, m.cumScale, cd, sel.x, sel.y) : []), [grid, m, cd, sel]);
   const velField = cd ? velOf(cd, comp) : null;
-  const vel = velField ? velField[i] : 0;
-  const velUp = cd ? cd.velUp[i] : 0;
+  const vel = velField?.[i] ?? 0;
+  const velUp = cd?.velUp[i] ?? 0;
   // The failure forecast runs on a coherence-masked 5x5 PATCH MEAN around the pixel (spatial averaging is
   // standard InSAR forecasting practice, Carla et al.), which suppresses per-pixel noise so the inverse-
   // velocity fit is credible on a deforming area. The single-pixel series stays on the Series + fit tab.
@@ -141,8 +142,8 @@ function Workbench({ m }: { m: Manifest }) {
   const rb = (id: string) => (isReal ? <HonestyBadge id={id} es={es} /> : undefined);
 
   const tabs = [
-    { id: 'vel', label: es ? 'Velocidad' : 'Velocity', content: <Panel badge={rb('vel')} t={`${es ? 'Velocidad de deformación' : 'Deformation velocity'}, ${COMP[comp]} (mm/yr)`}>{loadingMap || <><FieldMap W={W} H={H} colorAt={velColor} sel={sel} onPick={(x, y) => setSel({ x, y })} mask={maskCoh ? lowCoh : undefined} readout={(x, y, k) => `${x},${y} · ${(velField ? velField[k] : 0).toFixed(1)} mm/yr · coh ${(cd ? cd.coh[k] : 0).toFixed(2)}`} /><Cbar lo={es ? '←' : '←'} hi="→" ramp={[rgbCss(vik(-60, 60)), rgbCss(vik(0, 60)), rgbCss(vik(60, 60))]} unit={`${compUnit} ±60`} /></>}</Panel> },
-    { id: 'anom', label: es ? 'Anomalía (AE)' : 'Anomaly (AE)', content: <Panel badge={rb('anom')} t={es ? 'Mapa de anomalía, error de reconstrucción del autoencoder convolucional (no supervisado)' : 'Anomaly map, convolutional-autoencoder reconstruction error (unsupervised)'}>{loadingMap || <><FieldMap W={W} H={H} colorAt={anomColor} sel={sel} onPick={(x, y) => setSel({ x, y })} readout={(x, y, k) => `${x},${y} · ${es ? 'anomalía' : 'anomaly'} ${(anomN ? anomN.norm[k] : 0).toFixed(2)}`} /><Cbar lo="normal" hi={es ? 'anómalo' : 'anomalous'} ramp={[rgbCss(batlow(0)), rgbCss(batlow(0.5)), rgbCss(batlow(1))]} unit={es ? 'percentil' : 'percentile'} /></>}</Panel> },
+    { id: 'vel', label: es ? 'Velocidad' : 'Velocity', content: <Panel badge={rb('vel')} t={`${es ? 'Velocidad de deformación' : 'Deformation velocity'}, ${COMP[comp]} (mm/yr)`}>{loadingMap || <><FieldMap W={W} H={H} colorAt={velColor} sel={sel} onPick={(x, y) => setSel({ x, y })} mask={maskCoh ? lowCoh : undefined} readout={(x, y, k) => `${x},${y} · ${(velField?.[k] ?? 0).toFixed(1)} mm/yr · coh ${(cd?.coh[k] ?? 0).toFixed(2)}`} /><Cbar lo={es ? '←' : '←'} hi="→" ramp={[rgbCss(vik(-60, 60)), rgbCss(vik(0, 60)), rgbCss(vik(60, 60))]} unit={`${compUnit} ±60`} /></>}</Panel> },
+    { id: 'anom', label: es ? 'Anomalía (AE)' : 'Anomaly (AE)', content: <Panel badge={rb('anom')} t={es ? 'Mapa de anomalía, error de reconstrucción del autoencoder convolucional (no supervisado)' : 'Anomaly map, convolutional-autoencoder reconstruction error (unsupervised)'}>{loadingMap || <><FieldMap W={W} H={H} colorAt={anomColor} sel={sel} onPick={(x, y) => setSel({ x, y })} readout={(x, y, k) => `${x},${y} · ${es ? 'anomalía' : 'anomaly'} ${(anomN?.norm[k] ?? 0).toFixed(2)}`} /><Cbar lo="normal" hi={es ? 'anómalo' : 'anomalous'} ramp={[rgbCss(batlow(0)), rgbCss(batlow(0.5)), rgbCss(batlow(1))]} unit={es ? 'percentil' : 'percentile'} /></>}</Panel> },
     { id: 'class', label: es ? 'Clase (CNN)' : 'Class (CNN)', content: <Panel badge={rb('class')} t={es ? 'Mapa de clase de deformación, clasificador CNN 1-D por píxel (6 clases)' : 'Deformation-class map, 1-D CNN per-pixel classifier (6 classes)'}>{loadingMap || <><FieldMap W={W} H={H} colorAt={classColor} sel={sel} onPick={(x, y) => setSel({ x, y })} readout={(x, y, k) => `${x},${y} · ${CLS[cd ? Math.round(cd.classMap[k]) : 0]}`} /><ClassLegend cls={CLS} /></>}</Panel> },
     { id: 'lat', label: es ? 'Espacio latente' : 'Latent space', content: <Panel badge={rb('lat')} t={es ? 'Espacio latente del AE (UMAP) para este caso, la representación aprendida, por clase' : 'AE latent space (UMAP) for this case, the learned representation, by class'}><LatentScatter pts={caseInfo.latent} names={CLS} /><ClassLegend cls={CLS} /></Panel> },
     { id: 'series', label: es ? 'Serie + ajuste' : 'Series + fit', content: <Panel badge={rb('series')} t={es ? 'Desplazamiento vertical (Up) acumulado (mm) del píxel, negativo = hundimiento' : 'Cumulative vertical (Up) displacement (mm) at the pixel, negative = subsiding'}><UPlotChart data={tsData} build={buildTs} height={200} /><p className="tw-hint">{es ? 'Clic en cualquier mapa para inspeccionar otro píxel.' : 'Click any map to inspect another pixel.'}</p></Panel> },
@@ -151,8 +152,8 @@ function Workbench({ m }: { m: Manifest }) {
         <p className="tw-hint"><b>{es ? 'Intervalo conformal (propuesta novel)' : 'Conformal interval (novel proposal)'}:</b> {es ? 'falla en' : 'failure in'} <b className="mono">{(iv!.tFail! - lastDay).toFixed(0)} d</b>, {es ? 'rango' : 'range'} <span className="mono">[{(conf.lo - lastDay).toFixed(0)}, {(conf.hi - lastDay).toFixed(0)}] d</span> {es ? 'a' : 'at'} {Math.round((m.forecast!.conformal!.nominal) * 100)}% {es ? 'conformal split (Vovk et al.)' : 'split-conformal (Vovk et al.)'}{conf.coverage != null ? `, ${es ? 'cobertura medida' : 'measured coverage'} ${Math.round(conf.coverage * 100)}%` : ''}. {es ? 'Calibrado en escenas sintéticas; en datos reales es un prior (cambio de dominio).' : 'Calibrated on synthetic scenes; on real data it is a prior (distribution shift).'}</p>
       ) : (iv && !iv.credible ? <p className="tw-hint">{es ? 'Sin tendencia acelerante creible: no se proyecta tiempo de falla ni intervalo.' : 'No credible accelerating trend: no failure time or interval projected.'}</p> : null)}
     </Panel> },
-    { id: 'coh', label: es ? 'Coherencia' : 'Coherence', content: <Panel badge={rb('coh')} t={es ? 'Coherencia temporal media, calidad interferométrica (baja en agua/playa)' : 'Mean temporal coherence, interferometric quality (low over water/beach)'}>{loadingMap || <><FieldMap W={W} H={H} colorAt={cohColor} sel={sel} onPick={(x, y) => setSel({ x, y })} readout={(x, y, k) => `${x},${y} · coh ${(cd ? cd.coh[k] : 0).toFixed(2)}`} /><Cbar lo={es ? 'incoherente' : 'incoherent'} hi={es ? 'coherente' : 'coherent'} ramp={[rgbCss(batlow(0)), rgbCss(batlow(0.5)), rgbCss(batlow(1))]} unit="0–1" /></>}</Panel> },
-    { id: 'cum', label: es ? 'Acumulado (tiempo)' : 'Cumulative (time)', content: <Panel badge={rb('cum')} t={`${es ? 'Desplazamiento acumulado, época' : 'Cumulative displacement, epoch'} ${epoch + 1}/${nEp} (${es ? 'día' : 'day'} ${days[epoch].toFixed(0)})`}>{loadingMap || <><FieldMap W={W} H={H} colorAt={cumColor} sel={sel} onPick={(x, y) => setSel({ x, y })} mask={maskCoh ? lowCoh : undefined} readout={(x, y, k) => `${x},${y} · ${(cd ? cd.cumUp[epoch * W * H + k] / m.cumScale : 0).toFixed(1)} mm`} /><input className="range" type="range" min={0} max={nEp - 1} value={epoch} onChange={(e) => setEpoch(+e.target.value)} style={{ width: '100%', marginTop: '0.4rem' }} /><Cbar lo={es ? '← hundimiento' : '← subsiding'} hi={es ? 'alza →' : 'uplift →'} ramp={[rgbCss(vik(-80, 80)), rgbCss(vik(0, 80)), rgbCss(vik(80, 80))]} unit="mm ±80" /></>}</Panel> },
+    { id: 'coh', label: es ? 'Coherencia' : 'Coherence', content: <Panel badge={rb('coh')} t={es ? 'Coherencia temporal media, calidad interferométrica (baja en agua/playa)' : 'Mean temporal coherence, interferometric quality (low over water/beach)'}>{loadingMap || <><FieldMap W={W} H={H} colorAt={cohColor} sel={sel} onPick={(x, y) => setSel({ x, y })} readout={(x, y, k) => `${x},${y} · coh ${(cd?.coh[k] ?? 0).toFixed(2)}`} /><Cbar lo={es ? 'incoherente' : 'incoherent'} hi={es ? 'coherente' : 'coherent'} ramp={[rgbCss(batlow(0)), rgbCss(batlow(0.5)), rgbCss(batlow(1))]} unit="0–1" /></>}</Panel> },
+    { id: 'cum', label: es ? 'Acumulado (tiempo)' : 'Cumulative (time)', content: <Panel badge={rb('cum')} t={`${es ? 'Desplazamiento acumulado, época' : 'Cumulative displacement, epoch'} ${epoch + 1}/${nEp} (${es ? 'día' : 'day'} ${(days[Math.min(epoch, days.length - 1)] ?? 0).toFixed(0)})`}>{loadingMap || <><FieldMap W={W} H={H} colorAt={cumColor} sel={sel} onPick={(x, y) => setSel({ x, y })} mask={maskCoh ? lowCoh : undefined} readout={(x, y, k) => `${x},${y} · ${((cd?.cumUp[epoch * W * H + k] ?? 0) / m.cumScale).toFixed(1)} mm`} /><input className="range" type="range" min={0} max={nEp - 1} value={epoch} onChange={(e) => setEpoch(+e.target.value)} style={{ width: '100%', marginTop: '0.4rem' }} /><Cbar lo={es ? '← hundimiento' : '← subsiding'} hi={es ? 'alza →' : 'uplift →'} ramp={[rgbCss(vik(-80, 80)), rgbCss(vik(0, 80)), rgbCss(vik(80, 80))]} unit="mm ±80" /></>}</Panel> },
     // The held-out ROC + confusion matrix are cross-case (aggregate) views that do NOT react to the case selector,
     // so per the archetype design rule they live on the Benchmark page (which already renders them), not the App.
   ];
@@ -188,8 +189,8 @@ function Workbench({ m }: { m: Manifest }) {
             <span className="k">{es ? 'Píxel' : 'Pixel'}</span><span className="v">{sel.x},{sel.y}</span>
             <span className="k">{es ? 'Velocidad' : 'Velocity'} ({comp})</span><span className="v">{vel.toFixed(1)} mm/yr</span>
             <span className="k">{es ? 'Clase (CNN)' : 'Class (CNN)'}</span><span className="v" style={{ color: ALARM_C[alarm.level] }}>{CLS[cnnClass]}{cnnProbs ? ` ${(Math.max(...cnnProbs) * 100).toFixed(0)}%` : ''}</span>
-            <span className="k">{es ? 'Anomalía' : 'Anomaly'}</span><span className="v">{(anomN ? anomN.norm[i] : 0).toFixed(2)}</span>
-            <span className="k">{es ? 'Coherencia' : 'Coherence'}</span><span className="v">{(cd ? cd.coh[i] : 0).toFixed(2)}</span>
+            <span className="k">{es ? 'Anomalía' : 'Anomaly'}</span><span className="v">{(anomN?.norm[i] ?? 0).toFixed(2)}</span>
+            <span className="k">{es ? 'Coherencia' : 'Coherence'}</span><span className="v">{(cd?.coh[i] ?? 0).toFixed(2)}</span>
             <span className="k">{es ? 'Falla proy.' : 'Proj. failure'}</span><span className="v">{iv && iv.credible && daysToFail != null ? `${daysToFail.toFixed(0)} d` : ', '}</span>
           </div>
         </div>
