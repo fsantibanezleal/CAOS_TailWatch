@@ -5,7 +5,7 @@ Anantrasirichai et al. 2018/2020 (deep learning of volcanic/ground deformation, 
 
 **What:** a 1-D convolutional network on a per-pixel **displacement time-series** → one of 6 deformation classes
 (stable / linear / accelerating / seasonal / step / decorrelated). Per-pixel classification turns a velocity map
-into a TYPED deformation map.
+into a typed deformation map.
 
 ## Architecture (`science/train_models.py::CNN1D`)
 
@@ -25,6 +25,6 @@ held-out scenes 17-20 (by-scene split → no spatial leakage). Reported: held-ou
 ## Why it fits
 
 Velocity (a scalar rate) cannot tell a one-off step from steady creep from acceleration, but the failure-relevant
-distinction (forecastable acceleration vs reversible seasonal vs benign step) IS the type, which the CNN reads from
+distinction (forecastable acceleration vs reversible seasonal vs benign step) is the type, which the CNN reads from
 the temporal shape. The global-mean head keeps it length-agnostic. CAM-style temporal saliency (Selvaraju et al.
 2017), which would make the class evidence auditable, is roadmap: nothing in the repo computes it yet.

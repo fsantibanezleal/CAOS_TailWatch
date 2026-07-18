@@ -7,8 +7,8 @@
 
 ## 2-geometry SBAS decomposition (`science/sbas.py`)
 
-Each LOS geometry (ascending + descending) measures only the PROJECTION of the true 3-D motion onto its look vector,
-so raw ascending vs descending DISAGREE over the same dam, and that disagreement IS the horizontal signal. In full
+Each LOS geometry (ascending + descending) measures only the projection of the true 3-D motion onto its look vector,
+so raw ascending vs descending disagree over the same dam, and that disagreement is the horizontal signal. In full
 SBAS, the small-baseline interferogram network is inverted per geometry to cumulative LOS displacement; in TailWatch
 the forward model emits that per-epoch displacement directly and `science/sbas.py` runs only the downstream steps
 (the network inversion itself is roadmap): a 2×2 solve
@@ -21,11 +21,11 @@ dam-face bulging.
 For an accelerating (tertiary-creep) trajectory the inverse velocity `1/v` falls linearly toward zero at failure
 (Fukuzono): fit `1/v` vs time, project the zero-crossing → failure time `t_f` + a confidence interval, gated by an R²
 threshold so noise does not trigger a projection. A steady-creep (linear) trajectory has `t_f` undefined (no
-acceleration); a stable/seasonal control must NOT yield a finite `t_f`, the false-alarm guard. Feeds the tiered TARP
+acceleration); a stable/seasonal control must not yield a finite `t_f`, the false-alarm guard. Feeds the tiered TARP
 alarm (green/amber/red).
 
 ## Why it is the baseline, not the headline
 
 The velocity / inverse-velocity tier is a strong, interpretable classical method (the field standard). The learned
-tier's honest value is per-pixel TYPE classification + a label-free anomaly map, measured AGAINST this baseline, not
+tier's honest value is per-pixel type classification + a label-free anomaly map, measured against this baseline, not
 claimed to beat it everywhere. The Benchmark page reports both.

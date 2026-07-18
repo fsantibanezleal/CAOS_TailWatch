@@ -1,5 +1,5 @@
 // Loader for the committed precompute artifacts (forward sim → SBAS → conv-AE + CNN → ONNX). The manifest
-// tw-cases.json lists the configurable CASES (distinct deformation scenarios) + the held-out benchmark; each
+// tw-cases.json lists the configurable cases (distinct deformation scenarios) + the held-out benchmark; each
 // case's tw-<id>.bin packs eight float32 H*W maps (velocity Up/East/Asc/Desc, AE anomaly, CNN class,
 // coherence, zone) then an int16 cumulative-Up cube. Cases lazy-load so only the selected one is fetched.
 export interface RocCurve { fpr: number[]; tpr: number[] }
@@ -11,7 +11,7 @@ export interface Provenance {
   aoiBBox?: { latMin: number; latMax: number; lonMin: number; lonMax: number };
   license: string; attribution: string; citations: string[];
 }
-// A case is either one of the synthetic regime scenarios (source omitted / 'synthetic') or the REAL Sentinel-1
+// A case is either one of the synthetic regime scenarios (source omitted / 'synthetic') or the real Sentinel-1
 // sample (source 'real'), which carries its own smaller grid + real acquisition days + provenance + the subset of
 // components a single-geometry frame can resolve.
 export interface CaseInfo {

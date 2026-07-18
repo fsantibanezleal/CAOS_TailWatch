@@ -16,7 +16,7 @@ forward simulation. Local-only (CI never retrains). Deterministic from the fixed
 
 What runs (`pipeline.retrain` → `science/train_models.main`): load + 2-geometry SBAS decompose each scene
 (`preprocess`), per-pixel series + velocity patches (`feature_extraction`), train the 1-D CNN (30 ep) + the denoising
-conv-AE on NORMAL-only patches (24 ep) (`train`), per-pixel anomaly + class maps (`infer`), held-out (scenes 17-20)
+conv-AE on normal-only patches (24 ep) (`train`), per-pixel anomaly + class maps (`infer`), held-out (scenes 17-20)
 macro-F1 + AE/velocity ROC-AUC + the inverse-velocity forecaster benchmark (`evaluate`), and write the ONNX + cubes +
 tw-cases.json (`export`).
 

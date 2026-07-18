@@ -25,7 +25,7 @@ classical **inverse-velocity** (Fukuzono) baseline projects failure time with a 
 
 - **App**, case selector (5 deformation regimes) + the reactive view set: LOS velocity, Up/East decomposition,
   AE anomaly + CNN class maps, cumulative scrubber, inverse-velocity forecast, TARP.
-- **Introduction / Methodology / Implementation**, the problem, the term-by-term math (SBAS, decomposition,
+- **Introduction / Methodology / Implementation**, the motivation, the term-by-term math (SBAS, decomposition,
   inverse-velocity, the learned tier) with figures, and the two-lane architecture.
 - **Experiments**, the leakage-safe by-scene split + the forecaster Monte-Carlo self-validation.
 - **Benchmark**, the held-out learned-vs-classical numbers (CNN macro-F1, AE/velocity AUC, confusion), honest, no
@@ -67,9 +67,9 @@ cd frontend && npm run build  # tsc --noEmit && vite build (+ copy-data overlay 
 
 ## Honesty
 
-The scenes are **synthetic Sentinel-1 simulations**, NOT real SAR. The held-out split is by scene. Real failures
+The scenes are **synthetic Sentinel-1 simulations**, not real SAR. The held-out split is by scene. Real failures
 (Brumadinho 2019, Cadia 2018) are documented cautionary/forecastable analogs, not re-hosted data. The learned tier is
-measured AGAINST the strong classical velocity baseline, its value is per-pixel TYPE + a label-free anomaly, not a
+measured against the strong classical velocity baseline, its value is per-pixel type + a label-free anomaly, not a
 fabricated win. No fabricated benchmark numbers. Didactic + decision-support, not a certified alarm.
 
 ## License
