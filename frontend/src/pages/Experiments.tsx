@@ -30,7 +30,7 @@ export default function Experiments() {
             <div className="tw-stats">
               <Stat v={`${(f.detectRate * 100).toFixed(0)}%`} l={es ? `detección de falla (n=${f.nTraj})` : `failure detection (n=${f.nTraj})`} />
               <Stat v={`${f.medErrPct}%`} l={es ? 'error mediano de t_f' : 'median t_f error'} />
-              <Stat v={`${f.leadCurve.filter((b) => b.medErr != null)[0]?.medErr != null ? (f.leadCurve.find((b) => b.lo === 0)!.medErr! * 100).toFixed(1) : ', '}%`} l={es ? 'error a <40 días de la falla' : 'error <40 days to failure'} />
+              <Stat v={f.leadCurve.filter((b) => b.medErr != null)[0]?.medErr != null ? `${(f.leadCurve.find((b) => b.lo === 0)!.medErr! * 100).toFixed(1)}%` : 'n/a'} l={es ? 'error a <40 días de la falla' : 'error <40 days to failure'} />
               {f.falseAlarmRate != null && f.nControl != null
                 ? <Stat v={`${(f.falseAlarmRate * 100).toFixed(0)}%`} l={es ? `falsas alarmas (n=${f.nControl} controles)` : `false alarms (n=${f.nControl} controls)`} />
                 : <Stat v={'4'} l={es ? 'escenas held-out' : 'held-out scenes'} />}
@@ -51,7 +51,7 @@ export default function Experiments() {
               </div>
               <table className="tw-table"><thead><tr><th>{es ? 'adelanto (d)' : 'lead (d)'}</th><th>q (± rel.)</th><th>{es ? 'cobertura' : 'coverage'}</th><th>{es ? 'n cal / test' : 'n cal / test'}</th></tr></thead>
                 <tbody>{f.conformal.buckets.map((x, k) => (
-                  <tr key={k}><td>{x.lo}-{x.hi}</td><td>{x.q != null ? `±${(x.q * 100).toFixed(1)}%` : ', '}</td><td>{x.coverage != null ? `${Math.round(x.coverage * 100)}%` : ', '}</td><td>{x.nCal ?? ', '} / {x.nTest ?? ', '}</td></tr>
+                  <tr key={k}><td>{x.lo}-{x.hi}</td><td>{x.q != null ? `±${(x.q * 100).toFixed(1)}%` : 'n/a'}</td><td>{x.coverage != null ? `${Math.round(x.coverage * 100)}%` : 'n/a'}</td><td>{x.nCal ?? 'n/a'} / {x.nTest ?? 'n/a'}</td></tr>
                 ))}</tbody></table>
               <p className="tw-note">{es
                 ? `La propuesta beyond-SOTA: intervalos de predicción split-conformal (Vovk et al.) sobre el tiempo de falla, calibrados por bucket de adelanto en el banco Monte-Carlo y validados en semillas disjuntas held-out. La práctica estándar (Fukuzono) reporta un t_f puntual; el SOTA agrega una banda bootstrap (Carla et al.); esto agrega un intervalo sin supuestos de distribución con garantía de cobertura finita. Cobertura media ${Math.round(f.conformal.meanCoverage * 100)}% vs ${Math.round(f.conformal.nominal * 100)}% nominal (dentro de ±5%); el ancho q crece con el adelanto, mayor incertidumbre lejos de la falla. La calibración es sobre escenas sintéticas; en datos reales el intervalo es solo un prior (cambio de dominio), etiquetado así en la app.`
