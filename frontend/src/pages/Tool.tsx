@@ -191,7 +191,7 @@ function Workbench({ m }: { m: Manifest }) {
             <span className="k">{es ? 'Clase (CNN)' : 'Class (CNN)'}</span><span className="v" style={{ color: ALARM_C[alarm.level] }}>{CLS[cnnClass]}{cnnProbs ? ` ${(Math.max(...cnnProbs) * 100).toFixed(0)}%` : ''}</span>
             <span className="k">{es ? 'Anomalía' : 'Anomaly'}</span><span className="v">{(anomN?.norm[i] ?? 0).toFixed(2)}</span>
             <span className="k">{es ? 'Coherencia' : 'Coherence'}</span><span className="v">{(cd?.coh[i] ?? 0).toFixed(2)}</span>
-            <span className="k">{es ? 'Falla proy.' : 'Proj. failure'}</span><span className="v">{iv && iv.credible && daysToFail != null ? `${daysToFail.toFixed(0)} d` : ', '}</span>
+            <span className="k">{es ? 'Falla proy.' : 'Proj. failure'}</span><span className="v">{iv && iv.credible && daysToFail != null ? `${daysToFail.toFixed(0)} d` : (es ? 'sin proyección' : 'no projection')}</span>
           </div>
         </div>
         <label className="tw-ctl tw-check"><input type="checkbox" checked={maskCoh} onChange={(e) => setMaskCoh(e.target.checked)} /> {es ? 'Máscara de coherencia' : 'Coherence mask'}</label>
