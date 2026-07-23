@@ -3,6 +3,14 @@
 [![CI](https://img.shields.io/github/actions/workflow/status/fsantibanezleal/CAOS_TailWatch/ci.yml?branch=main&label=CI)](https://github.com/fsantibanezleal/CAOS_TailWatch/actions)
 [![License](https://img.shields.io/github/license/fsantibanezleal/CAOS_TailWatch)](LICENSE)
 [![Live demo](https://img.shields.io/badge/demo-live-2ea44f)](https://tailwatch.fasl-work.com)
+[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.21517681-blue)](https://doi.org/10.5281/zenodo.21517681)
+
+Technical report (CC-BY-4.0): *"TailWatch: An InSAR Deformation-Monitoring and Inverse-Velocity Failure-Forecasting
+Studio, on Synthetic Sentinel-1 and Real Campi Flegrei"*, concept DOI
+[10.5281/zenodo.21517681](https://doi.org/10.5281/zenodo.21517681) (source in
+[`manuscripts/insar-deformation/`](manuscripts/insar-deformation/)). It reports each stage's honest accuracy:
+strong anomaly detection (AUC 0.90-0.97), accelerating-class recall 0.99, and an inverse-velocity forecast within
+3.8% (synthetic) / 5.7% (real Campi Flegrei) of the true failure time.
 
 > Monitor tailings dams and pit walls for ground deformation from synthetic Sentinel-1 InSAR: a 2-geometry
 > SBAS-consistent displacement decomposition (the small-baseline network inversion itself is roadmap), a velocity map,

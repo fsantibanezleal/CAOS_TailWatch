@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="740" height="320" viewBox="0 0 740 320" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <marker id="ta" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#1a1a2e"/>
+    </marker>
+  </defs>
+
+  <text x="370" y="24" text-anchor="middle" font-size="14" font-weight="bold" fill="#1a1a2e">TailWatch: from InSAR displacement to a failure forecast</text>
+
+  <!-- input lane 1: synthetic forward sim -->
+  <rect x="20" y="56" width="176" height="66" rx="8" fill="#eaf2f8" stroke="#1b6ca8" stroke-width="1.5"/>
+  <text x="108" y="74" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#1b6ca8">synthetic Sentinel-1</text>
+  <text x="108" y="89" text-anchor="middle" font-size="8.8" fill="#333">von-Karman APS + decorrelation</text>
+  <text x="108" y="101" text-anchor="middle" font-size="8.8" fill="#333">+ DEM error + orbital ramps</text>
+  <text x="108" y="114" text-anchor="middle" font-size="8.8" fill="#333">5 deformation regimes</text>
+
+  <!-- input lane 2: real -->
+  <rect x="20" y="134" width="176" height="56" rx="8" fill="#fdf1e8" stroke="#e07a3f" stroke-width="1.6"/>
+  <text x="108" y="152" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#c15a22">real Campi Flegrei</text>
+  <text x="108" y="167" text-anchor="middle" font-size="8.8" fill="#333">COMET LiCSAR + LiCSBAS</text>
+  <text x="108" y="180" text-anchor="middle" font-size="8.8" fill="#333">Sentinel-1, 40 epochs (real)</text>
+
+  <!-- decomposition -->
+  <rect x="248" y="90" width="150" height="66" rx="8" fill="#ffffff" stroke="#1a1a2e" stroke-width="1.4"/>
+  <text x="323" y="112" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#1a1a2e">2-geometry</text>
+  <text x="323" y="127" text-anchor="middle" font-size="9" fill="#333">Up / East decomposition</text>
+  <text x="323" y="141" text-anchor="middle" font-size="8.5" font-style="italic" fill="#888">(SBAS inversion: roadmap)</text>
+
+  <!-- learned tier -->
+  <rect x="446" y="52" width="180" height="86" rx="8" fill="#eef7ef" stroke="#3fa34d" stroke-width="1.6"/>
+  <text x="536" y="70" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#2f7d3a">learned tier (live, ONNX)</text>
+  <text x="536" y="86" text-anchor="middle" font-size="8.8" fill="#333">autoencoder anomaly (AUC 0.90)</text>
+  <text x="536" y="99" text-anchor="middle" font-size="8.8" fill="#333">velocity anomaly (AUC 0.97)</text>
+  <text x="536" y="112" text-anchor="middle" font-size="8.8" fill="#333">CNN deformation type (6-class)</text>
+  <text x="536" y="127" text-anchor="middle" font-size="8.8" font-weight="bold" fill="#2f7d3a">accelerating recall 0.99</text>
+
+  <!-- forecast tier -->
+  <rect x="446" y="150" width="180" height="76" rx="8" fill="#fbf1f2" stroke="#b23a48" stroke-width="1.6"/>
+  <text x="536" y="168" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#8f2d3b">classical forecast</text>
+  <text x="536" y="184" text-anchor="middle" font-size="8.8" fill="#333">inverse-velocity (Fukuzono)</text>
+  <text x="536" y="197" text-anchor="middle" font-size="8.8" fill="#333">+ tiered TARP alarm</text>
+  <text x="536" y="212" text-anchor="middle" font-size="8.8" font-weight="bold" fill="#8f2d3b">median error 3.8% / 5.7% (real)</text>
+
+  <!-- arrows -->
+  <line x1="196" y1="89" x2="246" y2="110" stroke="#1a1a2e" stroke-width="1.4" marker-end="url(#ta)"/>
+  <line x1="196" y1="162" x2="246" y2="135" stroke="#1a1a2e" stroke-width="1.4" marker-end="url(#ta)"/>
+  <line x1="398" y1="112" x2="444" y2="95" stroke="#1a1a2e" stroke-width="1.4" marker-end="url(#ta)"/>
+  <line x1="398" y1="130" x2="444" y2="175" stroke="#1a1a2e" stroke-width="1.4" marker-end="url(#ta)"/>
+
+  <!-- honest footer -->
+  <rect x="60" y="256" width="620" height="48" rx="8" fill="#f7f7fa" stroke="#d8d8e0" stroke-width="1"/>
+  <text x="370" y="276" text-anchor="middle" font-size="10.2" font-weight="bold" fill="#b23a48">Didactic + decision-support, NOT a certified safety system.</text>
+  <text x="370" y="292" text-anchor="middle" font-size="9.4" font-style="italic" fill="#444">Most cases are high-fidelity synthetic; one real case (Campi Flegrei) validates the forecast on genuine Sentinel-1 data.</text>
+</svg>
