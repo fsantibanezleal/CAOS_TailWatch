@@ -98,3 +98,66 @@
 .u-legend { font-size: 0.76rem; color: var(--color-fg-subtle); margin-top: 0.15rem; }
 .u-legend .u-series { display: inline-flex; align-items: center; gap: 0.3rem; margin-right: 0.9rem; }
 .u-legend .u-value { font-family: var(--font-mono); color: var(--color-fg); }
+
+/* =============================================================================================
+   ADR-0071 UI FLOOR (applied by tools/ui-floor/apply_ui_floor.py). Measured minimum, not styling.
+   Every rule is here because its absence was a shipped defect somewhere in this line.
+   ============================================================================================= */
+
+/* 1. The page IS the viewport. The shell caps pages at a 1200px reading measure, correct for prose
+      and wrong for an instrument: it discarded 400px on a 1600px display and over half of a 2560px
+      one, which is why the visualization read as a thumbnail across the whole line. */
+.app-shell { height: 100dvh; min-height: 100dvh; overflow: hidden; }
+.app-shell > .page { flex: 1 1 auto; min-height: 0; display: flex; }
+.page-body.tw-layout { max-width: none; width: 100%; flex: 1 1 auto; min-height: 0;
+  padding: 1rem 1.25rem; align-items: stretch; }
+html, body { overflow-x: hidden; }
+
+/* 2. The prose footer margin (3rem) is dead space in a viewport-filling app: measured as exactly the
+      48px gap users saw between the content and the footer. */
+.app-shell .site-footer { margin-top: 0; }
+
+/* 3. Containment. A flex or grid item defaults to `min-width: auto` and will not shrink below its
+      content, so ONE nowrap row silently sizes the page wider than the screen (measured 1817px on a
+      1600px viewport). Every ancestor of a scrollable row must be allowed to shrink. */
+.page-body.tw-layout > * { min-width: 0; max-width: 100%; }
+.tabs, .tabpanel, .tablist { min-width: 0; max-width: 100%; }
+
+/* 4. Navigation chrome gets ONE row. `flex-wrap: wrap` let 12-to-18 tabs occupy two and three rows,
+      and every extra row is vertical space taken from the instrument on every render, forever.
+      NOTE: the row must NOT carry `overflow-x` if it hosts dropdown menus. In CSS a box cannot keep
+      `overflow-y: visible` when the other axis is anything else, so the declared value computes to
+      `auto` and the row clips its own menu. Group the tabs instead (ADR-0071 rule 5). */
+.tablist { flex-wrap: nowrap !important; }
+.tablist .tab, .tablist button { flex: 0 0 auto; white-space: nowrap; }
+
+/* ADR-0071 rules 4+5: ONE row of tabs; a tab combining several views reveals its list on hover and
+   you choose from the same tab. Two rows of chrome is the thing this replaces. */
+.tw-tabrow { display: flex; flex-wrap: nowrap; gap: 0.3rem; align-items: center; min-width: 0;
+  max-width: 100%; overflow: visible; flex: 0 0 auto;
+  border-bottom: 1px solid var(--color-border); padding-bottom: 0.45rem; margin-bottom: 0.8rem; }
+.tw-tabwrap { position: relative; flex: 0 0 auto; }
+.tw-tab { white-space: nowrap; cursor: pointer; font-size: 0.88rem; font-weight: 600;
+  padding: 0.42rem 0.85rem; border-radius: 8px; border: 1px solid transparent;
+  background: transparent; color: var(--color-fg-subtle); }
+.tw-tab:hover { color: var(--color-accent); }
+.tw-tab.on { color: var(--color-bg); background: var(--color-accent); border-color: var(--color-accent); }
+.tw-caret { margin-left: 0.4rem; font-size: 0.62rem; opacity: 0.75; }
+.tw-tabmenu { position: absolute; top: 100%; left: 0; z-index: 60; min-width: 200px;
+  display: flex; flex-direction: column; gap: 0.15rem; padding: 0.5rem 0.3rem 0.3rem; margin: 0;
+  background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 0 9px 9px 9px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.28); }
+.tw-tabmenu button { text-align: left; white-space: nowrap; cursor: pointer; font-size: 0.82rem;
+  padding: 0.34rem 0.55rem; border-radius: 6px; border: none; background: transparent; color: var(--color-fg-subtle); }
+.tw-tabmenu button:hover { background: color-mix(in srgb, var(--color-accent) 14%, transparent); color: var(--color-accent); }
+.tw-tabmenu button.on { color: var(--color-accent); font-weight: 700; }
+.tw-tabpanel { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding-right: 4px; }
+
+/* ADR-0070 entry control. Without a visible control in the App the focus route is an orphan: it
+   passes route tests, ships in the CHANGELOG, and no user ever reaches it. */
+.tw-focus-enter { display: block; text-decoration: none; border: 1px solid var(--color-accent);
+  border-radius: 10px; padding: 0.55rem 0.75rem; margin-bottom: 0.9rem;
+  background: color-mix(in srgb, var(--color-accent) 10%, transparent); }
+.tw-focus-enter:hover { background: color-mix(in srgb, var(--color-accent) 18%, transparent); }
+.tw-focus-enter-t { display: block; font-size: 0.86rem; font-weight: 700; color: var(--color-accent); }
+.tw-focus-enter-d { display: block; font-size: 0.72rem; color: var(--color-fg-subtle); margin-top: 0.15rem; line-height: 1.4; }
