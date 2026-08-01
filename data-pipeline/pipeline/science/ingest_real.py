@@ -24,7 +24,7 @@ Source + license (redistribution of a small modified clip is permitted WITH attr
 Run (needs onnx + onnxruntime + numpy + scipy + h5py in .venv-pipeline; the cum.h5 is NOT committed, it is read
 from a local path):
 
-    python -m twlab.science.ingest_real /path/to/TS_.../cum.h5
+    python -m pipeline.science.ingest_real /path/to/TS_.../cum.h5
 """
 from __future__ import annotations
 
@@ -185,7 +185,7 @@ def main(argv: list[str] | None = None) -> None:
     argv = list(sys.argv[1:] if argv is None else argv)
     if not argv:
         raise SystemExit(
-            "usage: python -m twlab.science.ingest_real <path-to-cum.h5>\n"
+            "usage: python -m pipeline.science.ingest_real <path-to-cum.h5>\n"
             "  cum.h5 = a LiCSBAS time-series (the tutorial sample: frame 124D_04854_171313, Campi Flegrei):\n"
             "  https://raw.githubusercontent.com/wiki/yumorishita/LiCSBAS/sample/LiCSBAS_sample_CF.tar.gz"
         )

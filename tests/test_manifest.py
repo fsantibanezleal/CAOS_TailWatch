@@ -1,6 +1,6 @@
 """CONTRACT 2 (artifact) tests: a manifest points to a real trace with the recorded byte size, the lane verdict is
 consistent with the gate, and the schema is the TailWatch one. Uses the committed tw-cases.json (no torch)."""
-from twlab import pipeline
+from pipeline import pipeline
 
 
 def test_manifest_matches_artifact_and_gate():

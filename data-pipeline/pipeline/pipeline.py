@@ -4,9 +4,9 @@ trace from the committed rich manifest (tw-cases.json), runs the lane gate, and 
 light (stdlib, no torch) and deterministic. `--retrain` regenerates those artifacts from the synthetic forward
 simulation (torch + scipy + h5py), see stages/.
 
-    python -m twlab.pipeline                 # rebuild all replay traces + manifests from the committed manifest
-    python -m twlab.pipeline accel           # one case
-    python -m twlab.pipeline all --retrain   # forward-sim -> SBAS -> train conv-AE+CNN -> export ONNX/cubes, then rebuild
+    python data-pipeline/run.py                 # rebuild all replay traces + manifests from the committed manifest
+    python data-pipeline/run.py accel           # one case
+    python data-pipeline/run.py all --retrain   # forward-sim -> SBAS -> train conv-AE+CNN -> export ONNX/cubes, then rebuild
 """
 from __future__ import annotations
 
@@ -32,7 +32,7 @@ def _load_manifest() -> dict:
     if not p.exists():
         raise SystemExit(
             f"missing committed artifact {p}. tw-cases.json is the heavy lane's rich output, run "
-            f"`python -m twlab.pipeline all --retrain` to regenerate it, or restore the committed copy."
+            f"`python data-pipeline/run.py all --retrain` to regenerate it, or restore the committed copy."
         )
     return read_json(p)
 
@@ -61,13 +61,13 @@ def precompute(case_id: str, seed: int = 42,
 
 def retrain(seed: int = 42) -> None:
     """HEAVY lane: regenerate the ONNX models + cubes + tw-cases.json from the synthetic forward simulation. The
-    real science is preserved verbatim in twlab/science/ (forward sim + SBAS + the conv-AE/CNN training + the cube/
+    real science is preserved verbatim in pipeline/science/ (forward sim + SBAS + the conv-AE/CNN training + the cube/
     manifest export); the named steps map to its functions (scene_fields=preprocess, pixel_series_dataset/
     velocity_patches=feature_extraction, train_cnn/train_ae=train, anomaly_map=infer, the held-out ROC/F1=evaluate,
     the cube+tw-cases.json write=export). Needs torch + scipy + h5py + the scenes in data/raw/scenes."""
     if not RAW_SCENES.exists():
         raise SystemExit(f"raw scenes not found in {RAW_SCENES}. Generate them with the forward sim first "
-                         f"(twlab/science/forward.py), see docs/guides/01_precompute-pipeline.md.")
+                         f"(pipeline/science/forward.py), see docs/guides/01_precompute-pipeline.md.")
     from .science import train_models
     print(f"[retrain] forward sim + SBAS + conv-AE/CNN train over {RAW_SCENES} ...", flush=True)
     train_models.main()
@@ -87,7 +87,7 @@ def run_all(seed: int = 42) -> list[dict]:
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(prog="twlab.pipeline")
+    ap = argparse.ArgumentParser(prog="pipeline.pipeline")
     ap.add_argument("case", nargs="?", default="all", help="a case id, or 'all'")
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--retrain", action="store_true",

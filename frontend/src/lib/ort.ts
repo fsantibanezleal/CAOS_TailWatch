@@ -18,7 +18,7 @@ const softmax = (a: Float32Array | number[]) => { const m = Math.max(...a); cons
 
 // The committed cnn.onnx fixes the series length to 60. Real cubes have a different epoch count (e.g. 40), so
 // linear-resample any series to 60 before inference (a 60-length series is unchanged). Matches the offline
-// ingest (twlab.science.ingest_real._resample_to), so live and baked class maps agree.
+// ingest (pipeline.science.ingest_real._resample_to), so live and baked class maps agree.
 const CNN_LEN = 60;
 function resampleTo(series: number[], n: number): number[] {
   const L = series.length;

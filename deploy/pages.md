@@ -3,7 +3,7 @@
 The default deploy for this archetype (ADR-0055 Pages-first): the SPA + the committed artifacts are served
 statically; there is **no backend** at request time. The workflow `.github/workflows/deploy-pages.yml`:
 
-1. regenerates the artifacts deterministically (`python -m twlab.pipeline all`) so the site replays fresh,
+1. regenerates the artifacts deterministically (`python data-pipeline/run.py all`) so the site replays fresh,
    audited outputs;
 2. builds the frontend (`cd frontend && npm ci && npm run build`, `copy-data.mjs` overlays `data/derived` into
    `public/`);
