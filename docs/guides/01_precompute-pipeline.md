@@ -8,7 +8,7 @@ forward simulation. Local-only (CI never retrains). Deterministic from the fixed
 ./scripts/setup.sh --precompute        # (PowerShell:  ./scripts/setup.ps1 -Precompute)
 
 # 2) generate the 20 synthetic Sentinel-1 scenes into data/raw/scenes (von-Kármán APS + decorrelation + DEM-error)
-.venv-pipeline/bin/python data-pipeline/twlab/science/forward.py   # writes data/raw/scenes/s1..s20.h5 (168 MB, git-ignored)
+.venv-pipeline/bin/python data-pipeline/pipeline/science/forward.py   # writes data/raw/scenes/s1..s20.h5 (168 MB, git-ignored)
 
 # 3) forward sim -> SBAS -> train conv-AE+CNN -> export ONNX + cubes + tw-cases.json -> rebuild the replay
 ./scripts/precompute.sh all --retrain

@@ -17,7 +17,7 @@ const hexRgb = (h: string): [number, number, number] => [parseInt(h.slice(1, 3),
 const ALARM_C: Record<string, string> = { green: '#3fb950', amber: '#d29922', red: '#f85149' };
 const sourceOf = (c: CaseInfo): 'synthetic' | 'real' => c.source ?? 'synthetic';
 
-// Per-tab honesty labels shown in Real mode (see the data-provenance dossier + twlab.science.ingest_real):
+// Per-tab honesty labels shown in Real mode (see the data-provenance dossier + pipeline.science.ingest_real):
 //   real   = computed directly on the real Sentinel-1 displacement/coherence
 //   assume = uses the real LOS up-vector under a single-geometry vertical-only assumption
 //   cross  = synthetic-trained ONNX applied cross-domain (model output, not verified ground truth)

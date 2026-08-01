@@ -9,7 +9,7 @@
   simple dilation (the per-pixel patch scoring leaves a border).
 * **h5py** (`h5py>=3.10`), reads/writes the synthetic Sentinel-1 scenes (`.h5`, 168 MB, git-ignored in `data/raw`).
 
-**Lane:** offline only (`twlab/science/{forward,sbas,train_models}.py`). Not shipped to the browser.
+**Lane:** offline only (`pipeline/science/{forward,sbas,train_models}.py`). Not shipped to the browser.
 
 ## Install
 

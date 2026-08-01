@@ -37,5 +37,5 @@ def build_replay(case: Any, *, derived_dir: str, manifests_dir: str,
     return manifest
 
 # The HEAVY export (writing cnn.onnx + ae.onnx + the per-case cubes + tw-cases.json) is done by the preserved
-# science orchestrator `twlab/science/train_models.py::main()`, invoked by `pipeline.retrain`, which writes those
+# science orchestrator `pipeline/science/train_models.py::main()`, invoked by `pipeline.retrain`, which writes those
 # artifacts to data/derived/. The named export step there is `export`; this module is the LIGHT replay builder.

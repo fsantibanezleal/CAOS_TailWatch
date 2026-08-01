@@ -1,6 +1,6 @@
 # Cases, taxonomy & coverage matrix
 
-`data-pipeline/twlab/cases/insar_cases.py` defines 5 cases across 2 categories, the deformation regimes a
+`data-pipeline/pipeline/cases/insar_cases.py` defines 5 cases across 2 categories, the deformation regimes a
 tailings-dam monitor must distinguish. The App shows one selected case; Experiments/Benchmark show cross-case
 summaries by category. Each case maps to a committed cube (`tw-<id>.bin`) and the SPA's `tw-cases.json`. All scenes
 are **synthetic Sentinel-1 simulations** (clearly labelled); the validation anchors point at the real documented

@@ -45,7 +45,7 @@ Instantiated from the CAOS product-repo archetype (ADR-0057): a heavy **offline 
 by two data contracts. See [`STRUCTURE.md`](STRUCTURE.md) and the [`docs/`](docs/README.md) wiki.
 
 ```
-OFFLINE  data-pipeline/twlab/ (torch+scipy+h5py)     LIVE  frontend/src/ (browser, TypeScript)
+OFFLINE  data-pipeline/pipeline/ (torch+scipy+h5py)     LIVE  frontend/src/ (browser, TypeScript)
   science/forward.py  synthetic Sentinel-1 sim          dsp/forecast.ts  inverse-velocity + TARP
   science/sbas.py     2-geom SBAS-consistent decomp     lib/ort.ts       onnxruntime-web (CNN live; AE offline)
   science/train_models.py  conv-AE + 1-D CNN -> ONNX    viz/             FieldMap / LatentScatter / charts
@@ -64,7 +64,7 @@ without torch or the 168 MB scenes. Heavy work (the forward sim + torch training
 
 ```bash
 ./scripts/setup.sh            # venvs + light deps + editable pkg (numpy+ruff+pytest)   [.ps1 on Windows]
-./scripts/precompute.sh       # python -m twlab.pipeline all  (rebuild the replay layer, numpy-only)
+./scripts/precompute.sh       # python data-pipeline/run.py all  (rebuild the replay layer, numpy-only)
 .venv-pipeline/bin/python -m pytest    # 8 passed     ·     ./scripts/smoke.sh   # CONTRACT 2 OK
 ./scripts/dev.sh              # cd frontend && npm install && npm run dev (vite + live ONNX + TS DSP)
 cd frontend && npm run build  # tsc --noEmit && vite build (+ copy-data overlay + SPA 404.html)

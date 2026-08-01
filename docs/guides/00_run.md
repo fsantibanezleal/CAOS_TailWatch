@@ -8,7 +8,7 @@ A clone replays with **no torch and no 168 MB scenes**, the trained ONNX + cubes
 ./scripts/setup.sh            #  (PowerShell:  ./scripts/setup.ps1)
 
 # 2) rebuild the per-case replay traces + manifests from the committed tw-cases.json (numpy-only)
-./scripts/precompute.sh       #  -> python -m twlab.pipeline all
+./scripts/precompute.sh       #  -> python data-pipeline/run.py all
 
 # 3) tests + the Contract-2 disk check
 .venv-pipeline/bin/python -m pytest        # 8 passed
