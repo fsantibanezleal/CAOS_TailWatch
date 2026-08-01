@@ -16,13 +16,13 @@ jobs:
           python-version: "3.12"
           cache: pip
       - name: Install (light lane + dev + editable pkg, no torch; the ONNX/cubes/tw-cases.json are committed)
-        run: pip install -r requirements.txt -r requirements-dev.txt -e .
+        run: pip install -r requirements.txt -r requirements-dev.txt
       - name: Lint
         run: ruff check data-pipeline tests scripts
       - name: Tests
         run: pytest
       - name: Pipeline smoke (rebuild the replay layer from the committed manifest)
-        run: python -m twlab.pipeline all
+        run: python data-pipeline/run.py all
       - name: CONTRACT 2, manifests <-> traces consistent (no drift)
         run: python scripts/check_artifacts.py
 
@@ -35,8 +35,8 @@ jobs:
           python-version: "3.12"
       - name: Rebuild the replay layer (so copy-data has the manifests/traces)
         run: |
-          pip install -r requirements.txt -e .
-          python -m twlab.pipeline all
+          pip install -r requirements.txt
+          python data-pipeline/run.py all
       - uses: actions/setup-node@v4
         with:
           node-version: "20"

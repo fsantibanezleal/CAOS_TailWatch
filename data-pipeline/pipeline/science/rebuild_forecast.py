@@ -3,7 +3,7 @@ bank) without the torch lane. Pure numpy, reuses forecast_benchmark() so the num
 single source of truth. Use when the models do not need retraining but the forecast protocol did
 (issue #24).
 
-    python -m twlab.science.rebuild_forecast
+    python -m pipeline.science.rebuild_forecast
 """
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""twlab, the offline+live engine for TailWatch (instantiated from the CAOS product-repo archetype, ADR-0057).
+"""pipeline, the offline+live engine for TailWatch (instantiated from the CAOS product-repo archetype, ADR-0057).
 
 The CORE is real and SOTA-pinned: a high-fidelity synthetic Sentinel-1 InSAR forward simulation (von-Kármán APS,
 decorrelation, DEM-error, orbital ramps) + a 2-geometry SBAS displacement decomposition feed a 2-D convolutional

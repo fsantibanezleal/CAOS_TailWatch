@@ -9,7 +9,7 @@ accelerating, seasonal, step, decorrelated}, optional `dam_sev` / `coherence_thr
 for passing rows.
 
 ```python
-from twlab.io.contract import validate_records
+from pipeline.io.contract import validate_records
 rep = validate_records([{ "scene_id": "mine", "W": 160, "H": 120, "n_ep": 60,
                           "regime": "accelerating", "dam_sev": 1.5 }])
 print(rep.summary())   # accepted / rejected (with reason) / flagged

@@ -3,11 +3,11 @@
 ```
 CAOS_TailWatch/
 ├─ README.md · CHANGELOG.md (X.XX.XXX) · LICENSE · LICENSES.md · ATTRIBUTION.md · STRUCTURE.md
-├─ pyproject.toml (twlab) · .env.example · .gitignore · .gitattributes · .vscode/
+├─ pyproject.toml (pipeline) · .env.example · .gitignore · .gitattributes · .vscode/
 ├─ requirements.txt (live-thin numpy) · -dev · -precompute (torch/scipy/h5py/onnx) · -gpu (dormant) · -api (dormant)
 ├─ data-pipeline/
 │  ├─ README.md
-│  └─ twlab/                       # the offline engine + staged pipeline
+│  └─ pipeline/                       # the offline engine + staged pipeline
 │     ├─ __init__.py (version) · pipeline.py (orchestrator+CLI) · registry.py (cases by CATEGORY) · live.py (dormant)
 │     ├─ io/      contract.py (CONTRACT 1: InSAR scene schema) · schema.py · formats.py
 │     ├─ core/    rng.py · trace.py (CONTRACT 2 trace) · manifest.py (CONTRACT 2) · gate.py (lane gate)
@@ -33,6 +33,6 @@ CAOS_TailWatch/
 └─ .github/workflows/  ci.yml (ruff+pytest+pipeline+check_artifacts+guards) · deploy-pages.yml
 ```
 
-**The base is frozen**, edits land only in the CORE (the forward-sim/SBAS/training science in `twlab/science/`, the
+**The base is frozen**, edits land only in the CORE (the forward-sim/SBAS/training science in `pipeline/science/`, the
 DSP/viz/pages in `frontend/src/`, the cases/content), never in the structure, contracts, env, or deploy. The 168 MB
 synthetic `.h5` scenes are NEVER committed (regenerable from the forward sim); only the compact derived artifacts are.

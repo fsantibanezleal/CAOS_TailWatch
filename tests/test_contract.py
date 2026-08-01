@@ -1,6 +1,6 @@
 """CONTRACT 1 (ingestion) tests: good InSAR scene descriptors validate; ill-formed scenes are rejected with a
 reason; decorrelated / extreme-severity scenes are flagged; the committed example passes."""
-from twlab.io.contract import validate_records
+from pipeline.io.contract import validate_records
 
 
 def test_good_scene_accepted():
@@ -37,7 +37,7 @@ def test_flagged_but_accepted():
 def test_committed_example_passes_contract():
     from pathlib import Path
 
-    from twlab.io.formats import read_csv_rows
+    from pipeline.io.formats import read_csv_rows
 
     csv = Path(__file__).resolve().parents[1] / "data" / "examples" / "scenes.csv"
     rep = validate_records(read_csv_rows(csv))

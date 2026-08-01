@@ -24,8 +24,8 @@ jobs:
           python-version: "3.12"
       - name: Rebuild the replay layer (numpy-only; the committed ONNX/cubes/tw-cases.json are the heavy lane's outputs)
         run: |
-          pip install -r requirements.txt -e .
-          python -m twlab.pipeline all
+          pip install -r requirements.txt
+          python data-pipeline/run.py all
       - uses: actions/setup-node@v4
         with:
           node-version: "20"

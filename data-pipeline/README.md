@@ -1,10 +1,10 @@
-# data-pipeline/, the offline engine (`twlab`)
+# data-pipeline/, the offline engine (`pipeline`)
 
 The staged, seeded, contract-bounded offline pipeline for TailWatch (ADR-0057). Install editable from the repo root
-(`pip install -e .`); run with `python -m twlab.pipeline`.
+(`pip install -e .`); run with `python data-pipeline/run.py`.
 
 ```
-twlab/
+pipeline/
 ├─ __init__.py            # __version__ = "0.09.000"
 ├─ pipeline.py            # orchestrator + CLI (light replay by default; --retrain runs the heavy science)
 ├─ registry.py            # cases grouped by CATEGORY (failure regimes / control-normal)
@@ -20,7 +20,7 @@ twlab/
 
 **Two lanes:**
 
-* **Default (light, numpy/stdlib)**, `python -m twlab.pipeline all` rebuilds every per-case replay trace +
+* **Default (light, numpy/stdlib)**, `python data-pipeline/run.py all` rebuilds every per-case replay trace +
   manifest from the committed `tw-cases.json`. No torch, no 168 MB scenes, a clone replays.
 * **Heavy (`--retrain`)**, `pipeline all --retrain` runs the preserved science (`science/train_models.main`):
   forward sim → SBAS → train the conv-AE + 1-D CNN → export `cnn.onnx`/`ae.onnx` + the per-case cubes +

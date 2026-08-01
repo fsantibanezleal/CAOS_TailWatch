@@ -9,7 +9,7 @@ PY="${PYTHON:-python}"; PRECOMPUTE=0; [ "${1:-}" = "--precompute" ] && PRECOMPUT
 mkvenv() { [ -d "$1" ] || "$PY" -m venv "$1"; }
 venvpy() { local p="$1/bin/python"; [ -x "$p" ] || p="$1/Scripts/python.exe"; echo "$p"; }
 echo "[setup] .venv-pipeline (default pipeline + tests + lint)…"; mkvenv .venv-pipeline; VP="$(venvpy .venv-pipeline)"
-"$VP" -m pip install --upgrade pip -q; "$VP" -m pip install -q -r requirements.txt -r requirements-dev.txt; "$VP" -m pip install -q -e .
+"$VP" -m pip install --upgrade pip -q; "$VP" -m pip install -q -r requirements.txt -r requirements-dev.txt; "$VP" -m pip install -q
 if [ "$PRECOMPUTE" -eq 1 ]; then
   echo "[setup] + heavy precompute engines (torch/scipy/h5py/onnx)…"
   "$VP" -m pip install -q torch==2.12.1 --index-url https://download.pytorch.org/whl/cpu

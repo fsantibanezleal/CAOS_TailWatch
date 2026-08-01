@@ -5,7 +5,7 @@
 classical velocity baseline is measured against. Training is modest (a small CNN + conv-AE over patches from 16
 synthetic scenes, minutes on CPU), no GPU.
 
-**Lane:** offline only (`twlab/science/train_models.py`, named by `stages/{train,infer,evaluate,export}`). Never
+**Lane:** offline only (`pipeline/science/train_models.py`, named by `stages/{train,infer,evaluate,export}`). Never
 shipped to the browser.
 
 ## Install

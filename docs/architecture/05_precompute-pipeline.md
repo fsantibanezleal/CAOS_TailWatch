@@ -1,6 +1,6 @@
 # 05, The staged precompute pipeline
 
-`data-pipeline/twlab/stages/`, six named, seeded steps. The real science is preserved verbatim in `twlab/science/`
+`data-pipeline/pipeline/stages/`, six named, seeded steps. The real science is preserved verbatim in `pipeline/science/`
 (the forward sim + SBAS + the conv-AE/CNN training + the cube/manifest export); the stage modules are thin wrappers
 that name the steps and delegate to it, and `pipeline.retrain` runs the preserved orchestrator
 (`science/train_models.main`). The science is kept verbatim because it is real research code, run only via `--retrain`.

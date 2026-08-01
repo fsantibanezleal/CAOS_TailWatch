@@ -2,7 +2,7 @@
 the flat index covering every category."""
 import json
 
-from twlab import pipeline, registry
+from pipeline import pipeline, registry
 
 
 def test_case_deterministic_same_seed():

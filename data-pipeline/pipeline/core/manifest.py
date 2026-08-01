@@ -51,7 +51,7 @@ def build_case_manifest(*, case: Any, seed: int, artifact_rel: str, trace_bytes:
         "real_or_synthetic": case.real_or_synthetic,
         "expected_band": case.expected_band,
         "validation_anchor": case.validation_anchor,
-        "engine": {"package": "twlab", "version": __version__,
+        "engine": {"package": "pipeline", "version": __version__,
                    "model": "conv-AE (anomaly) + 1-D CNN (classifier) on 2-geometry SBAS; classical inverse-velocity baseline"},
         "dataset": REAL_DATASET if getattr(case, "real_or_synthetic", "synthetic") == "real" else DATASET,
         "split": SPLIT,
