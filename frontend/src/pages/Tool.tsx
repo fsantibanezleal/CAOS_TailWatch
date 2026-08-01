@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import type uPlot from 'uplot';
-import { Tabs, useShellLang } from '@fasl-work/caos-app-shell';
+import { Link } from 'react-router-dom';
+import { useShellLang } from '@fasl-work/caos-app-shell';
 import { loadManifest, loadCase, velOf, seriesAt, pctNorm, gridOf, componentsOf, CLASS_COLORS, CLASS_EN, CLASS_ES, COMP_EN, COMP_ES, type Manifest, type CaseData, type CaseInfo, type Component, type Provenance } from '../data/demo';
 import { vik, batlow, rgbCss } from '../lib/colormap';
 import { inverseVelocity, tarp, conformalInterval } from '../dsp/forecast';
@@ -37,6 +38,16 @@ const BADGE_TXT: Record<Honesty, { en: string; es: string }> = {
   cross: { en: 'Cross-domain model', es: 'Modelo cross-domain' },
 };
 
+
+/** ADR-0071 rules 4+5. Eight flat sibling tabs is a list, not an architecture: every extra row of nav is
+ *  vertical space taken off the instrument on every render. Grouped by the question being asked; the
+ *  sub-views are revealed from the same tab. */
+const TAB_GROUPS: { id: string; en: string; es: string; members: string[] }[] = [
+  { id: 'maps',     en: 'Maps',      es: 'Mapas',      members: ['vel', 'cum', 'coh'] },
+  { id: 'pixel',    en: 'Pixel',     es: 'Pixel',      members: ['series', 'iv'] },
+  { id: 'learned',  en: 'Learned',   es: 'Aprendido',  members: ['anom', 'class', 'lat'] },
+];
+
 export default function Tool() {
   const es = useShellLang() === 'es';
   const [m, setM] = useState<Manifest | null>(null);
@@ -53,6 +64,9 @@ function Workbench({ m }: { m: Manifest }) {
   const hasReal = m.cases.some((c) => sourceOf(c) === 'real');
   const [source, setSource] = useState<'synthetic' | 'real'>('synthetic');
   const [caseId, setCaseId] = useState(m.cases[0].id);
+  const [activeTab, setActiveTab] = useState('vel');
+  const [openMenu, setOpenMenu] = useState<string | null>(null);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [comp, setComp] = useState<Component>('up');
   const [cd, setCd] = useState<CaseData | null>(null);
   const [sel, setSel] = useState({ x: 80, y: 50 });
@@ -161,6 +175,14 @@ function Workbench({ m }: { m: Manifest }) {
   return (
     <div className="page-body tw-layout">
       <aside className="tw-side">
+        {/* ADR-0070 entry: without a visible control the focus route is an orphan that ships and nobody
+            reaches. It carries the SELECTED case. */}
+        <Link className="tw-focus-enter" to={`/focus/${caseId}`}>
+          <span className="tw-focus-enter-t">{es ? 'Modo enfoque' : 'Focus mode'}</span>
+          <span className="tw-focus-enter-d">
+            {es ? 'Abrir esta area a pantalla completa' : 'Open this area full screen'}
+          </span>
+        </Link>
         {hasReal && (
           <div className="tw-ctl"><span className="tw-ctl-lbl">{es ? 'Fuente' : 'Source'}</span>
             <div className="tw-seg tw-source">
@@ -199,7 +221,47 @@ function Workbench({ m }: { m: Manifest }) {
           ? (es ? 'Sentinel-1 InSAR real (LiCSAR/LiCSBAS, geometría descendente): velocidad, coherencia y serie acumulada son reales; anomalía/clase/latente son el modelo sintético aplicado cross-domain (no verdad de terreno); el pronóstico de falla es ilustrativo. No es un sistema de alarma certificado.' : 'Real Sentinel-1 InSAR (LiCSAR/LiCSBAS, descending): velocity, coherence and cumulative series are real; anomaly/class/latent are the synthetic model applied cross-domain (not ground truth); the failure forecast is illustrative. Not a certified alarm system.')
           : (es ? 'Datos sintéticos físicamente fundados (formato LiCSBAS); modelos entrenados offline, inferencia ONNX en vivo. No es un sistema de alarma certificado.' : 'Synthetic physics-grounded data (LiCSBAS format); models trained offline, live ONNX inference. Not a certified alarm system.')}</p>
       </aside>
-      <div className="tw-main"><Tabs tabs={tabs.map((t) => ({ ...t, content: <PanelBoundary key={`${source}-${caseId}-${t.id}`} lang={es ? 'es' : 'en'}>{t.content}</PanelBoundary> }))} ariaLabel="methods" /></div>
+      <div className="tw-main">
+        <div className="tw-tabrow" role="tablist" aria-label="methods">
+          {TAB_GROUPS.filter((g) => tabs.some((x) => g.members.includes(x.id))).map((g) => {
+            const mine = tabs.filter((x) => g.members.includes(x.id));
+            const activeHere = mine.some((x) => x.id === activeTab);
+            const shown = activeHere ? mine.find((x) => x.id === activeTab)! : mine[0];
+            const multi = mine.length > 1;
+            return (
+              <div key={g.id} className="tw-tabwrap"
+                   onPointerEnter={() => { if (multi) { if (closeTimer.current) clearTimeout(closeTimer.current); setOpenMenu(g.id); } }}
+                   onPointerLeave={() => {
+                     if (closeTimer.current) clearTimeout(closeTimer.current);
+                     closeTimer.current = setTimeout(() => setOpenMenu((mm) => (mm === g.id ? null : mm)), 240);
+                   }}>
+                <button role="tab" aria-selected={activeHere} className={`tw-tab ${activeHere ? 'on' : ''}`}
+                        onClick={() => {
+                          if (!multi) { setActiveTab(mine[0].id); setOpenMenu(null); return; }
+                          setOpenMenu(openMenu === g.id ? null : g.id);
+                          if (!activeHere) setActiveTab(shown.id);
+                        }}>
+                  {activeHere ? shown.label : (es ? g.es : g.en)}{multi ? <span className="tw-caret">v</span> : null}
+                </button>
+                {multi && openMenu === g.id && (
+                  <div className="tw-tabmenu" role="menu">
+                    {mine.map((x) => (
+                      <button key={x.id} role="menuitem" className={x.id === activeTab ? 'on' : ''}
+                              onClick={() => { setActiveTab(x.id); setOpenMenu(null); }}>{x.label}</button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+        <div className="tw-tabpanel">
+          {(() => {
+            const cur = tabs.find((x) => x.id === activeTab) ?? tabs[0];
+            return cur ? <PanelBoundary key={`${source}-${caseId}-${cur.id}`} lang={es ? 'es' : 'en'}>{cur.content}</PanelBoundary> : null;
+          })()}
+        </div>
+      </div>
     </div>
   );
 }

@@ -3,6 +3,36 @@
 All notable changes to CAOS TailWatch are documented here. Versions follow `X.XX.XXX` (major.minor.patch); the
 project stays in `0.x`; the App now serves both the synthetic simulator and a real Sentinel-1 InSAR sample.
 
+## [0.14.000] · 2026-08-01
+
+### Fixed - the rail was painted over by the footer, and the docs routes clipped
+
+`align-items: start` let both grid columns grow to their content, so the rail ran past the shell bottom and
+its lowest control was drawn OVER by the footer: hit-testing the coherence-mask checkbox returned
+`FOOTER.site-footer`. Rows are sized by the ROW now and the rail scrolls itself. Prose routes get their own
+scroll (floor v2); previously `/introduction`, `/methodology`, `/experiments` and `/benchmark` clipped with
+nothing able to scroll.
+
+### Changed - tabs regularized per ADR-0071
+
+Eight flat tabs are now THREE groups on one 45px row (Maps, Pixel, Learned), sub-views revealed on hover.
+
+### Added - ADR-0070 focus mode, with the caldera caveat on screen
+
+A full-viewport view of the selected AOI: the velocity field as the stage, click any pixel to recompute the
+series and the inverse-velocity fit live, and the Fukuzono verdict NAMED on the stage. When the terminal fit
+does not support a projection the badge says so instead of printing a date, and the wording keeps "where the
+line extrapolates for this pixel" distinct from "a prediction of failure for the site".
+
+The real lane's provenance caveat is in the RAIL, not on a docs page: the Sentinel-1 cube is the Campi
+Flegrei volcanic caldera, NOT a tailings facility. It demonstrates the identical InSAR workflow on real
+data, and a tailings reading does not transfer. That is the first thing a viewer of this screen needs.
+
+**A bug caught by looking rather than by a passing check:** the focus view read its time axis from
+`CaseInfo.days`, which is optional and empty for most cases, so the inverse-velocity fit had no time axis
+and the badge sat on "Loading" forever while the map rendered perfectly. `days` now comes from `gridOf()`,
+exactly as the App does.
+
 ## [0.13.000] · 2026-07-30
 
 ### Fixed
