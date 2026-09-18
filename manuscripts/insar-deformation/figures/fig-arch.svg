@@ -24,7 +24,7 @@
   <rect x="248" y="90" width="150" height="66" rx="8" fill="#ffffff" stroke="#1a1a2e" stroke-width="1.4"/>
   <text x="323" y="112" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#1a1a2e">2-geometry</text>
   <text x="323" y="127" text-anchor="middle" font-size="9" fill="#333">Up / East decomposition</text>
-  <text x="323" y="141" text-anchor="middle" font-size="8.5" font-style="italic" fill="#888">(SBAS inversion: roadmap)</text>
+  <text x="323" y="141" text-anchor="middle" font-size="8.5" font-style="italic" fill="#888">(real frame: Up only)</text>
 
   <!-- learned tier -->
   <rect x="446" y="52" width="180" height="86" rx="8" fill="#eef7ef" stroke="#3fa34d" stroke-width="1.6"/>
@@ -39,7 +39,7 @@
   <text x="536" y="168" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#8f2d3b">classical forecast</text>
   <text x="536" y="184" text-anchor="middle" font-size="8.8" fill="#333">inverse-velocity (Fukuzono)</text>
   <text x="536" y="197" text-anchor="middle" font-size="8.8" fill="#333">+ tiered TARP alarm</text>
-  <text x="536" y="212" text-anchor="middle" font-size="8.8" font-weight="bold" fill="#8f2d3b">median error 3.8% / 5.7% (real)</text>
+  <text x="536" y="212" text-anchor="middle" font-size="8.8" font-weight="bold" fill="#8f2d3b">median error 5.7% (synthetic)</text>
 
   <!-- arrows -->
   <line x1="196" y1="89" x2="246" y2="110" stroke="#1a1a2e" stroke-width="1.4" marker-end="url(#ta)"/>
@@ -47,8 +47,8 @@
   <line x1="398" y1="112" x2="444" y2="95" stroke="#1a1a2e" stroke-width="1.4" marker-end="url(#ta)"/>
   <line x1="398" y1="130" x2="444" y2="175" stroke="#1a1a2e" stroke-width="1.4" marker-end="url(#ta)"/>
 
-  <!-- honest footer -->
+  <!-- scope footer -->
   <rect x="60" y="256" width="620" height="48" rx="8" fill="#f7f7fa" stroke="#d8d8e0" stroke-width="1"/>
   <text x="370" y="276" text-anchor="middle" font-size="10.2" font-weight="bold" fill="#b23a48">Didactic + decision-support, NOT a certified safety system.</text>
-  <text x="370" y="292" text-anchor="middle" font-size="9.4" font-style="italic" fill="#444">Most cases are high-fidelity synthetic; one real case (Campi Flegrei) validates the forecast on genuine Sentinel-1 data.</text>
+  <text x="370" y="292" text-anchor="middle" font-size="9.4" font-style="italic" fill="#444">All accuracies are measured on synthetic cases; the real Campi Flegrei series has no failure event.</text>
 </svg>
