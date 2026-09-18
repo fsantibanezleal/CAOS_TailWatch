@@ -4,7 +4,8 @@
   fig-campiflegrei.pdf - the REAL Campi Flegrei case (COMET LiCSAR/LiCSBAS Sentinel-1): the line-of-sight
                          displacement map over the observation window and the crest cumulative time series.
   fig-forecast.pdf     - the classical inverse-velocity (Fukuzono) failure forecast: median forecast error vs
-                         time-to-failure, on the synthetic accelerating cases and on the real Campi Flegrei case.
+                         lead time, on the synthetic accelerating cases (the tw-cases.json forecast block). The
+                         real Campi Flegrei series has no failure event, so no forecast error is plotted for it.
   fig-learned.pdf      - the learned tier: anomaly-detection ROC (autoencoder + velocity) and the six-class
                          deformation-type confusion matrix (macro-F1).
 
@@ -66,24 +67,22 @@ def fig_campiflegrei():
 
 
 def fig_forecast():
-    tc = json.loads((DER / "tw-cases.json").read_text(encoding="utf-8"))
-    rc = json.loads((DER / "real-cf" / "trace.json").read_text(encoding="utf-8"))
+    fc = json.loads((DER / "tw-cases.json").read_text(encoding="utf-8"))["forecast"]
     fig, ax = plt.subplots(figsize=(6.0, 3.0))
-    for src, lab, col in [(tc["forecast"], "synthetic accelerating (n=180)", "#e07a3f"),
-                          (rc["forecast"], "real Campi Flegrei (n=40)", "#1b6ca8")]:
-        lc = src.get("leadCurve", [])
-        mid = [(l.get("mid") if l.get("mid") is not None else 0.5 * (l.get("lo", 0) + l.get("hi", 0))) for l in lc]
-        err = [100 * (l.get("medErr") if l.get("medErr") is not None else l.get("medAbsRelErr", 0)) for l in lc]
-        ax.plot(mid, err, "o-", color=col, linewidth=1.8, markersize=5, label=lab)
+    lc = fc.get("leadCurve", [])
+    mid = [(l.get("mid") if l.get("mid") is not None else 0.5 * (l.get("lo", 0) + l.get("hi", 0))) for l in lc]
+    err = [100 * (l.get("medErr") if l.get("medErr") is not None else l.get("medAbsRelErr", 0)) for l in lc]
+    ax.plot(mid, err, "o-", color="#e07a3f", linewidth=1.8, markersize=5,
+            label=f"synthetic accelerating scenes (n={fc['nTraj']})")
     ax.set_xlabel("lead time before failure (days)")
     ax.set_ylabel("median forecast error (% of true failure time)")
-    ax.set_title("Inverse-velocity (Fukuzono) failure forecast:\naccurate near failure, 100% detection",
-                 fontsize=9.0)
+    ax.set_title("Inverse-velocity (Fukuzono) failure forecast\non synthetic accelerating scenes", fontsize=9.0)
     ax.grid(True, color=GRID, linewidth=0.7)
     ax.set_axisbelow(True)
     ax.legend(fontsize=8.0, frameon=True, facecolor="white", edgecolor=GRID, loc="upper left")
-    ax.text(0.97, 0.05, "median |error|: 3.8% (synth) / 5.7% (real)", transform=ax.transAxes,
-            ha="right", va="bottom", fontsize=8, style="italic", color="#555",
+    n_alarms = sum(r["falseAlarms"] for r in fc.get("controlRegimes", {}).values())
+    ax.text(0.97, 0.05, f"median |error| {fc['medErrPct']:.1f}%; false alarms {n_alarms} of {fc['nControl']} controls",
+            transform=ax.transAxes, ha="right", va="bottom", fontsize=8, style="italic", color="#555",
             bbox=dict(boxstyle="round,pad=0.3", fc="white", ec=GRID))
     for s in ("top", "right"):
         ax.spines[s].set_visible(False)
