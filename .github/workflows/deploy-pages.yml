@@ -17,15 +17,12 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Rebuild the replay layer (numpy-only; the committed ONNX/cubes/tw-cases.json are the heavy lane's outputs)
-        run: |
-          pip install -r requirements.txt
-          python data-pipeline/run.py all
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
@@ -41,6 +38,7 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
