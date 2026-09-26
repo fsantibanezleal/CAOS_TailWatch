@@ -28,7 +28,7 @@ export const architecture: ArchitectureConfig = {
         'falla, respondiendo "¿se está hundiendo / acelerando el muro, y cuándo fallaría?". Un clic en cualquier ' +
         'píxel inspecciona su serie de desplazamiento, su velocidad (Este/Up/LOS), su anomalía y su pronóstico de ' +
         'velocidad inversa.\n\n' +
-        'Es un sistema real, no un demo. El motor de deformación (frontend/src/dsp/) recalcula la velocidad, el ajuste ' +
+        'Es un sistema real, no una demo. El motor de deformación (frontend/src/dsp/) recalcula la velocidad, el ajuste ' +
         'de velocidad inversa de Fukuzono y el nivel TARP en vivo en el navegador. Un CNN 1-D clasifica la serie de un ' +
         'píxel en vivo (ONNX, en el cliente); el mapa de anomalía del autoencoder convolucional se precalcula offline ' +
         'en el pipeline de entrenamiento. El campo de velocidad se enmascara por coherencia interferométrica, y la ' +
@@ -108,7 +108,7 @@ export const architecture: ArchitectureConfig = {
         'El motor determinista está siempre activo y es transparente, la referencia contra la que se mide toda alarma. ' +
         'El carril aprendido enriquece el click-to-inspect: un CNN 1-D clasifica la serie de 60 épocas de un píxel en 6 ' +
         'patrones de deformación, y un autoencoder convolucional reconstruye un parche de velocidad de 16×16 (MSE = ' +
-        'anomalía), computado offline en el mapa de anomalía. El CNN corre en el cliente como ONNX; ambos se reportan ' +
+        'anomalía), computado offline en el mapa de anomalía. El CNN se ejecuta en el cliente como ONNX; ambos se reportan ' +
         'junto a la física, nunca como caja negra. Refs: ' +
         'Fukuzono 1985, Voight 1988, Carlà 2017.',
     },
@@ -131,7 +131,7 @@ export const architecture: ArchitectureConfig = {
         'con guardas de rango/NaN, para que la app acepte datos del usuario, no solo los casos incluidos. El Contrato 2 ' +
         '(artefacto) define la salida que lee la web (campos de velocidad/anomalía/coherencia por caso, los ' +
         'pronósticos, el índice de modelos), espejada exactamente por contract.types.ts. Entre ambos, el pipeline por ' +
-        'etapas y determinista corre el lane gate (numpy-light por defecto, --retrain para el carril pesado de torch) y ' +
+        'etapas y determinista ejecuta el lane gate (numpy-light por defecto, --retrain para el carril pesado de torch) y ' +
         'escribe un manifest de procedencia, de modo que cada resultado es reproducible y la web nunca diverge en silencio.',
     },
   ],

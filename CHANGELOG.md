@@ -3,6 +3,16 @@
 All notable changes to CAOS TailWatch are documented here. Versions follow `X.XX.XXX` (major.minor.patch); the
 project stays in `0.x`; the App now serves both the synthetic simulator and a real Sentinel-1 InSAR sample.
 
+## [0.14.001] · 2026-09-26
+
+### Fixed
+
+- Three Spanish lines in the architecture text: "una demo" (the noun is feminine), and "se ejecuta"
+  and "ejecuta" where the text had the calque "corre" (a July fix that had waited on
+  `task/text-quality-pass2`).
+- No em-dash in the files the content guard does not scan: `.gitignore`, the dormant deploy templates
+  and the shell scripts.
+
 ## [0.14.000] · 2026-08-01
 
 ### Fixed - the rail was painted over by the footer, and the docs routes clipped

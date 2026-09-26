@@ -1,4 +1,4 @@
-# DORMANT nginx reverse-proxy template for the VPS path — used ONLY if the app/ backend is activated (ADR-0002).
+# DORMANT nginx reverse-proxy template for the VPS path: used ONLY if the app/ backend is activated (ADR-0002).
 # Rename to <domain>.nginx, fill <domain>/<port>, then install + reload nginx on the host.
 server {
     server_name <domain>;
