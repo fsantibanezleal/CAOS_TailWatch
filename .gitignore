@@ -1,6 +1,6 @@
 # Minimal-but-complete ignore for an instantiated product repo (ADR-0057).
 
-# --- Python virtualenvs (ANY name, ANY depth) — NEVER committed; recreate via scripts/setup ---
+# --- Python virtualenvs (ANY name, ANY depth): NEVER committed; recreate via scripts/setup ---
 .venv/
 .venv*
 **/.venv*
@@ -37,8 +37,8 @@ frontend/public/tw-cases.json
 frontend/public/forecast-benchmark.json
 *.tsbuildinfo
 
-# --- Raw / heavy data — commit ONLY the compact derived artifacts under data/derived/ ---
-# the synthetic Sentinel-1 scenes (168 MB of .h5) are regenerable from the forward sim — NEVER committed
+# --- Raw / heavy data: commit ONLY the compact derived artifacts under data/derived/ ---
+# the synthetic Sentinel-1 scenes (168 MB of .h5) are regenerable from the forward sim: NEVER committed
 data/raw/
 *.h5
 *.hdf5
@@ -46,7 +46,7 @@ data/raw/
 *.nc
 *.npy
 
-# --- Secrets / env (public repo — only .env.example is committed) ---
+# --- Secrets / env (public repo: only .env.example is committed) ---
 .env
 .env.*
 !.env.example
