@@ -49,7 +49,8 @@ jobs:
       - name: Base-integrity guards (the regressions this archetype forbids)
         run: |
           fail=0
-          if git ls-files | grep -qE '(^|/)\.env(\..+)?$' && ! git ls-files | grep -qx '.env.example'; then
+          envs="$(git ls-files | grep -E '(^|/)\.env(\..+)?$' | grep -vE '(^|/)\.env(\..+)?\.example$' || true)"
+          if [ -n "$envs" ]; then
             echo "::error::a real .env is tracked (only .env.example may be)"; fail=1; fi
           if git ls-files | grep -qiE '(^|/)\.?venv|\.(dll|so|dylib|pt|pth)$'; then
             echo "::error::a venv or native/heavy binary is tracked (recreate from requirements; keep models small/LFS)"; fail=1; fi
